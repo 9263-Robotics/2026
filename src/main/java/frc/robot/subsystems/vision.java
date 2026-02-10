@@ -10,9 +10,6 @@ import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.TalonSRXControlMode;
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
@@ -36,11 +33,6 @@ public class vision extends SubsystemBase {
 
   /** Creates a new ExampleSubsystem. */
   public vision() {
-    cam1Estimator.setMultiTagFallbackStrategy(PoseStrategy.LOWEST_AMBIGUITY);
-  }
-
-  @Override
-  public void periodic() {
   }
 
   public void visionPoseUpdate(SwerveDrive m_SwerveDrive){
@@ -48,20 +40,22 @@ public class vision extends SubsystemBase {
 
     var cam1Pipeline = camera1.getAllUnreadResults();
     for (var result : cam1Pipeline){
-      fieldToCamera1 = cam1Estimator.estimateCoprocMultiTagPose(result);
-      m_SwerveDrive.addVisionMeasurement(fieldToCamera1.get().estimatedPose.toPose2d(), fieldToCamera1.get().timestampSeconds);
+      if (result.getTargets().size() <= 1){
+        fieldToCamera1 = cam1Estimator.estimateLowestAmbiguityPose(result);
+      } else{
+       fieldToCamera1 = cam1Estimator.estimateCoprocMultiTagPose(result);
+      }
+       m_SwerveDrive.addVisionMeasurement(fieldToCamera1.get().estimatedPose.toPose2d(), fieldToCamera1.get().timestampSeconds);
     }
 
     var cam2Pipeline = camera2.getAllUnreadResults();
     for (var result : cam2Pipeline){
+      if (result.getTargets().size() <= 1){
+        fieldToCamera2 = cam2Estimator.estimateLowestAmbiguityPose(result);
+      } else{
        fieldToCamera2 = cam2Estimator.estimateCoprocMultiTagPose(result);
-
+      }
        m_SwerveDrive.addVisionMeasurement(fieldToCamera2.get().estimatedPose.toPose2d(), fieldToCamera2.get().timestampSeconds);
     }
-  }
-
-  @Override
-  public void simulationPeriodic() {
-    // This method will be called once per scheduler run during simulation
   }
 }
