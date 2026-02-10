@@ -16,11 +16,13 @@ import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import frc.robot.subsystems.vision;
 
 public class SwerveSubsystem extends SubsystemBase {
 
 
     private final SwerveDrive swerveDrive;
+    private final vision m_vision = new vision();
 
     public SwerveSubsystem(File directory){
 
@@ -69,5 +71,10 @@ public class SwerveSubsystem extends SubsystemBase {
         return run( () -> {
         swerveDrive.zeroGyro();
         });
+    }
+    
+    @Override
+    public void periodic() {
+        m_vision.visionPoseUpdate(swerveDrive);
     }
 }

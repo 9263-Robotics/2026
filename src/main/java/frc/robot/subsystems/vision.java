@@ -30,6 +30,7 @@ public class vision extends SubsystemBase {
   private Optional<EstimatedRobotPose> fieldToCamera1;
   private Optional<EstimatedRobotPose> fieldToCamera2;
 
+  //TODO: add correct offsets to the estimators. need  cameras mounted tho.
   private PhotonPoseEstimator cam1Estimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded), PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(0, 0, 0, new Rotation3d(0,0,0)));
   private PhotonPoseEstimator cam2Estimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded), PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(0, 0, 0, new Rotation3d(0,0,0)));
 
