@@ -64,7 +64,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    
+    m_driverController.circle().whileTrue(drivebase.zeroGyro());
   }
 
   /**
