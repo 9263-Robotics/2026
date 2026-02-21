@@ -1,72 +1,76 @@
 package frc.robot.subsystems;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
-import org.photonvision.targeting.PhotonTrackedTarget;
-
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.Matrix;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.SwerveDrive;
 
-public class vision extends SubsystemBase {
+public class Vision extends SubsystemBase {
   PhotonCamera camera1 = new PhotonCamera("Camera-1");
   PhotonCamera camera2 = new PhotonCamera("Camera-2v2");
 
-  private Optional<EstimatedRobotPose> fieldToCamera1;
-  private Optional<EstimatedRobotPose> fieldToCamera2;
+  public static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
-  //TODO: add correct offsets to the estimators. need  cameras mounted tho.
-  private PhotonPoseEstimator cam1Estimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded), PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(0.195, -0.35, 0.25, new Rotation3d(0,0,0)));
-  private PhotonPoseEstimator cam2Estimator = new PhotonPoseEstimator(AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded), PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, new Transform3d(0.2, 0.35, 0.25, new Rotation3d(0,0,0)));
-
+  public static PoseStrategy primaryStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+  
+  // //TODO: add correct offsets to the estimators. need  cameras mounted tho.
+  
   /** Creates a new ExampleSubsystem. */
-  public vision() {
-  }
+  public Vision() { }
 
-  public void visionPoseUpdate(SwerveDrive m_SwerveDrive){
-    // get pose from cam1-com2 & send it to the swerve module
+  public void updatePoseEstimation(SwerveDrive swerveDrive){
+    for(Cameras curCamera: Cameras.values()) {
+      curCamera.resultList = curCamera.camera.getAllUnreadResults();
 
-    var cam1Pipeline = camera1.getAllUnreadResults();
-    for (var result : cam1Pipeline){
-      if (result.getTargets().size() == 1){
-        fieldToCamera1 = cam1Estimator.estimateLowestAmbiguityPose(result);
-        m_SwerveDrive.addVisionMeasurement(fieldToCamera2.get().estimatedPose.toPose2d(), fieldToCamera2.get().timestampSeconds);
-        
-      } else if (result.getTargets().size() > 1){
-       fieldToCamera1 = cam1Estimator.estimateCoprocMultiTagPose(result);
-       m_SwerveDrive.addVisionMeasurement(fieldToCamera2.get().estimatedPose.toPose2d(), fieldToCamera2.get().timestampSeconds);
-      }
-      if (result.getTargets().size() != 0){
-      //  m_SwerveDrive.addVisionMeasurement(fieldToCamera1.get().estimatedPose.toPose2d(), fieldToCamera1.get().timestampSeconds, VecBuilder.fill(0.1,0.1,1));
+      for (PhotonPipelineResult result: curCamera.resultList) {
+        if(result.getTargets().size() == 1) {
+          curCamera.estimatedPose = curCamera.poseEstimator.estimateLowestAmbiguityPose(result);
+          swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
+        } else if (result.getTargets().size() > 1) {
+          curCamera.estimatedPose = curCamera.poseEstimator.estimateCoprocMultiTagPose(result);
+          swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
+        }
       }
     }
+  }
 
-    var cam2Pipeline = camera2.getAllUnreadResults();
-    for (var result : cam2Pipeline){
-      if (result.getTargets().size() == 1){
-        fieldToCamera2 = cam2Estimator.estimateLowestAmbiguityPose(result);
-        m_SwerveDrive.addVisionMeasurement(fieldToCamera2.get().estimatedPose.toPose2d(), fieldToCamera2.get().timestampSeconds);
-      } else if (result.getTargets().size() > 1) {
-       fieldToCamera2 = cam2Estimator.estimateCoprocMultiTagPose(result);
-       m_SwerveDrive.addVisionMeasurement(fieldToCamera2.get().estimatedPose.toPose2d(), fieldToCamera2.get().timestampSeconds);
-      }
-      if (result.getTargets().size() != 0){
-      //  m_SwerveDrive.addVisionMeasurement(fieldToCamera2.get().estimatedPose.toPose2d(), fieldToCamera2.get().timestampSeconds, VecBuilder.fill(0.1,0.1,1));
-      }
+  public enum Cameras {
+    FRONT_LEFT_CAM("Camera-1",
+                    new Translation3d(0.195, -0.35, 0.25), 
+                    new Rotation3d(0,0,0)),
+
+    FRONT_RIGHT_CAM("Camera-2v2",
+                    new Translation3d(0.2, 0.35, 0.25), 
+                    new Rotation3d(0,0,0));
+    
+    
+    
+                 
+    public PhotonCamera camera;
+    public PhotonPoseEstimator poseEstimator;
+    public Transform3d robotToCamTransform;
+    public Optional<EstimatedRobotPose> estimatedPose = Optional.empty();
+    public List<PhotonPipelineResult> resultList = new ArrayList<>();
+                    
+  
+    Cameras(String name, Translation3d robotToCamTrans, Rotation3d robotToCamRot) {
+      camera = new PhotonCamera(name);
+      robotToCamTransform = new Transform3d(robotToCamTrans,robotToCamRot);
+      poseEstimator = new PhotonPoseEstimator(Vision.fieldLayout, Vision.primaryStrategy, robotToCamTransform);
+
     }
   }
 }
