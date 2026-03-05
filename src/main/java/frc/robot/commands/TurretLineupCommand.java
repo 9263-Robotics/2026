@@ -6,20 +6,22 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.TurretSubsystem;
 
-import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
-import edu.wpi.first.math.interpolation.InterpolatingDouble;
+import frc.robot.commands.DistanceToAngleMap;
+import frc.robot.commands.AnglePair;
+import frc.robot.commands.VectorFileReader;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-
-public class TurretLineup extends SubsystemBase {
+public class TurretLineupCommand extends SubsystemBase {
   /** Creates a new TurretLineup. */
   private final DistanceToAngleMap distanceToAngleMap = new DistanceToAngleMap("/home/lvuser/vector_list.txt");
+  private final TurretSubsystem turretSubsystem = new TurretSubsystem();
 
-  public TurretLineup() {
+  public TurretLineupCommand() {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -51,5 +53,12 @@ public class TurretLineup extends SubsystemBase {
 
   public double HorizontalAngleCalculate(double x, double y) {
     return 90 - Math.toDegrees(Math.atan2(x, y));
+  }
+
+  public void setAngles() {
+    // Example usage with dummy values
+    AnglePair angles = getAngles(5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    turretSubsystem.setTurretVerticalAngle(angles.verticalAngle);
+    turretSubsystem.setTurretHorizontalAngle(angles.horizontalAngle);
   }
 }
