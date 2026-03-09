@@ -73,7 +73,33 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    
-    return Commands.none();
+    Command path1 = AutoBuilder.followPath(PathPlannerPath.fromPathFile("Path1"));
+    Command path2 = AutoBuilder.followPath(PathPlannerPath.fromPathFile("Path2"));
+    Command path3 = AutoBuilder.followPath(PathPlannerPath.fromPathFile("Path3"));
+
+    return new SequentialCommandGroup(
+
+        new InstantCommand(() -> intakeSubsystem.intakeOn()),
+
+        path1,
+
+        new InstantCommand(() -> intakeSubsystem.intakeOff()),
+
+        new TurretAimCommand(turretSubsystem),
+
+        new WaitCommand(0.3),
+
+        new InstantCommand(() -> shooterSubsystem.outtake()),
+
+        new WaitCommand(1.0),
+
+        new InstantCommand(() -> shooterSubsystem.stop()),
+
+        path2,
+
+        new InstantCommand(() -> intakeSubsystem.intakeOn()),
+
+        path3
+    );
   }
 }
