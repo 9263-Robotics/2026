@@ -27,7 +27,7 @@ public class RobotContainer {
 
   // ------- SUBSYSTEM DEFINES -------
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                                "swerve/test")); // "swerve/test" or "swerve/comp" to set which swerve base we're using
+                                                                                "swerve/comp")); // "swerve/test" or "swerve/comp" to set which swerve base we're using
 
   // Replace with CommandPS4Controller or CommandXBoxController if needed
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
