@@ -10,9 +10,17 @@ import swervelib.SwerveInputStream;
 
 import java.io.File;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -44,14 +52,26 @@ public class RobotContainer {
                                                             .scaleTranslation(0.4)
                                                             .allianceRelativeControl(true);
 
-  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);                                                          
+  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+  
+  
+  private final SendableChooser<Command> autoChooser;
+  //List of autos to display.
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
 
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    //Intializing the list of autos to display.
+
+    
+
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+
+
   }
 
   /**
@@ -73,33 +93,20 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    Command path1 = AutoBuilder.followPath(PathPlannerPath.fromPathFile("Path1"));
-    Command path2 = AutoBuilder.followPath(PathPlannerPath.fromPathFile("Path2"));
-    Command path3 = AutoBuilder.followPath(PathPlannerPath.fromPathFile("Path3"));
+    
+    return autoChooser.getSelected();
+  }
 
-    return new SequentialCommandGroup(
 
-        new InstantCommand(() -> intakeSubsystem.intakeOn()),
+  public void setupNamedCommands() {
+    NamedCommands.registerCommand("Testcommand", new PrintCommand("This is a test command"));
+    //First argument is the name of the command PathPlanner will use. Second argument is the actual command WITH parameters the robot will run.
+  }
 
-        path1,
+  private void setupAutoChooser() {
+    // new PathPlannerAuto("Testauto"); //idk if this is actually nessessary lol, I think it worked without it last year, but we had it
 
-        new InstantCommand(() -> intakeSubsystem.intakeOff()),
-
-        new TurretAimCommand(turretSubsystem),
-
-        new WaitCommand(0.3),
-
-        new InstantCommand(() -> shooterSubsystem.outtake()),
-
-        new WaitCommand(1.0),
-
-        new InstantCommand(() -> shooterSubsystem.stop()),
-
-        path2,
-
-        new InstantCommand(() -> intakeSubsystem.intakeOn()),
-
-        path3
-    );
+    Shuffleboard.getTab("AUTO").add("Auto", autoChooser);
+    //Displays the dropdown menu for selecting the auto. (Use elastic?)
   }
 }

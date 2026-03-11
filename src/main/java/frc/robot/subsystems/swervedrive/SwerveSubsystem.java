@@ -54,6 +54,8 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.setAngularVelocityCompensation(true,
                                                true,
                                                0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
+        
+        setUpPathplanner();
     }
 
     public SwerveDrive getSwerveDrive() {
@@ -84,7 +86,7 @@ public class SwerveSubsystem extends SubsystemBase {
         m_vision.updatePoseEstimation(swerveDrive);
     }
 
-    private void setUpPathplanner() {
+    public void setUpPathplanner() {
         RobotConfig config;
 
         try {
