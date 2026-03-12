@@ -5,31 +5,29 @@
 package frc.robot.commands.Turret;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
-import org.opencv.core.Point;
-
-import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
-import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Turret;
 import swervelib.SwerveDrive;
 import frc.util.PolynomialRegression;
+import frc.util.*;
 
 /** An example command that uses an example subsystem. */
 public class ShootAtTarget extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
 
-  public static PolynomialRegression shooterSpeedInterpolation = 
-    new PolynomialRegression(
-      Arrays.asList(
-        new Point(2, 47),
-        new Point(3, 50),
-        new Point(4, 50),
-        new Point(5, 55),
-        new Point(6, 62)
-      ),
-       1);
+  private static final List<Point> data = Arrays.asList(
+      new Point(1.0, 2500),
+      new Point(2,1)
+  );
+
+  public static final PolynomialRegression distanceRegression =
+      new PolynomialRegression(data, 1);
 
   private final SwerveDrive drivebase;
   private final Turret turret;
@@ -55,6 +53,12 @@ public class ShootAtTarget extends Command {
   @Override
   public void execute() {
     // m_turret.
+   if (DriverStation.getAlliance().get() == Alliance.Red){
+      
+   }
+    if (DriverStation.getAlliance().get() == Alliance.Blue){
+    
+   }
   }
 
   // Called once the command ends or is interrupted.
