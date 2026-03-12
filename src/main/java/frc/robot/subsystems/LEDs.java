@@ -40,6 +40,16 @@ public class LEDs extends SubsystemBase {
     // boolean goldGroup = true;
     // boolean greenGroup = false;
 
+    //LEDS colour states:
+    //Disabled: Fade green-yellow-green (repeat)
+    //Enabled Hood Down: Solid Green
+    //Enabled Hood Down / Intaking: Pulse Green
+    //Enabled Hood Up && Flywheel not at speed: Solid White
+    //Enabled Hood Up: Solid Yellow
+    //Enabled Hood Up / Intaking : Pulse Half Green (Rest unchanged)
+    //Enabled Hood Up / Outtaking: Pulse Yellow
+    //Climb: Yellow load bar slowly filling up, turn solid green when 100%.
+
     public LEDs() {
         // PWM port 0
         // Must be a PWM header, not MXP or DIO
