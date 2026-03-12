@@ -1,0 +1,93 @@
+package frc.robot.subsystems;
+
+import com.revrobotics.PersistMode;
+import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkFlexConfig;
+
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CANIDs;
+import frc.robot.Constants.CANIDs.TurretPID;
+import frc.robot.Constants.ScoringConstants;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+
+public class Turret extends SubsystemBase {
+
+    private final SwerveSubsystem drivetrain;
+
+    private final SparkFlex turretMotor = new SparkFlex(CANIDs.TurretMotor, MotorType.kBrushless);
+    private SparkFlexConfig turretMotorConfig = new SparkFlexConfig();
+
+    private final DigitalInput limitSwitch = new DigitalInput(0);
+    private boolean Zeroed;
+
+    private ProfiledPIDController turretPID = new ProfiledPIDController(TurretPID.k, TurretPID.i, TurretPID.d, new Constraints(TurretPID.maxVel, TurretPID.maxAccel));
+
+    private enum Targets {
+        IDLE,
+        HUB,
+        PASSING
+    }
+
+    private Targets target = Targets.IDLE;
+
+    public Turret(SwerveSubsystem drivetrain) {
+        this.drivetrain = drivetrain;
+
+
+
+
+        turretMotorConfig.encoder.positionConversionFactor(360.0 / 50)
+                                .velocityConversionFactor((360.0 / 50) / 60.0);
+
+        turretMotorConfig.smartCurrentLimit(50);
+        turretMotor.configure(turretMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
+        
+        turretPID.setTolerance(3);
+        turretPID.setGoal(turretMotor.getEncoder().getPosition());
+        
+        
+
+    }
+
+    @Override
+    public void periodic(){
+
+        runPID();
+    }
+
+
+    private void runPID(){
+        if(Zeroed){
+            turretMotor.setVoltage(turretPID.calculate(turretMotor.getEncoder().getPosition()));
+        } else {
+             System.out.println("Turret Not Zeroed :/");
+        }
+    }
+
+    public void setTurretAngle(Rotation2d rot) {
+        turretPID.setGoal(rot.getDegrees());
+    }
+
+    public boolean isTurretAligned(){
+        return turretPID.atGoal();
+    }
+
+
+    public Command zeroTurret() {
+        return runEnd(() -> {
+            turretMotor.setVoltage(0.1);
+        }, () -> {
+            turretMotor.set(0);
+            turretMotor.getEncoder().setPosition(ScoringConstants.ZeroSwitchPos);
+            turretPID.setGoal(turretMotor.getEncoder().getPosition());
+            Zeroed = true;
+        }).until(() -> limitSwitch.get());
+    }
+}
