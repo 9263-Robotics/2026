@@ -75,6 +75,8 @@ public class SwerveSubsystem extends SubsystemBase {
     
     @Override
     public void periodic() {
-        m_vision.updatePoseEstimation(swerveDrive);
+        if (!SwerveDriveTelemetry.isSimulation) {
+            m_vision.updatePoseEstimation(swerveDrive);
+        }
     }
 }

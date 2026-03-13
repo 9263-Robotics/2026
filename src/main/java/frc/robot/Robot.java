@@ -49,7 +49,10 @@ public class Robot extends TimedRobot {
   public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+      // Call LED subsystem's periodic so patterns still run while disabled
+      RobotContainer.getInstance().getAddressableLEDs().periodic();
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override

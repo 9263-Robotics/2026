@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.subsystems.AddressableLEDs;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -24,6 +25,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  //Getter for singleton instance of RobotContainer, which can be used to access subsystems in the Robot class and other places
+  private static RobotContainer instance;
+
+    public static RobotContainer getInstance() {
+        return instance;
+    }
 
   // ------- SUBSYSTEM DEFINES -------
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
@@ -44,10 +51,14 @@ public class RobotContainer {
                                                             .scaleTranslation(0.4)
                                                             .allianceRelativeControl(true);
 
-  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);                                                          
+  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);   
+  
+  // Define Addressable LED subsystem
+  private final AddressableLEDs m_AddressableLEDs = new AddressableLEDs();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    instance = this;
     // Configure the trigger bindings
     configureBindings();
 
@@ -65,6 +76,14 @@ public class RobotContainer {
    */
   private void configureBindings() {
     m_driverController.circle().whileTrue(drivebase.zeroGyro());
+
+    m_driverController.cross().whileTrue(
+    Commands.startEnd(
+        () -> m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.FLASHBANG),
+        () -> m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.OFF),
+        m_AddressableLEDs
+    ).ignoringDisable(true)
+);
   }
 
   /**
@@ -75,5 +94,9 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     
     return Commands.none();
+  }
+
+  public AddressableLEDs getAddressableLEDs() {
+    return m_AddressableLEDs;
   }
 }
