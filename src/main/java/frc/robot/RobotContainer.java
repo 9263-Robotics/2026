@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-
+nkDFSnkjzdvnkDnkmdvs
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -65,6 +65,11 @@ public class RobotContainer {
    */
   private void configureBindings() {
     m_driverController.circle().whileTrue(drivebase.zeroGyro());
+
+    m_driverController.triangle().onTrue(new PidCommands(pid, 90.0));
+    m_driverController.triangle().onFalse(new PidCommands(pid, 0.0));
+    
+    m_driverController.square().whileTrue(new IntakeCommands(m_intake));
   }
 
   /**
