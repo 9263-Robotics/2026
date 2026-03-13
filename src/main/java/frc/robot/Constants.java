@@ -24,4 +24,11 @@ public final class Constants {
     // max speed of the robot in m/s use Units.feetToMeters to use feet
     public static final double MAX_SPEED = Units.feetToMeters(15);
   }
+  public static class OuttakeConstants {
+    public static final int MOTORID1 = 0; // placeholders
+    public static final int MOTORID2 = 1;
+    public static final double P = 0.075, I = 0.03, D = 0.005;
+    public static final double ratio = 1.2;
+    public static final double threshold = 2.0;
+  }
 }
