@@ -36,7 +36,7 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandXBoxController if needed
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
 
-  private final Intake m_intake = new Intake();
+  private final Intake intake = new Intake();
   private final PidSubsystem pid = new PidSubsystem();
 
 
@@ -76,7 +76,7 @@ public class RobotContainer {
     m_driverController.triangle().onTrue(new PidCommands(pid, 90.0));
     m_driverController.triangle().onFalse(new PidCommands(pid, 0));
 
-    m_driverController.square().whileTrue(new IntakeCommands(m_intake));
+    m_driverController.square().whileTrue(new IntakeCommands(intake));
   }
 
   /**
