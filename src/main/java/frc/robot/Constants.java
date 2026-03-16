@@ -22,7 +22,33 @@ public final class Constants {
 
   public static class SwerveConstants {
     // max speed of the robot in m/s use Units.feetToMeters to use feet
-    public static final double MAX_SPEED = Units.feetToMeters(15);
+    public static final double MAX_SPEED = Units.feetToMeters(16.5);
+  }
+
+
+  public static class ScoringConstants {
+    public static final double AIM_OFFSET_MULT = 1;
+
+    public static final double ZeroSwitchPos = 0;
+  }
+
+  public static class CANIDs {
+
+    // 0 --> RIO
+    // 1-8 --> Swerve, from FL,FR,BL,BR, odd are spark maxs, even are krakenx60s, eg. FR is 3-SM, 4-Kx60
+    // 20 --> Gyro
+    
+    public static final int PDH = 9;
+    public static final int TurretMotor = 11;
+
+    public static class TurretPID{
+      public static final double k = 0.001;
+      public static final double i = 0;
+      public static final double d = 0;
+
+      public static final double maxVel = 180;
+      public static final double maxAccel = 540;
+    }
   }
   public static class OuttakeConstants {
     public static final int MOTORID1 = 0; // placeholders
