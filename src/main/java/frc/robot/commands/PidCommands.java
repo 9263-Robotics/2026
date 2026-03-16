@@ -1,7 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PidSubsystem;
+import frc.robot.subsystems.PID.PidSubsystem;
 
 public class PidCommands extends Command {
   private final PidSubsystem pid;
@@ -14,9 +14,7 @@ public class PidCommands extends Command {
   }
 
   @Override
-  public void initialize() {
-    // pid.setSetpoint(setpoint); 
-  }
+  public void initialize() {}
   public void execute() {
     pid.setSetpoint(setpoint); 
   }

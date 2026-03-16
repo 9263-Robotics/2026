@@ -5,6 +5,10 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.IntakeCommands;
+import frc.robot.commands.PidCommands;
+import frc.robot.subsystems.PID.PidSubsystem;
+import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -16,7 +20,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-nkDFSnkjzdvnkDnkmdvs
+
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -31,6 +35,9 @@ public class RobotContainer {
 
   // Replace with CommandPS4Controller or CommandXBoxController if needed
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
+
+  private final Intake m_intake = new Intake();
+  private final PidSubsystem pid = new PidSubsystem();
 
 
    /**
@@ -67,8 +74,8 @@ public class RobotContainer {
     m_driverController.circle().whileTrue(drivebase.zeroGyro());
 
     m_driverController.triangle().onTrue(new PidCommands(pid, 90.0));
-    m_driverController.triangle().onFalse(new PidCommands(pid, 0.0));
-    
+    m_driverController.triangle().onFalse(new PidCommands(pid, 0));
+
     m_driverController.square().whileTrue(new IntakeCommands(m_intake));
   }
 
