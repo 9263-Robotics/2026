@@ -57,4 +57,14 @@ public final class Constants {
     public static final double ratio = 1.2;
     public static final double threshold = 2.0;
   }
+
+  public static class Setpoints {
+    public static class Hood { // placeholders
+      public static final double STOWED = 0;
+    }
+    public static class IntakeArm { // placeholders
+      public static final double STOWED = 90;
+      public static final double ENGAGED = 0;
+    }
+  }
 }

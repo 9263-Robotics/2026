@@ -7,7 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.IntakeCommands;
 import frc.robot.commands.PidCommands;
-import frc.robot.subsystems.PID.PidSubsystem;
+import frc.robot.subsystems.PID.IntakeArm;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
@@ -37,7 +37,7 @@ public class RobotContainer {
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
 
   private final Intake m_intake = new Intake();
-  private final PidSubsystem pid = new PidSubsystem();
+  private final IntakeArm pid = new IntakeArm();
 
 
    /**

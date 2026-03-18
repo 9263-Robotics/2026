@@ -1,13 +1,13 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.PID.PidSubsystem;
+import frc.robot.subsystems.PID.IntakeArm;
 
 public class PidCommands extends Command {
-  private final PidSubsystem pid;
+  private final IntakeArm pid;
   private final double setpoint;
 
-  public PidCommands(PidSubsystem subsystem, double setpoint) {
+  public PidCommands(IntakeArm subsystem, double setpoint) {
     this.pid = subsystem;
     this.setpoint = setpoint;
     addRequirements(subsystem);

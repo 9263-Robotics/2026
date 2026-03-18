@@ -71,6 +71,10 @@ public class Turret extends SubsystemBase {
         }
     }
 
+    public double getTurretAngle(){
+        return turretMotor.getEncoder().getPosition();
+    }
+
     public void setTurretAngle(Rotation2d rot) {
         turretPID.setGoal(rot.getDegrees());
     }
