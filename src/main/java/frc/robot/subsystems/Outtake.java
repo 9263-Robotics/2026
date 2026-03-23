@@ -1,69 +1,44 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
-import edu.wpi.first.math.controller.PIDController;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.OuttakeConstants.*;
 
 public class Outtake extends SubsystemBase {
-    // two krakens, same direction
-    // must make flywheel maintain velocity
-    // provide a boolean method which returns whether the flywheel velocity is good.
-    // gear ratio: 1.2
-    private final TalonFX motor1 = new TalonFX(MOTORID1, new CANBus("rio"));
-    private final TalonFX motor2 = new TalonFX(MOTORID2, new CANBus("rio"));
+    private final TalonFX motor = new TalonFX(MOTORCANID1, new CANBus("rio"));
+    private final Slot0Configs configs = new Slot0Configs();
 
-    private final PIDController motorFeedback1 = new PIDController(P, I, D);
-    private final PIDController motorFeedback2 = new PIDController(P, I, D);
+    final VelocityVoltage request = new VelocityVoltage(0).withSlot(0);
 
-    Outtake() {
-        setDefaultCommand(
-            runOnce(
-                () -> {
-                    motor1.disable();
-                    motor2.disable();
-                }
-            )
-        );
+    private final TalonFX motorfollower = new TalonFX(MOTORCANID2, new CANBus("rio"));
+
+    public Outtake() {
+        motorfollower.setControl(new Follower(motor.getDeviceID(), MotorAlignmentValue.Aligned));
+
+        configs.kP = P;
+        configs.kI = I;
+        configs.kD = D;
+        motor.getConfigurator().apply(configs);
     }
 
-    private double flywheeltomotorRPS(double flywheel) {
-        return flywheel / ratio;
+    public void setTargetVelocity(double RPS){
+        motor.setControl(request.withVelocity(RPS / RATIO));
     }
 
-    private double getVelocity(TalonFX motor) {
-        return motor.getVelocity().getValueAsDouble();
+    public void stopMotor(){
+        motor.setControl(request.withVelocity(0));
+        motor.stopMotor(); // just for good measure
     }
 
-    public boolean velocityReady(double flywheelRPS) {
-        if (getVelocity(motor1) >= flywheelRPS - threshold && 
-            getVelocity(motor1) <= flywheelRPS + threshold &&
-            getVelocity(motor1) >= getVelocity(motor2) - threshold && 
-            getVelocity(motor1) <= getVelocity(motor2) + threshold)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    public Command constantVelocity(double flywheelRPSsetpoint) {
-        return run(
-            () -> {
-                double setpoint = flywheeltomotorRPS(flywheelRPSsetpoint);
-                double RPS1 = getVelocity(motor1);
-                double RPS2 = getVelocity(motor1);
-                // SmartDashboard.putNumber("Outtake RPS 1", RPS1);
-                motor1.set(motorFeedback1.calculate(RPS1, setpoint));
-                motor2.set(motorFeedback2.calculate(RPS2, setpoint));
-            }
-        );
+    public boolean atSetpoint() {
+        return TOLERANCE > Math.abs(motor.getClosedLoopError().getValueAsDouble());
     }
 }

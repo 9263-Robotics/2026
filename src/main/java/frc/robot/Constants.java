@@ -23,6 +23,10 @@ public final class Constants {
   public static class SwerveConstants {
     // max speed of the robot in m/s use Units.feetToMeters to use feet
     public static final double MAX_SPEED = Units.feetToMeters(16.5);
+
+    // placeholders for turret offset
+    public static final double TURRET_OFFSET_X = 0;
+    public static final double TURRET_OFFSET_Y = 0;
   }
 
 
@@ -50,11 +54,37 @@ public final class Constants {
       public static final double maxAccel = 540;
     }
   }
+
   public static class OuttakeConstants {
-    public static final int MOTORID1 = 0; // placeholders
-    public static final int MOTORID2 = 1;
+    public static final int MOTORCANID1 = 0; // placeholders
+    public static final int MOTORCANID2 = 1;
+    public static final double TARGET_FLYWHEEL_SPEED = 10;
     public static final double P = 0.075, I = 0.03, D = 0.005;
-    public static final double ratio = 1.2;
-    public static final double threshold = 2.0;
+    public static final double RATIO = 1.2;
+    public static final double TOLERANCE = 1.0;
+  }
+
+  public static class KickerConstants {
+    public static final int MOTORCANID = 2; // placeholder
+    public static final double MOTORSPEED = 0.5;
+  }
+  public static class SpindexerConstants {
+    public static final int MOTORCANID = 3; // placeholder
+    public static final double MOTORSPEED = 0.5;
+  }
+  public static class HoodConstants {
+    public static final int MOTORCANID = 7; // supposedly true
+    public static final double P = 0.075, I = 0.03, D = 0.005;
+    public static final double MAXANGLERAD = Math.PI / 4, MINANGLERAD = 0; //placeholders
+  }
+
+  public static class Setpoints {
+    public static class Hood { // placeholders
+      public static final double STOWED = 0;
+    }
+    public static class IntakeArm { // placeholders
+      public static final double STOWED = 90;
+      public static final double ENGAGED = 0;
+    }
   }
 }

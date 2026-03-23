@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.MathUtil;
 
-public class PidSubsystem extends SubsystemBase {
+public class IntakeArm extends SubsystemBase {
   
   //TODO IDK THE ACTUAL CAN ID STUFF SO CHANGE IT
   private final SparkMax pidMotor1 = new SparkMax(14, MotorType.kBrushless);
@@ -18,7 +18,7 @@ public class PidSubsystem extends SubsystemBase {
   private final PIDController pid = new PIDController(0.00025, 0.00001, 0.00001);
   private double setpoint = 0.0;
 
-  public PidSubsystem() {
+  public IntakeArm() {
     encoder.setPosition(0);
   }
 

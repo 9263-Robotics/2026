@@ -28,10 +28,10 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     private final SwerveDrive swerveDrive;
-    private final Vision m_vision = new Vision();
+    private final Vision m_vision;
 
-    public SwerveSubsystem(File directory){
-
+    public SwerveSubsystem(File directory, Vision vision){
+        m_vision = vision;
 
         // Set Telemetry Verbosity (might want lower for comps as it can slow things down if it's too high, but for testing we don't care)
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
