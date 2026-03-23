@@ -71,7 +71,7 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    m_driverController.circle().whileTrue(drivebase.zeroGyro());
+    m_driverController.circle().onTrue(drivebase.zeroGyro());
 
     m_driverController.triangle().onTrue(new PidCommands(pid, 90.0));
     m_driverController.triangle().onFalse(new PidCommands(pid, 0));
