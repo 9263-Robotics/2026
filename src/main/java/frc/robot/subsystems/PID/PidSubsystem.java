@@ -6,12 +6,12 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.MathUtil;
+import frc.robot.Constants.CANIDs;
 
 public class PidSubsystem extends SubsystemBase {
   
-  //TODO IDK THE ACTUAL CAN ID STUFF SO CHANGE IT
-  private final SparkMax pidMotor1 = new SparkMax(14, MotorType.kBrushless);
-  private final SparkMax pidMotor2 = new SparkMax(15, MotorType.kBrushless);  
+  private final SparkMax pidMotor1 = new SparkMax(CANIDs.PidMotor1, MotorType.kBrushless);
+  private final SparkMax pidMotor2 = new SparkMax(CANIDs.PidMotor2, MotorType.kBrushless);
 
   private final RelativeEncoder encoder = pidMotor1.getEncoder();
 

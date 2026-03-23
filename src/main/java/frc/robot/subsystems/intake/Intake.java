@@ -5,8 +5,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import frc.robot.Constants.CANIDs;
+
 public class Intake extends SubsystemBase {
-  private final TalonFX intakeMotor = new TalonFX(5);
+  private final TalonFX intakeMotor = new TalonFX(CANIDs.IntakeMotor);
 
   /** Creates a new ExampleSubsystem. */
   public Intake() {}

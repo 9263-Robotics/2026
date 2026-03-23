@@ -14,17 +14,12 @@ public class PidCommands extends Command {
   }
 
   @Override
-  public void initialize() {}
-  public void execute() {
-    pid.setSetpoint(setpoint); 
-  }
-
-  @Override
-  public void end(boolean interrupted) {
+  public void initialize() {
+    pid.setSetpoint(setpoint);
   }
 
   @Override
   public boolean isFinished() {
-    return false; 
+    return true;
   }
 }

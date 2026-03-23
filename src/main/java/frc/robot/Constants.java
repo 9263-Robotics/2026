@@ -40,6 +40,9 @@ public final class Constants {
     
     public static final int PDH = 9;
     public static final int TurretMotor = 11;
+    public static final int IntakeMotor = 5;
+    public static final int PidMotor1 = 14;
+    public static final int PidMotor2 = 15;
 
     public static class TurretPID{
       public static final double k = 0.001;
