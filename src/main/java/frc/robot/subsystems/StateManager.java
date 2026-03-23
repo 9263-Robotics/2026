@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.KickerConstants;
 import frc.robot.Constants.Setpoints;
 import frc.robot.Constants.SpindexerConstants;
+import frc.robot.commands.SpinCommand;
 import frc.robot.commands.Turret.SimpleAimAtTarget;
 import frc.robot.subsystems.PID.IntakeArm;
 import frc.robot.subsystems.intake.Intake;
@@ -119,13 +120,13 @@ public class StateManager extends SubsystemBase {
         return new ParallelCommandGroup(
             aimCommand, 
             ConditionalStartShooting(),
-            outtakeSubsystem.constantVelocity()
+            new SpinCommand(outtakeSubsystem)
         );
     }
 
     Command ConditionalStartShooting() {
         return runEnd(() -> {
-            if (outtakeSubsystem.velocityReady()){
+            if (outtakeSubsystem.atSetpoint()){
                 kickerSubsystem.motor.set(KickerConstants.MOTORSPEED);
                 spindexerSubsystem.motor.set(SpindexerConstants.MOTORSPEED);
             }
@@ -145,7 +146,7 @@ public class StateManager extends SubsystemBase {
         }
 
         return new ParallelCommandGroup(
-            outtakeSubsystem.constantVelocity(),
+            new SpinCommand(outtakeSubsystem),
             ConditionalStartShooting(),
             aimCommand
         );

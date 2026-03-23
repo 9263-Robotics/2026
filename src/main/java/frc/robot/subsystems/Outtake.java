@@ -8,7 +8,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.OuttakeConstants.*;
@@ -29,26 +28,17 @@ public class Outtake extends SubsystemBase {
         configs.kD = D;
         motor.getConfigurator().apply(configs);
     }
-    
-    public Command spin(double RPS) {
-        return runOnce(
-            () -> {
-                motor.setControl(request.withVelocity(RPS / RATIO));
-            }
-        )
-        .andThen(
-            () -> {
-                motor.setControl(request.withVelocity(0));
-                motor.stopMotor(); // just for good measure
-            }
-        );
+
+    public void setTargetVelocity(double RPS){
+        motor.setControl(request.withVelocity(RPS / RATIO));
+    }
+
+    public void stopMotor(){
+        motor.setControl(request.withVelocity(0));
+        motor.stopMotor(); // just for good measure
     }
 
     public boolean atSetpoint() {
         return TOLERANCE > Math.abs(motor.getClosedLoopError().getValueAsDouble());
-    }
-
-    public Command constantVelocity(){
-        return constantVelocity(TARGET_FLYWHEEL_SPEED);
     }
 }
