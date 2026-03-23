@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.Filesystem;
 
@@ -7,6 +7,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import org.dyn4j.geometry.Vector2;
 
 public class VectorFileReader {
 

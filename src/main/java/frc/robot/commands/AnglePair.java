@@ -1,3 +1,4 @@
+package frc.robot.commands;
 public class AnglePair {
     public final double verticalAngle;
     public final double horizontalAngle;
