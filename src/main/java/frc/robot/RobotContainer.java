@@ -5,9 +5,15 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.IntakeCommands;
-import frc.robot.commands.PidCommands;
+import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Kicker;
+import frc.robot.subsystems.Outtake;
+import frc.robot.subsystems.Spindexer;
+import frc.robot.subsystems.StateManager;
+import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.PID.IntakeArm;
+import frc.robot.subsystems.StateManager.State;
 import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
@@ -30,14 +36,32 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
 
   // ------- SUBSYSTEM DEFINES -------
+  private final Vision vision = new Vision();
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
-                                                                                "swerve/comp")); // "swerve/test" or "swerve/comp" to set which swerve base we're using
+                                                                                "swerve/comp"), // "swerve/test" or "swerve/comp" to set which swerve base we're using
+                                                                vision
+  ); 
+  private final Intake m_intake = new Intake();
+  private final IntakeArm pid = new IntakeArm();
+  private final Outtake outtake = new Outtake();
+  private final Turret turret = new Turret();
+  private final Kicker kicker = new Kicker();
+  private final Spindexer spindexer = new Spindexer();
+  private final Hood hood = new Hood();
+  private final StateManager stateManager = new StateManager(
+    outtake,
+    turret, 
+    drivebase, 
+    m_intake, 
+    pid, 
+    vision, 
+    kicker, 
+    spindexer, 
+    hood
+    );
 
   // Replace with CommandPS4Controller or CommandXBoxController if needed
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
-
-  private final Intake m_intake = new Intake();
-  private final IntakeArm pid = new IntakeArm();
 
 
    /**
@@ -73,10 +97,13 @@ public class RobotContainer {
   private void configureBindings() {
     m_driverController.circle().whileTrue(drivebase.zeroGyro());
 
-    m_driverController.triangle().onTrue(new PidCommands(pid, 90.0));
-    m_driverController.triangle().onFalse(new PidCommands(pid, 0));
+    // m_driverController.triangle().onTrue(new PidCommands(pid, 90.0));
+    // m_driverController.triangle().onFalse(new PidCommands(pid, 0));
 
-    m_driverController.square().whileTrue(new IntakeCommands(m_intake));
+    // m_driverController.square().whileTrue(new IntakeCommands(m_intake));
+    m_driverController.triangle().onTrue(stateManager.SetState(State.INTAKE));
+    m_driverController.square().onTrue(stateManager.SetState(State.SHOOT));
+    m_driverController.circle().onTrue(stateManager.SetState(State.TRENCH));
   }
 
   /**

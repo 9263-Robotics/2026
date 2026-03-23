@@ -23,7 +23,7 @@ public class Outtake extends SubsystemBase {
     private final PIDController motorFeedback1 = new PIDController(P, I, D);
     private final PIDController motorFeedback2 = new PIDController(P, I, D);
 
-    Outtake() {
+    public Outtake() {
         setDefaultCommand(
             runOnce(
                 () -> {
@@ -56,8 +56,12 @@ public class Outtake extends SubsystemBase {
         }
     }
 
+    public boolean velocityReady(){
+        return velocityReady(TARGET_FLYWHEEL_SPEED);
+    }
+
     public Command constantVelocity(double flywheelRPSsetpoint) {
-        return run(
+        return runEnd(
             () -> {
                 double setpoint = flywheeltomotorRPS(flywheelRPSsetpoint);
                 double RPS1 = getVelocity(motor1);
@@ -65,7 +69,14 @@ public class Outtake extends SubsystemBase {
                 // SmartDashboard.putNumber("Outtake RPS 1", RPS1);
                 motor1.set(motorFeedback1.calculate(RPS1, setpoint));
                 motor2.set(motorFeedback2.calculate(RPS2, setpoint));
+            }, () -> {
+                motor1.set(0);
+                motor2.set(0);
             }
         );
+    }
+
+    public Command constantVelocity(){
+        return constantVelocity(TARGET_FLYWHEEL_SPEED);
     }
 }

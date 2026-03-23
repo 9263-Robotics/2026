@@ -58,6 +58,7 @@ public final class Constants {
   public static class OuttakeConstants {
     public static final int MOTORID1 = 0; // placeholders
     public static final int MOTORID2 = 1;
+    public static final double TARGET_FLYWHEEL_SPEED = 10;
     public static final double P = 0.075, I = 0.03, D = 0.005;
     public static final double RATIO = 1.2;
     public static final double THRESHOLD = 2.0;
@@ -65,13 +66,16 @@ public final class Constants {
 
   public static class KickerConstants {
     public static final int MOTORCANID = 2; // placeholder
+    public static final double MOTORSPEED = 0.5;
   }
   public static class SpindexerConstants {
     public static final int MOTORCANID = 3; // placeholder
+    public static final double MOTORSPEED = 0.5;
   }
   public static class HoodConstants {
     public static final int MOTORCANID = 7; // supposedly true
     public static final double P = 0.075, I = 0.03, D = 0.005;
+    public static final double MAXANGLERAD = Math.PI / 4, MINANGLERAD = 0; //placeholders
   }
 
   public static class Setpoints {

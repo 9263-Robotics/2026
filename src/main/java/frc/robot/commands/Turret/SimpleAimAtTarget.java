@@ -25,7 +25,7 @@ public class SimpleAimAtTarget extends Command{
     }
 
     @Override
-    public void initialize(){
+    public void execute(){
         Pose2d swervePose = swerveSubsystem.getSwerveDrive().getPose();
         // may need to be updated depending on how we actually implement ZeroSwitchPos
         Pose2d turretPose = swervePose.transformBy(new Transform2d(new Translation2d(SwerveConstants.TURRET_OFFSET_X, SwerveConstants.TURRET_OFFSET_Y), new Rotation2d()));
@@ -37,6 +37,6 @@ public class SimpleAimAtTarget extends Command{
 
     @Override
     public boolean isFinished(){
-        return true;
+        return false;
     }
 }

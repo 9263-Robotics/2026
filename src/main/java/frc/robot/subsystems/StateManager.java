@@ -8,7 +8,9 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+import frc.robot.Constants.KickerConstants;
 import frc.robot.Constants.Setpoints;
+import frc.robot.Constants.SpindexerConstants;
 import frc.robot.commands.Turret.SimpleAimAtTarget;
 import frc.robot.subsystems.PID.IntakeArm;
 import frc.robot.subsystems.intake.Intake;
@@ -16,7 +18,6 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.util.StaticPoses;
 
 public class StateManager extends SubsystemBase {
-    //TODO: Create button bindings for the different states
     public enum State {
         TRENCH,
         INTAKE,
@@ -28,22 +29,56 @@ public class StateManager extends SubsystemBase {
         PASS_NONSCORING_SIDE_INTAKE,
     }
 
+    public boolean IsShooting(){
+        return (
+               state == State.SHOOT
+            || state == State.SHOOT_AND_INTAKE
+            || state == State.PASS_SCORING_SIDE
+            || state == State.PASS_SCORING_SIDE_INTAKE
+            || state == State.PASS_NONSCORING_SIDE
+            || state == State.PASS_NONSCORING_SIDE_INTAKE
+        );
+    }
+
+    public Command SetState(State newState){
+        return runOnce(() -> {
+            state = newState;
+        });
+    }
+
     final Outtake outtakeSubsystem;
     final Turret turretSubsytem;
     final SwerveSubsystem swerveSubsystem;
     final Intake intakeSubsystem;
     final IntakeArm intakeArmSubsytem;
     final Vision visionSubsystem;
+    final Kicker kickerSubsystem;
+    final Spindexer spindexerSubsystem;
+    final Hood hoodSubsystem;
     
     public State state;
 
-    public StateManager(Outtake outtake, Turret turret, SwerveSubsystem swerve, Intake intake, IntakeArm intakeArm, Vision vision){
+    public StateManager(
+            Outtake outtake, 
+            Turret turret, 
+            SwerveSubsystem swerve, 
+            Intake intake, 
+            IntakeArm intakeArm, 
+            Vision vision,
+            Kicker kicker,
+            Spindexer spindexer,
+            Hood hood
+            ){
+
         outtakeSubsystem = outtake;
         turretSubsytem = turret;
         swerveSubsystem = swerve;
         intakeSubsystem = intake;
         intakeArmSubsytem = intakeArm;
         visionSubsystem = vision;
+        spindexerSubsystem = spindexer;
+        kickerSubsystem = kicker;
+        hoodSubsystem = hood;
         BindStateActions();
     }
 
@@ -59,9 +94,7 @@ public class StateManager extends SubsystemBase {
     }
 
     Command TrenchStateCommand() {
-        return runOnce(() -> {
-            // TODO: set hood to stowed position
-        });
+        return hoodSubsystem.setHoodAngle(Setpoints.Hood.STOWED);
     }
 
     Command IntakeStateCommand() {
@@ -75,26 +108,46 @@ public class StateManager extends SubsystemBase {
     }
 
     Command ShootStateCommand() {
-        return defer(() -> {
-            // TODO: get flywheels up to speed, turn on kicker and spindexer if at speed
-            Optional<Pose2d> hubPose = StaticPoses.GetHubPoseOptional();
-            if (hubPose.isPresent()){
-                return new SimpleAimAtTarget(swerveSubsystem, visionSubsystem, turretSubsytem, hubPose.get());
-            } else {
-                return new PrintCommand("switched to shooting state but unable to locate hub");
+        final Command aimCommand;
+        Optional<Pose2d> hubPose = StaticPoses.GetHubPoseOptional();
+        if (hubPose.isPresent()){
+            aimCommand = new SimpleAimAtTarget(swerveSubsystem, visionSubsystem, turretSubsytem, hubPose.get());
+        } else {
+            aimCommand = new PrintCommand("switched to shooting state but unable to locate hub");
+        }
+
+        return new ParallelCommandGroup(
+            aimCommand, 
+            ConditionalStartShooting(),
+            outtakeSubsystem.constantVelocity()
+        );
+    }
+
+    Command ConditionalStartShooting() {
+        return runEnd(() -> {
+            if (outtakeSubsystem.velocityReady()){
+                kickerSubsystem.motor.set(KickerConstants.MOTORSPEED);
+                spindexerSubsystem.motor.set(SpindexerConstants.MOTORSPEED);
             }
+        }, () -> {
+            kickerSubsystem.motor.set(0);
+            spindexerSubsystem.motor.set(0);
         });
     }
 
     Command PassStateCommand(boolean passingScoringTableSide) {
-        return defer(() -> {
-            // TODO: get flywheels up to speed, turn on kicker and spindexer if at speed
-            Optional<Pose2d> targetPose = passingScoringTableSide ? StaticPoses.GetScoringTableTrenchOptional() : StaticPoses.GetNonScoringTableTrenchOptional();
-            if (targetPose.isPresent()){
-                return new SimpleAimAtTarget(swerveSubsystem, visionSubsystem, turretSubsytem, targetPose.get());
-            } else {
-                return new PrintCommand("switched to pass state but unable to locate trench");
-            }
-        });
+        final Command aimCommand;
+        Optional<Pose2d> targetPose = passingScoringTableSide ? StaticPoses.GetScoringTableTrenchOptional() : StaticPoses.GetNonScoringTableTrenchOptional();
+        if (targetPose.isPresent()){
+            aimCommand = new SimpleAimAtTarget(swerveSubsystem, visionSubsystem, turretSubsytem, targetPose.get());
+        } else {
+            aimCommand = new PrintCommand("switched to pass state but unable to locate trench");
+        }
+
+        return new ParallelCommandGroup(
+            outtakeSubsystem.constantVelocity(),
+            ConditionalStartShooting(),
+            aimCommand
+        );
     }
 }

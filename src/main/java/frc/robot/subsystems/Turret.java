@@ -15,11 +15,11 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIDs;
 import frc.robot.Constants.CANIDs.TurretPID;
 import frc.robot.Constants.ScoringConstants;
-import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+// import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class Turret extends SubsystemBase {
 
-    private final SwerveSubsystem drivetrain;
+    // private final SwerveSubsystem drivetrain;
 
     private final SparkFlex turretMotor = new SparkFlex(CANIDs.TurretMotor, MotorType.kBrushless);
     private SparkFlexConfig turretMotorConfig = new SparkFlexConfig();
@@ -29,16 +29,16 @@ public class Turret extends SubsystemBase {
 
     private ProfiledPIDController turretPID = new ProfiledPIDController(TurretPID.k, TurretPID.i, TurretPID.d, new Constraints(TurretPID.maxVel, TurretPID.maxAccel));
 
-    private enum Targets {
-        IDLE,
-        HUB,
-        PASSING
-    }
+    // private enum Targets {
+    //     IDLE,
+    //     HUB,
+    //     PASSING
+    // }
 
-    private Targets target = Targets.IDLE;
+    // private Targets target = Targets.IDLE;
 
-    public Turret(SwerveSubsystem drivetrain) {
-        this.drivetrain = drivetrain;
+    public Turret(/*SwerveSubsystem drivetrain*/) {
+        // this.drivetrain = drivetrain;
 
 
 
