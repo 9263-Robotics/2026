@@ -22,10 +22,10 @@ public class Hood extends SubsystemBase {
         // config.encoder.positionConversionFactor(360);
     }
 
-    public Command setHoodAngle(double radians) {
+    public Command setHoodAngle(double angle) {
         return runOnce(
             () -> {
-                controller.setSetpoint(radians, ControlType.kPosition);
+                controller.setSetpoint(angle, ControlType.kPosition);
             }
         );
     }
