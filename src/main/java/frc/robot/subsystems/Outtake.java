@@ -31,10 +31,12 @@ public class Outtake extends SubsystemBase {
     }
     
     public Command spin(double RPS) {
-        return runEnd(
+        return runOnce(
             () -> {
                 motor.setControl(request.withVelocity(RPS / RATIO));
-            },
+            }
+        )
+        .andThen(
             () -> {
                 motor.setControl(request.withVelocity(0));
                 motor.stopMotor(); // just for good measure
