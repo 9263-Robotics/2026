@@ -10,6 +10,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.OuttakeConstants.*;
 
+// suboptimal code (i.e. not done)
+
 public class Outtake extends SubsystemBase {
     // two krakens, same direction
     // must make flywheel maintain velocity
@@ -33,7 +35,7 @@ public class Outtake extends SubsystemBase {
     }
 
     private double flywheeltomotorRPS(double flywheel) {
-        return flywheel / ratio;
+        return flywheel / RATIO;
     }
 
     private double getVelocity(TalonFX motor) {
@@ -41,10 +43,10 @@ public class Outtake extends SubsystemBase {
     }
 
     public boolean velocityReady(double flywheelRPS) {
-        if (getVelocity(motor1) >= flywheelRPS - threshold && 
-            getVelocity(motor1) <= flywheelRPS + threshold &&
-            getVelocity(motor1) >= getVelocity(motor2) - threshold && 
-            getVelocity(motor1) <= getVelocity(motor2) + threshold)
+        if (getVelocity(motor1) >= flywheelRPS - THRESHOLD && 
+            getVelocity(motor1) <= flywheelRPS + THRESHOLD &&
+            getVelocity(motor1) >= getVelocity(motor2) - THRESHOLD && 
+            getVelocity(motor1) <= getVelocity(motor2) + THRESHOLD)
         {
             return true;
         }
