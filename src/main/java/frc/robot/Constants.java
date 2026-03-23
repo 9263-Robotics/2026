@@ -23,6 +23,10 @@ public final class Constants {
   public static class SwerveConstants {
     // max speed of the robot in m/s use Units.feetToMeters to use feet
     public static final double MAX_SPEED = Units.feetToMeters(16.5);
+
+    // placeholders for turret offset
+    public static final double TURRET_OFFSET_X = 0;
+    public static final double TURRET_OFFSET_Y = 0;
   }
 
 
