@@ -18,6 +18,7 @@ public class Hood extends SubsystemBase {
 
     Hood() {
         config.closedLoop.pid(P, I, D);
+        config.closedLoop.outputRange(0, 1); // PLACEHOLDER
         // config.encoder.positionConversionFactor(360);
     }
 
