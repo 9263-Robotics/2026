@@ -25,29 +25,22 @@ public class TurretLineupCommand extends SubsystemBase {
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
-  public AnglePair getAngles(
-    double target_x, double target_y, double target_z, 
-    double robot_x, double robot_y, double robot_z, 
-    double robot_velocity_x, double robot_velocity_y)
+  public AnglePair getAngles(pose2d target, pose2d robot, ChassisSpeeds robotVelocity)
   {
-        double camera_distance = Math.sqrt(
-          (target_x-robot_x)*(target_x-robot_x) + 
-          (target_y-robot_y)*(target_y-robot_y) + 
-          (target_z-robot_z)*(target_z-robot_z));
-        double robot_displacement_x = robot_velocity_x * 0.02; // Assuming a 20ms loop time
-        double robot_displacement_y = robot_velocity_y * 0.02; // Assuming a 20ms loop time 
+        double robot_displacement_x = robotVelocity.x * 0.02; // Assuming a 20ms loop time
+        double robot_displacement_y = robotVelocity.y * 0.02; // Assuming a 20ms loop time 
         
-        double turret_vertical_angle = VerticalAngleCalculate(camera_distance);
+        double turret_vertical_angle = HoodAngleCalculate(camera_distance);
 
-        double dx = robot_x - robot_displacement_x;
-        double dy = robot_y - robot_displacement_y;
+        double dx = robot.x - robot_displacement_x;
+        double dy = robot.y - robot_displacement_y;
 
         double turret_horizontal_angle = HorizontalAngleCalculate(dx, dy);
         
         return new AnglePair(turret_vertical_angle, turret_horizontal_angle);
   }
 
-  public double VerticalAngleCalculate(double distance) {
+  public double HoodAngleCalculate(double distance) {
     return distanceToAngleMap.getAngleForDistance(distance);
   }
 
@@ -57,7 +50,7 @@ public class TurretLineupCommand extends SubsystemBase {
 
   public void setAngles() {
     // Example usage with dummy values
-    AnglePair angles = getAngles(5.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0);
+    AnglePair angles = getAngles();
     turretSubsystem.setTurretVerticalAngle(angles.verticalAngle);
     turretSubsystem.setTurretHorizontalAngle(angles.horizontalAngle);
   }
