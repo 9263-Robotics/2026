@@ -20,14 +20,15 @@ public class Hood extends SubsystemBase {
 
     public Hood() {
         config.closedLoop.pid(P, I, D);
+        config.closedLoop.outputRange(0, 1); // PLACEHOLDER
         // config.encoder.positionConversionFactor(360);
     }
 
-    public Command setHoodAngle(double radians) {
+    public Command setHoodAngle(double angle) {
         return runOnce(
             () -> {
-                if (radians >= MINANGLERAD && radians <= MAXANGLERAD)
-                    controller.setSetpoint(radians, ControlType.kPosition);
+                if (angle >= MINANGLERAD && angle <= MAXANGLERAD)
+                controller.setSetpoint(angle, ControlType.kPosition);
             }
         );
     }
