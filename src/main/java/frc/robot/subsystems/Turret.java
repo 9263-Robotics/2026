@@ -16,13 +16,11 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIDs;
 import frc.robot.Constants.CANIDs.TurretPID;
-import frc.robot.commands.Turret.ShootAtTarget;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class Turret extends SubsystemBase {
 
     private final SwerveSubsystem drivetrain;
-    private final ShootAtTarget shootAtTarget;
 
     private final SparkFlex turretMotor = new SparkFlex(CANIDs.TurretMotor, MotorType.kBrushless);
     private SparkFlexConfig turretMotorConfig = new SparkFlexConfig();
@@ -114,9 +112,6 @@ public class Turret extends SubsystemBase {
         }else if (turretMotor.getEncoder().getPosition() > -90 && turretPID.calculate(turretMotor.getEncoder().getPosition())>0){
             turretMotor.setVoltage(turretPID.calculate(turretMotor.getEncoder().getPosition()));
         }
-
-
-        
     }
 
     
