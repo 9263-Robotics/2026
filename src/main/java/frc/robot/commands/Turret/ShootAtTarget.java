@@ -8,29 +8,45 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Turret;
-import swervelib.SwerveDrive;
-import frc.util.PolynomialRegression;
-import frc.util.*;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 /** An example command that uses an example subsystem. */
 public class ShootAtTarget extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
 
-  private static final List<Point> data = Arrays.asList(
-      new Point(1.0, 2500),
-      new Point(2,1)
-  );
+  private static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap();
 
-  public static final PolynomialRegression distanceRegression =
-      new PolynomialRegression(data, 1);
+  private static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap();
+  
+    static { // x is distance, y is angle
+      hoodAngleMap.put(1.0,1.0);
+      hoodAngleMap.put(2.0,4.0);
+      hoodAngleMap.put(3.0,9.0);
+      
 
-  private final SwerveDrive drivebase;
+      flywheelSpeedMap.put(1.0, 5000.0);
+      flywheelSpeedMap.put(2.0, 5000.0);
+      flywheelSpeedMap.put(3.0, 5000.0);
+      flywheelSpeedMap.put(4.5, 6700.0);
+
+  }
+
+  private final SwerveSubsystem drivebase;
   private final Turret turret;
+
+  Rotation2d desiredTurretAngle = null;
 
 
   /**
@@ -38,7 +54,7 @@ public class ShootAtTarget extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-   public ShootAtTarget(Turret turret, SwerveDrive drivebase) {
+   public ShootAtTarget(Turret turret, SwerveSubsystem drivebase) {
     this.turret = turret;
     this.drivebase = drivebase;
 
@@ -52,13 +68,37 @@ public class ShootAtTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    Translation2d hub = null;
     // m_turret.
-   if (DriverStation.getAlliance().get() == Alliance.Red){
-      
-   }
+    if (DriverStation.getAlliance().get() == Alliance.Red){
+      hub = new Translation2d(39.05, 13.19);
+    }
     if (DriverStation.getAlliance().get() == Alliance.Blue){
+      hub = new Translation2d(15.13, 13.19);
+    }
+
+    //  Transform2d transformToHub = drivebase.getSwerveDrive().getPose().minus(hub);
+    // Transform2d transformToHub = turret.getTurretPose();
+    Translation2d toHub = hub.minus(turret.getTurretPose().getTranslation());
+    // double distanceToHub = Math.sqrt(Math.pow(transformToHub.getX(), 2)+Math.pow(transformToHub.getY(), 2));
+    double distanceToHub = toHub.getNorm();
+
+    double predictedAngle = hoodAngleMap.get(distanceToHub);
+
+    double predictedFlywheelSpeed = flywheelSpeedMap.get(distanceToHub);
+
+    Rotation2d fieldAngleToHub = toHub.getAngle();
+
+    desiredTurretAngle = fieldAngleToHub.minus(turret.getTurretRotation());
+
+    turret.setTurretAngle(desiredTurretAngle);
+
     
-   }
+
+  }
+
+  public Rotation2d getDesiredAngle(){
+    return desiredTurretAngle;
   }
 
   // Called once the command ends or is interrupted.
