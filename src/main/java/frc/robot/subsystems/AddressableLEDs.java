@@ -22,10 +22,10 @@ public class AddressableLEDs extends SubsystemBase {
   private static final int kLedPort = 0;
 
   // Number of LEDs on the strip.
-  private static final int kLedStripLength = 40; //183 for bunper strip last year TODO: update to actual length
+  private static final int kLedStripLength = 29; //183 for bunper strip last year TODO: update to actual length. 29 is one small strip
 
-  AddressableLEDBufferView m_LedSection1 = m_ledBuffer.createView(0, 19); // Sections of controllable LEDs, can be used for different patterns/effects -
-  AddressableLEDBufferView m_LedSection2 = m_ledBuffer.createView(20, 39); // This should probably be split where the strips are split and conected with wires.
+  AddressableLEDBufferView m_LedSection1 = m_ledBuffer.createView(0, 10); // Sections of controllable LEDs, can be used for different patterns/effects -
+  AddressableLEDBufferView m_LedSection2 = m_ledBuffer.createView(11, 28); // This should probably be split where the strips are split and conected with wires.
   //AddressableLEDBufferView m_LedSection3 = m_ledBuffer.createView(90, 163); // Also sections may need to be reversed to adjust for wiring direction
   //AddressableLEDBufferView m_LedSection4 = m_ledBuffer.createView(164, 182);
 
