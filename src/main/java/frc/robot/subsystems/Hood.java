@@ -14,7 +14,7 @@ import static frc.robot.Constants.HoodConstants.*;
 import java.util.function.DoubleSupplier;
 
 public class Hood extends SubsystemBase {
-    private final SparkMax motor = new SparkMax(MOTORCANID, MotorType.kBrushless);
+    public final SparkMax motor = new SparkMax(MOTORCANID, MotorType.kBrushless);
     private final SparkClosedLoopController controller = motor.getClosedLoopController();
     private final SparkMaxConfig config = new SparkMaxConfig();
 
@@ -27,8 +27,9 @@ public class Hood extends SubsystemBase {
     public Command setHoodAngle(double angle) {
         return runOnce(
             () -> {
-                if (angle >= MINANGLERAD && angle <= MAXANGLERAD)
+                if (angle >= MINANGLEROT && angle <= MAXANGLEROT)
                 controller.setSetpoint(angle, ControlType.kPosition);
+                
             }
         );
     }
@@ -37,5 +38,9 @@ public class Hood extends SubsystemBase {
         return defer(() -> {
             return setHoodAngle(radianSupplier.getAsDouble());
         });
+    }
+
+    public double getSetpoint(){
+        return controller.getSetpoint();
     }
 }

@@ -19,10 +19,12 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
 import java.io.File;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -104,6 +106,16 @@ public class RobotContainer {
     m_driverController.triangle().onTrue(stateManager.SetState(State.INTAKE));
     m_driverController.square().onTrue(stateManager.SetState(State.SHOOT));
     m_driverController.circle().onTrue(stateManager.SetState(State.TRENCH));
+
+    // move hood up on left button
+    m_driverController.L2().onTrue(new InstantCommand(() -> {
+      hood.setHoodAngle(() -> hood.getSetpoint()+0.1);
+    }));
+
+    //move hood down on right button
+    m_driverController.R2().onTrue(new InstantCommand(() -> {
+      hood.setHoodAngle(() -> hood.getSetpoint()-0.1);
+    }));
   }
 
   /**
