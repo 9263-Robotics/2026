@@ -114,23 +114,21 @@ function run()
     println("angle: ", CF.coef(anglefit))
     =#
 
-    function objective1(x, p)
-        pfit = map(coef -> round(coef, digits=trunc(Int, x[1])), fit(d, v0, trunc(Int, x[2])))
-        sum(abs.(map(x -> pfit(x), d) .- v0))
-    end
-    f1 = OPT.OptimizationFunction(objective1)
-    prob1 = OPT.OptimizationProblem(f1, [1, 1], lb = [1, 1], ub = [8, 20])
-    optsol1 = OPT.solve(prob1, NLopt.GN_DIRECT_L(), maxtime = 3)
-    @show v0fit = map(coef -> round(coef, digits=trunc(Int, optsol1[1])), fit(d, v0, trunc(Int, optsol1[2])))
+    roundedpolyfit(vars, ydata) = map(coef -> round(coef, digits=trunc(Int, vars[1])), fit(d, ydata, trunc(Int, vars[2])))
 
-    function objective2(x, p)
-        pfit = map(coef -> round(coef, digits=trunc(Int, x[1])), fit(d, angle, trunc(Int, x[2])))
-        sum(abs.(map(x -> pfit(x), d) .- angle))
+    function regressionobj(x, p)
+        pfit = roundedpolyfit(x, p)
+        sum(abs.(map(_x -> pfit(_x), d) .- p))
     end
-    f2 = OPT.OptimizationFunction(objective2)
-    prob2 = OPT.OptimizationProblem(f2, [1, 1], lb = [1, 1], ub = [8, 20])
-    optsol2 = OPT.solve(prob2, NLopt.GN_DIRECT_L(), maxtime = 3)
-    @show anglefit = map(coef -> round(coef, digits=trunc(Int, optsol2[1])), fit(d, angle, trunc(Int, optsol2[2])))
+    optf = OPT.OptimizationFunction(regressionobj)
+
+    v0prob = OPT.OptimizationProblem(optf, [1, 1], lb=[1, 1], ub=[8, 20], p=v0)
+    v0sol = OPT.solve(v0prob, NLopt.GN_DIRECT_L(), maxtime = 3)
+    @show v0fit = roundedpolyfit(v0sol, v0)
+
+    angleprob = OPT.OptimizationProblem(optf, [1, 1], lb=[1, 1], ub=[8, 20], p=angle)
+    anglesol = OPT.solve(angleprob, NLopt.GN_DIRECT_L(), maxtime = 3)
+    @show anglefit = roundedpolyfit(anglesol, angle)
 
     default(ms = 2)
 
