@@ -12,6 +12,7 @@ import frc.robot.Constants.KickerConstants;
 import frc.robot.Constants.Setpoints;
 import frc.robot.Constants.SpindexerConstants;
 import frc.robot.commands.SpinCommand;
+import frc.robot.commands.Turret.ShootAtTarget;
 import frc.robot.commands.Turret.SimpleAimAtTarget;
 import frc.robot.subsystems.PID.IntakeArm;
 import frc.robot.subsystems.intake.Intake;
@@ -109,13 +110,13 @@ public class StateManager extends SubsystemBase {
     }
 
     Command ShootStateCommand() {
-        final Command aimCommand;
-        Optional<Pose2d> hubPose = StaticPoses.GetHubPoseOptional();
-        if (hubPose.isPresent()){
-            aimCommand = new SimpleAimAtTarget(swerveSubsystem, visionSubsystem, turretSubsytem, hubPose.get());
-        } else {
-            aimCommand = new PrintCommand("switched to shooting state but unable to locate hub");
-        }
+        final Command aimCommand = new ShootAtTarget(turretSubsytem, swerveSubsystem, outtakeSubsystem, hoodSubsystem);
+        // Optional<Pose2d> hubPose = StaticPoses.GetHubPoseOptional();
+        // if (hubPose.isPresent()){
+        //     aimCommand = new ShootAtTarget(turretSubsytem, swerveSubsystem);
+        // } else {
+        //     aimCommand = new PrintCommand("switched to shooting state but unable to locate hub");
+        // }
 
         return new ParallelCommandGroup(
             aimCommand, 
@@ -126,7 +127,7 @@ public class StateManager extends SubsystemBase {
 
     Command ConditionalStartShooting() {
         return runEnd(() -> {
-            if (outtakeSubsystem.atSetpoint()){
+            if (outtakeSubsystem.atSetpoint() && turretSubsytem.isTurretAligned()){
                 kickerSubsystem.motor.set(KickerConstants.MOTORSPEED);
                 spindexerSubsystem.motor.set(SpindexerConstants.MOTORSPEED);
             }

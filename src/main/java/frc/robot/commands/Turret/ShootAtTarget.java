@@ -19,6 +19,8 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Outtake;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
@@ -45,6 +47,9 @@ public class ShootAtTarget extends Command {
 
   private final SwerveSubsystem drivebase;
   private final Turret turret;
+  private final Outtake outtake;
+  private final Hood hood;
+
 
   Rotation2d desiredTurretAngle = null;
 
@@ -54,9 +59,11 @@ public class ShootAtTarget extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-   public ShootAtTarget(Turret turret, SwerveSubsystem drivebase) {
+   public ShootAtTarget(Turret turret, SwerveSubsystem drivebase, Outtake outtake, Hood hood) {
     this.turret = turret;
     this.drivebase = drivebase;
+    this.outtake = outtake;
+    this.hood = hood;
 
     addRequirements(turret);
   }
@@ -83,18 +90,17 @@ public class ShootAtTarget extends Command {
     // double distanceToHub = Math.sqrt(Math.pow(transformToHub.getX(), 2)+Math.pow(transformToHub.getY(), 2));
     double distanceToHub = toHub.getNorm();
 
-    double predictedAngle = hoodAngleMap.get(distanceToHub);
+    hood.setHoodAngle(hoodAngleMap.get(distanceToHub));
 
-    double predictedFlywheelSpeed = flywheelSpeedMap.get(distanceToHub);
+    outtake.setTargetVelocity(flywheelSpeedMap.get(distanceToHub));
+
+
 
     Rotation2d fieldAngleToHub = toHub.getAngle();
 
     desiredTurretAngle = fieldAngleToHub.minus(turret.getTurretRotation());
 
     turret.setTurretAngle(desiredTurretAngle);
-
-    
-
   }
 
   public Rotation2d getDesiredAngle(){

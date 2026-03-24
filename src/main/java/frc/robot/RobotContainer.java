@@ -46,7 +46,7 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final IntakeArm pid = new IntakeArm();
   private final Outtake outtake = new Outtake();
-  private final Turret turret = new Turret();
+  private final Turret turret = new Turret(drivebase);
   private final Kicker kicker = new Kicker();
   private final Spindexer spindexer = new Spindexer();
   private final Hood hood = new Hood();
