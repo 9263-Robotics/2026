@@ -11,6 +11,7 @@ import java.util.Map;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
@@ -25,12 +26,21 @@ import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 public class ShootAtTarget extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
 
-  private static final InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
+  private static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap();
+
+  private static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap();
   
     static { // x is distance, y is angle
-      table.put(1.0,1.0);
-      table.put(2.0,4.0);
-      table.put(3.0,9.0);
+      hoodAngleMap.put(1.0,1.0);
+      hoodAngleMap.put(2.0,4.0);
+      hoodAngleMap.put(3.0,9.0);
+      
+
+      flywheelSpeedMap.put(1.0, 5000.0);
+      flywheelSpeedMap.put(2.0, 5000.0);
+      flywheelSpeedMap.put(3.0, 5000.0);
+      flywheelSpeedMap.put(4.5, 6700.0);
+
   }
 
   private final SwerveSubsystem drivebase;
@@ -56,17 +66,31 @@ public class ShootAtTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Pose2d hub = null;
+    Translation2d hub = null;
     // m_turret.
-   if (DriverStation.getAlliance().get() == Alliance.Red){
-      hub = new Pose2d(39.05, 13.19, new Rotation2d());
-   }
+    if (DriverStation.getAlliance().get() == Alliance.Red){
+      hub = new Translation2d(39.05, 13.19);
+    }
     if (DriverStation.getAlliance().get() == Alliance.Blue){
-      hub = new Pose2d(15.13, 13.19, new Rotation2d());
-   }
-   Transform2d transformToHub = drivebase.getSwerveDrive().getPose().minus(hub);
-   double distanceToHub = Math.sqrt(Math.pow(transformToHub.getX(), 2)+Math.pow(transformToHub.getY(), 2));
-   double predictedAngle = table.get(distanceToHub);
+      hub = new Translation2d(15.13, 13.19);
+    }
+
+    //  Transform2d transformToHub = drivebase.getSwerveDrive().getPose().minus(hub);
+    // Transform2d transformToHub = turret.getTurretPose();
+    Translation2d toHub = hub.minus(turret.getTurretPose().getTranslation());
+    // double distanceToHub = Math.sqrt(Math.pow(transformToHub.getX(), 2)+Math.pow(transformToHub.getY(), 2));
+    double distanceToHub = toHub.getNorm();
+
+    double predictedAngle = hoodAngleMap.get(distanceToHub);
+
+    double predictedFlywheelSpeed = flywheelSpeedMap.get(distanceToHub);
+
+    Rotation2d fieldAngleToHub = toHub.getAngle();
+
+    Rotation2d desiredTurretAngle = fieldAngleToHub.minus(turret.getTurretRotation());
+
+    turret.setTurretAngle(desiredTurretAngle);
+
   }
 
   // Called once the command ends or is interrupted.
