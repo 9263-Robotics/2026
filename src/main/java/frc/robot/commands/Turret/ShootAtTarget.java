@@ -46,6 +46,8 @@ public class ShootAtTarget extends Command {
   private final SwerveSubsystem drivebase;
   private final Turret turret;
 
+  Rotation2d desiredTurretAngle = null;
+
 
   /**
    * Creates a new ExampleCommand.
@@ -87,10 +89,14 @@ public class ShootAtTarget extends Command {
 
     Rotation2d fieldAngleToHub = toHub.getAngle();
 
-    Rotation2d desiredTurretAngle = fieldAngleToHub.minus(turret.getTurretRotation());
+    desiredTurretAngle = fieldAngleToHub.minus(turret.getTurretRotation());
 
     turret.setTurretAngle(desiredTurretAngle);
 
+  }
+
+  public Rotation2d getDesiredAngle(){
+    return desiredTurretAngle;
   }
 
   // Called once the command ends or is interrupted.

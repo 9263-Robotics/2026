@@ -16,12 +16,13 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIDs;
 import frc.robot.Constants.CANIDs.TurretPID;
-import frc.robot.Constants.ScoringConstants;
+import frc.robot.commands.Turret.ShootAtTarget;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class Turret extends SubsystemBase {
 
     private final SwerveSubsystem drivetrain;
+    private final ShootAtTarget shootAtTarget;
 
     private final SparkFlex turretMotor = new SparkFlex(CANIDs.TurretMotor, MotorType.kBrushless);
     private SparkFlexConfig turretMotorConfig = new SparkFlexConfig();
@@ -82,20 +83,14 @@ public class Turret extends SubsystemBase {
 
         turretPose = drivetrain.getSwerveDrive().getPose().plus(new Transform2d(-0.3,0.3, getTurretRotation()));
 
+        
+
     }
-
-
-    private void runPID(){
-        // if(Zeroed){
-            turretMotor.setVoltage(turretPID.calculate(turretMotor.getEncoder().getPosition()));
-        // } else {
-        //      System.out.println("Turret Not Zeroed :/");
-        // }
-    }
-
 
     public void setTurretAngle(Rotation2d rot) {
-        turretPID.setGoal(rot.getDegrees());
+        double delta1 = rot.getDegrees() - getTurretRotation().getDegrees();
+        delta1 = Math.IEEEremainder(delta1, 360);
+        turretPID.setGoal(delta1);
     }
 
     public boolean isTurretAligned(){
@@ -108,6 +103,20 @@ public class Turret extends SubsystemBase {
 
     public Pose2d getTurretPose() {
         return turretPose;
+    }
+
+    private void runPID(){
+        // if(Zeroed){
+        if (turretMotor.getEncoder().getPosition() < 90 && turretMotor.getEncoder().getPosition() > -90){
+            turretMotor.setVoltage(turretPID.calculate(turretMotor.getEncoder().getPosition()));
+        } else if (turretMotor.getEncoder().getPosition() > 90 && turretPID.calculate(turretMotor.getEncoder().getPosition())<0){
+            turretMotor.setVoltage(turretPID.calculate(turretMotor.getEncoder().getPosition()));
+        }else if (turretMotor.getEncoder().getPosition() > -90 && turretPID.calculate(turretMotor.getEncoder().getPosition())>0){
+            turretMotor.setVoltage(turretPID.calculate(turretMotor.getEncoder().getPosition()));
+        }
+
+
+        
     }
 
     
