@@ -27,7 +27,7 @@ public class ShootAtTarget extends Command {
 
   private static final InterpolatingDoubleTreeMap table = new InterpolatingDoubleTreeMap();
   
-    static {
+    static { // x is distance, y is angle
       table.put(1.0,1.0);
       table.put(2.0,4.0);
       table.put(3.0,9.0);
