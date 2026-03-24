@@ -1,0 +1,7 @@
+[deps]
+CurveFit = "5a033b19-8c74-5913-a970-47c3779ef25c"
+DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
+Optimization = "7f7a1694-90dd-40f0-9382-eb1efda571ba"
+OptimizationNLopt = "4e6fcdb7-1186-4e1f-a706-475e75c168bb"
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+Polynomials = "f27b6e38-b328-58d1-80ce-0feddd5e7a45"
