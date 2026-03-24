@@ -29,11 +29,11 @@ public class Outtake extends SubsystemBase {
         motor.getConfigurator().apply(configs);
     }
 
-    public void setTargetVelocity(double RPS){
+    public void setTargetVelocity(double RPS) {
         motor.setControl(request.withVelocity(RPS / RATIO));
     }
 
-    public void stopMotor(){
+    public void stopMotor() {
         motor.setControl(request.withVelocity(0));
         motor.stopMotor(); // just for good measure
     }
