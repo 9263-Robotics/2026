@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.Turret;
 
 import edu.wpi.first.wpilibj.Filesystem;
 
@@ -10,9 +10,9 @@ import java.util.ArrayList;
 
 import org.dyn4j.geometry.Vector2;
 
-public class VectorFileReader {
+public class FileRead {
 
-    public static ArrayList<Vector2> getVectors(String filename) {
+    public static ArrayList<Vector2> getFile(String filename) {
 
         ArrayList<Vector2> vectors = new ArrayList<>();
 
