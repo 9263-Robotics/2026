@@ -92,11 +92,11 @@ public class Turret extends SubsystemBase {
 
     private void runPID(){
         // if(Zeroed){
-        if (turretMotor.getEncoder().getPosition() < 90 && turretMotor.getEncoder().getPosition() > -90){
+        if (turretMotor.getEncoder().getPosition() < 45 && turretMotor.getEncoder().getPosition() > -45){
             turretMotor.setVoltage(turretPID.calculate(turretMotor.getEncoder().getPosition()));
-        } else if (turretMotor.getEncoder().getPosition() > 90 && turretPID.calculate(turretMotor.getEncoder().getPosition())<0){
+        } else if (turretMotor.getEncoder().getPosition() > 45 && turretPID.calculate(turretMotor.getEncoder().getPosition())<0){
             turretMotor.setVoltage(turretPID.calculate(turretMotor.getEncoder().getPosition()));
-        }else if (turretMotor.getEncoder().getPosition() > -90 && turretPID.calculate(turretMotor.getEncoder().getPosition())>0){
+        }else if (turretMotor.getEncoder().getPosition() > -45 && turretPID.calculate(turretMotor.getEncoder().getPosition())>0){
             turretMotor.setVoltage(turretPID.calculate(turretMotor.getEncoder().getPosition()));
         }
     }
