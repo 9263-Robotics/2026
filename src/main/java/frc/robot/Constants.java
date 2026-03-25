@@ -58,7 +58,7 @@ public final class Constants {
   public static class OuttakeConstants {
     public static final int MOTORCANID1 = 0; // placeholders
     public static final int MOTORCANID2 = 1;
-    public static final double TARGET_FLYWHEEL_SPEED = 10;
+    public static final double TARGET_FLYWHEEL_SPEED = 5000;
     public static final double P = 0.075, I = 0.03, D = 0.005;
     public static final double RATIO = 1.2;
     public static final double TOLERANCE = 1.0;
