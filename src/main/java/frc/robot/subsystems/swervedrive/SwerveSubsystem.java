@@ -22,16 +22,13 @@ import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-import frc.robot.subsystems.Vision;
 
 public class SwerveSubsystem extends SubsystemBase {
 
 
     private final SwerveDrive swerveDrive;
-    private final Vision m_vision;
 
-    public SwerveSubsystem(File directory, Vision vision){
-        m_vision = vision;
+    public SwerveSubsystem(File directory){
 
         // Set Telemetry Verbosity (might want lower for comps as it can slow things down if it's too high, but for testing we don't care)
         SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;
@@ -84,7 +81,6 @@ public class SwerveSubsystem extends SubsystemBase {
     
     @Override
     public void periodic() {
-        m_vision.updatePoseEstimation(swerveDrive);
     }
 
     public void setUpPathplanner() {

@@ -35,13 +35,13 @@ public class Turret extends SubsystemBase {
 
     private ProfiledPIDController turretPID = new ProfiledPIDController(TurretPID.k, TurretPID.i, TurretPID.d, new Constraints(TurretPID.maxVel, TurretPID.maxAccel));
 
-    private enum Targets {
-        IDLE,
-        HUB,
-        PASSING
-    }
+    // private enum Targets {
+    //     IDLE,
+    //     HUB,
+    //     PASSING
+    // }
 
-    private Targets target = Targets.IDLE;
+    // private Targets target = Targets.IDLE;
 
     public Turret(SwerveSubsystem drivetrain) {
         this.drivetrain = drivetrain;
@@ -67,7 +67,7 @@ public class Turret extends SubsystemBase {
 
         runPID();
 
-        turretRotation = new Rotation2d(turretMotor.getEncoder().getPosition()).plus(drivetrain.getSwerveDrive().getPose().getRotation());
+        turretRotation = Rotation2d.fromDegrees(turretMotor.getEncoder().getPosition()).plus(drivetrain.getSwerveDrive().getPose().getRotation());
 
         turretPose = drivetrain.getSwerveDrive().getPose().plus(new Transform2d(-0.3,0.3, getTurretRotation()));
     }
