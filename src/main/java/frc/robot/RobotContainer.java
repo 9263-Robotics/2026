@@ -21,6 +21,8 @@ import swervelib.SwerveInputStream;
 import java.io.File;
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -81,6 +83,18 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    // Register commands for PathPlanner
+    NamedCommands.registerCommand("Intake", stateManager.SetState(State.INTAKE));
+    NamedCommands.registerCommand("Shoot", stateManager.SetState(State.SHOOT));
+    NamedCommands.registerCommand("Shoot&Intake", stateManager.SetState(State.SHOOT_AND_INTAKE));
+
+    // Movement stuff
+    // NamedCommands.registerCommand("Trench", stateManager.SetState(State.TRENCH));
+    // NamedCommands.registerCommand("passScoringSide", stateManager.SetState(State.PASS_SCORING_SIDE));
+    // NamedCommands.registerCommand("passScoringSideIntake", stateManager.SetState(State.PASS_SCORING_SIDE_INTAKE));
+    // NamedCommands.registerCommand("passNonscoringSide", stateManager.SetState(State.PASS_NONSCORING_SIDE));
+    // NamedCommands.registerCommand("passNonscoringSideIntake", stateManager.SetState(State.PASS_NONSCORING_SIDE_INTAKE));
+
     // Configure the trigger bindings
     configureBindings();
 
