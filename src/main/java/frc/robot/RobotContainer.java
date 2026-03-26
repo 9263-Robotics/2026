@@ -10,9 +10,17 @@ import swervelib.SwerveInputStream;
 
 import java.io.File;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
+import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -44,14 +52,26 @@ public class RobotContainer {
                                                             .scaleTranslation(1)
                                                             .allianceRelativeControl(true);
 
-  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);                                                          
+  Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+  
+  
+  private final SendableChooser<Command> autoChooser;
+  //List of autos to display.
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
 
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    //Intializing the list of autos to display.
+
+    
+
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+
+
   }
 
   /**
@@ -74,6 +94,19 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     
-    return Commands.none();
+    return autoChooser.getSelected();
+  }
+
+
+  public void setupNamedCommands() {
+    NamedCommands.registerCommand("Testcommand", new PrintCommand("This is a test command"));
+    //First argument is the name of the command PathPlanner will use. Second argument is the actual command WITH parameters the robot will run.
+  }
+
+  private void setupAutoChooser() {
+    // new PathPlannerAuto("Testauto"); //idk if this is actually nessessary lol, I think it worked without it last year, but we had it
+
+    Shuffleboard.getTab("AUTO").add("Auto", autoChooser);
+    //Displays the dropdown menu for selecting the auto. (Use elastic?)
   }
 }

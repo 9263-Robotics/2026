@@ -5,10 +5,16 @@ import static edu.wpi.first.units.Units.Meter;
 import java.io.File;
 import java.util.function.Supplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveConstants;
@@ -16,11 +22,13 @@ import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
+import frc.robot.subsystems.Vision;
 
 public class SwerveSubsystem extends SubsystemBase {
 
 
     private final SwerveDrive swerveDrive;
+    private final Vision m_vision = new Vision();
 
     public SwerveSubsystem(File directory){
 
@@ -46,6 +54,8 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.setAngularVelocityCompensation(true,
                                                true,
                                                0.1); //Correct for skew that gets worse as angular velocity increases. Start with a coefficient of 0.1.
+        
+        setUpPathplanner();
     }
 
     public SwerveDrive getSwerveDrive() {
@@ -70,4 +80,65 @@ public class SwerveSubsystem extends SubsystemBase {
         swerveDrive.zeroGyro();
         });
     }
+    
+    @Override
+    public void periodic() {
+        m_vision.updatePoseEstimation(swerveDrive);
+    }
+
+    public void setUpPathplanner() {
+        RobotConfig config;
+
+        try {
+            config = RobotConfig.fromGUISettings();
+
+            final boolean enableFeedforward = true;
+
+            // Configure AutoBuilder last
+            AutoBuilder.configure(
+                swerveDrive::getPose, // Robot pose supplier
+
+                swerveDrive::resetOdometry, // Method to reset odometry (will be called if your auto has a starting pose)
+
+                swerveDrive::getRobotVelocity, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+
+                (speedsRobotRelative, moduleFeedForwards) -> { // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+                    if (enableFeedforward) {
+                    swerveDrive.drive(
+                        speedsRobotRelative,
+                        swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
+                        moduleFeedForwards.linearForces()
+                        );
+                    } else {
+                        swerveDrive.setChassisSpeeds(speedsRobotRelative);
+                    }
+                },
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                    new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                    new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                ),
+                config, // The robot configuration
+                () -> {
+                // Boolean supplier that controls when the path will be mirrored for the red alliance
+                // This will flip the path being followed to the red side of the field.
+                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                var alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+                },
+                this // Reference to this subsystem to set requirements
+            );
+            
+        } catch (Exception e){
+             e.printStackTrace();
+        }
+
+        
+    }
+
+
+     
 }
