@@ -43,7 +43,7 @@ public final class Constants {
     // 20 --> Gyro
     
     public static final int PDH = 9;
-    public static final int TurretMotor = 11;
+    public static final int TurretMotor = 16;
 
     public static class TurretPID{
       public static final double k = 0.001;
@@ -56,24 +56,24 @@ public final class Constants {
   }
 
   public static class OuttakeConstants {
-    public static final int MOTORCANID1 = 0; // placeholders
-    public static final int MOTORCANID2 = 1;
-    public static final double TARGET_FLYWHEEL_SPEED = 5000;
+    public static final int MOTORCANID1 = 18; // placeholders
+    public static final int MOTORCANID2 = 19;
+    public static final double TARGET_FLYWHEEL_SPEED = 10;
     public static final double P = 0.075, I = 0.03, D = 0.005;
     public static final double RATIO = 1.2;
     public static final double TOLERANCE = 1.0;
   }
 
   public static class KickerConstants {
-    public static final int MOTORCANID = 2; // placeholder
+    public static final int MOTORCANID = 15; // placeholder
     public static final double MOTORSPEED = 0.5;
   }
   public static class SpindexerConstants {
-    public static final int MOTORCANID = 3; // placeholder
+    public static final int MOTORCANID = 11; // placeholder
     public static final double MOTORSPEED = 0.5;
   }
   public static class HoodConstants {
-    public static final int MOTORCANID = 7; // supposedly true
+    public static final int MOTORCANID = 17; // supposedly true
     public static final double P = 0.075, I = 0.03, D = 0.005;
     public static final double MAXANGLEROT = 2000/7/4, MINANGLEROT = 0; //placeholders
   }
