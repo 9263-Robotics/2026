@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 // import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CANIDs;
@@ -70,6 +71,9 @@ public class Turret extends SubsystemBase {
         turretRotation = Rotation2d.fromDegrees(turretMotor.getEncoder().getPosition()).plus(drivetrain.getSwerveDrive().getPose().getRotation());
 
         turretPose = drivetrain.getSwerveDrive().getPose().plus(new Transform2d(-0.3,0.3, getTurretRotation()));
+
+        SmartDashboard.putNumber("Turret position", turretMotor.getEncoder().getPosition());
+        SmartDashboard.putNumber("Turret setpoint", turretPID.getGoal().position);
     }
 
     public void setTurretAngle(Rotation2d rot) {

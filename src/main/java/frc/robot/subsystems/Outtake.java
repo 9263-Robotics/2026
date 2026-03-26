@@ -7,6 +7,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -27,6 +28,12 @@ public class Outtake extends SubsystemBase {
         configs.kI = I;
         configs.kD = D;
         motor.getConfigurator().apply(configs);
+    }
+
+    @Override
+    public void periodic(){
+        SmartDashboard.putNumber("Outtake velocity", motor.getVelocity().getValueAsDouble());
+        SmartDashboard.putNumber("Outtake velocity setpoint", motor.getControlMode().getValueAsDouble()); //idk if this works but hopefully
     }
 
     public void setTargetVelocity(double RPS){
