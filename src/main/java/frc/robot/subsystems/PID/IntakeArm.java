@@ -10,8 +10,8 @@ import edu.wpi.first.math.MathUtil;
 public class IntakeArm extends SubsystemBase {
   
   //TODO IDK THE ACTUAL CAN ID STUFF SO CHANGE IT
-  private final SparkMax pidMotor1 = new SparkMax(14, MotorType.kBrushless);
-  private final SparkMax pidMotor2 = new SparkMax(15, MotorType.kBrushless);  
+  private final SparkMax pidMotor1 = new SparkMax(12, MotorType.kBrushless);
+  private final SparkMax pidMotor2 = new SparkMax(13, MotorType.kBrushless);  
 
   private final RelativeEncoder encoder = pidMotor1.getEncoder();
 
