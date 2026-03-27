@@ -100,8 +100,11 @@ public class RobotContainer {
     m_driverController.circle().whileTrue(drivebase.zeroGyro());
 
     m_driverController.R2().whileTrue(kicker.shoot());
-    m_driverController.triangle().whileTrue(kicker.flywheel());
-    
+    m_driverController.R1().whileTrue(kicker.flywheel());
+
+    m_driverController.povDown().whileTrue(intake.setSetpoint(-12.5));
+    m_driverController.povRight().whileTrue(intake.setSetpoint(-6.5));
+    m_driverController.povUp().whileTrue(intake.setSetpoint(0));    
   }
 
   /**

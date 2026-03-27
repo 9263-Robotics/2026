@@ -58,17 +58,9 @@ public class Intake extends SubsystemBase {
     pidMotor2.set(-output); //negative cuz facing other way
   } //positive for counter clockwise, negative for clockwise
 
-  public void setSetpoint(double point){
-    pid.setSetpoint(point);//this is the method that will be called to change the setpoint of the PID controller
-    
+  public Command setSetpoint(double point){
+    return run(() -> {
+      pid.setSetpoint(point);//this is the method that will be called to change the setpoint of the PID controller
+    }); 
   }
-
-  public Command flywheel() {
-    return runEnd(() -> {
-        intakeMotor.set(-0.6);
-    }, () -> {
-        intakeMotor.set(0);
-    });
-}
-
 }
