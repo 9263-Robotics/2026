@@ -104,7 +104,7 @@ public class RobotContainer {
   private void setupAutoChooser() {
     // new PathPlannerAuto("Testauto"); //idk if this is actually nessessary lol, I think it worked without it last year, but we had it
 
-    Shuffleboard.getTab("AUTO").add("Auto", autoChooser);
+    Shuffleboard.getTab("AUTO").add("Auto Select", autoChooser);
     //Displays the dropdown menu for selecting the auto. (Use elastic?)
   }
 }
