@@ -63,4 +63,14 @@ public class Intake extends SubsystemBase {
       pid.setSetpoint(point);//this is the method that will be called to change the setpoint of the PID controller
     }); 
   }
+  
+  public Command runIntakeMotor() {
+    return runEnd(() -> {
+        intakeMotor.set(-0.5);
+    }, () -> {
+        intakeMotor.set(0);
+    });
+}
+
+
 }

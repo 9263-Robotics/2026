@@ -102,9 +102,12 @@ public class RobotContainer {
     m_driverController.R2().whileTrue(kicker.shoot());
     m_driverController.R1().whileTrue(kicker.flywheel());
 
-    m_driverController.povDown().whileTrue(intake.setSetpoint(-12.5));
-    m_driverController.povRight().whileTrue(intake.setSetpoint(-6.5));
-    m_driverController.povUp().whileTrue(intake.setSetpoint(0));    
+    m_driverController.povDown().whileTrue(intake.setSetpoint(-15));
+    m_driverController.povRight().whileTrue(intake.setSetpoint(-5));
+    m_driverController.povUp().whileTrue(intake.setSetpoint(0));  
+    
+     m_driverController.square().whileTrue(intake.runIntakeMotor());
+    
   }
 
   /**
