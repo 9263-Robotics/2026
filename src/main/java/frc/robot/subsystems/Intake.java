@@ -2,6 +2,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -18,7 +19,7 @@ public class Intake extends SubsystemBase {
 
   private final RelativeEncoder encoder = pidMotor1.getEncoder();
 
-  private final PIDController pid = new PIDController(0.00025, 0.00001, 0.00001);
+  private final PIDController pid = new PIDController(0.00025, 0.0, 0.0);
   private double setpoint = 0.0;
 
   /** Creates a new ExampleSubsystem. */
@@ -44,9 +45,11 @@ public class Intake extends SubsystemBase {
     output = MathUtil.clamp(output, -0.5, 0.5); // limits the output to be between -0.5 and 0.5
     pidMotor1.set(output); // sets the motor output to the calculated value
     pidMotor2.set(-output); //negative cuz facing other way
+  } //positive for counter clockwise, negative for clockwise
 
-  }
   public void setSetpoint(double point){
     setpoint = point; //this is the method that will be called to change the setpoint of the PID controller
+    Shuffleboard.getTab(getName()).addDouble("intake setpoint", () -> setpoint);
+    Shuffleboard.getTab(getName()).addDouble("intake encoder", () -> getPosition());
   }
 }
