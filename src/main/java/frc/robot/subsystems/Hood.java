@@ -29,7 +29,7 @@ public class Hood extends SubsystemBase {
         return runOnce(
             () -> {
                 if (angle >= MINANGLEROT && angle <= MAXANGLEROT)
-                controller.setSetpoint(angle, ControlType.kPosition);
+                controller.setSetpoint((angle / 360) / (2000 / 7), ControlType.kPosition);
                 
             }
         );
@@ -48,6 +48,6 @@ public class Hood extends SubsystemBase {
     }
 
     public double getSetpoint(){
-        return controller.getSetpoint();
+        return controller.getSetpoint() * 360;
     }
 }
