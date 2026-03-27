@@ -6,20 +6,20 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.IntakeArm;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Outtake;
 import frc.robot.subsystems.Spindexer;
 import frc.robot.subsystems.StateManager;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.PID.IntakeArm;
 import frc.robot.subsystems.StateManager.State;
-import frc.robot.subsystems.intake.Intake;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
 import java.io.File;
-import java.util.function.DoubleSupplier;
+// import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.auto.NamedCommands;
 

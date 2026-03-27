@@ -52,7 +52,7 @@ public class StateManager extends SubsystemBase {
     final Turret turretSubsytem;
     final SwerveSubsystem swerveSubsystem;
     final Intake intakeSubsystem;
-    final IntakeArm intakeArmSubsytem;
+    final IntakeArm intakeArmSubsystem;
     final Vision visionSubsystem;
     final Kicker kickerSubsystem;
     final Spindexer spindexerSubsystem;
@@ -76,7 +76,7 @@ public class StateManager extends SubsystemBase {
         turretSubsytem = turret;
         swerveSubsystem = swerve;
         intakeSubsystem = intake;
-        intakeArmSubsytem = intakeArm;
+        intakeArmSubsystem = intakeArm;
         visionSubsystem = vision;
         spindexerSubsystem = spindexer;
         kickerSubsystem = kicker;
@@ -101,10 +101,10 @@ public class StateManager extends SubsystemBase {
 
     Command IntakeStateCommand() {
         return runEnd(() -> {
-            intakeArmSubsytem.setSetpoint(Setpoints.IntakeArm.ENGAGED);
+            intakeSubsystem.setSetpoint(Setpoints.IntakeArm.ENGAGED);
             intakeSubsystem.startIntake();
         }, () -> {
-            intakeArmSubsytem.setSetpoint(Setpoints.IntakeArm.STOWED);
+            intakeSubsystem.setSetpoint(Setpoints.IntakeArm.STOWED);
             intakeSubsystem.stopIntake();
         });
     }

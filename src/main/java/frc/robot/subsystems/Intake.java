@@ -1,15 +1,18 @@
-package frc.robot.subsystems.PID;
+package frc.robot.subsystems;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.RelativeEncoder;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.MathUtil;
 
-public class IntakeArm extends SubsystemBase {
-  
-  //TODO IDK THE ACTUAL CAN ID STUFF SO CHANGE IT
+public class Intake extends SubsystemBase {
+  private final TalonFX intakeMotor = new TalonFX(14);
+
   private final SparkMax pidMotor1 = new SparkMax(12, MotorType.kBrushless);
   private final SparkMax pidMotor2 = new SparkMax(13, MotorType.kBrushless);  
 
@@ -18,8 +21,17 @@ public class IntakeArm extends SubsystemBase {
   private final PIDController pid = new PIDController(0.00025, 0.00001, 0.00001);
   private double setpoint = 0.0;
 
-  public IntakeArm() {
+  /** Creates a new ExampleSubsystem. */
+  public Intake() {
     encoder.setPosition(0);
+  }
+
+  public void startIntake(){
+      intakeMotor.set(1.0); //full speed
+  }
+
+  public void stopIntake(){
+      intakeMotor.set(0.0); //stop
   }
 
   public double getPosition() {
