@@ -14,8 +14,7 @@ import frc.robot.Constants.SpindexerConstants;
 import frc.robot.commands.SpinCommand;
 import frc.robot.commands.Turret.ShootAtTarget;
 import frc.robot.commands.Turret.SimpleAimAtTarget;
-import frc.robot.subsystems.PID.IntakeArm;
-import frc.robot.subsystems.intake.Intake;
+import frc.robot.subsystems.IntakeArm;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import frc.util.StaticPoses;
 
@@ -52,7 +51,7 @@ public class StateManager extends SubsystemBase {
     final Turret turretSubsytem;
     final SwerveSubsystem swerveSubsystem;
     final Intake intakeSubsystem;
-    final IntakeArm intakeArmSubsystem;
+    final IntakeArm intakeArmSubsystem; //Subject to be removed
     final Vision visionSubsystem;
     final Kicker kickerSubsystem;
     final Spindexer spindexerSubsystem;
@@ -76,7 +75,7 @@ public class StateManager extends SubsystemBase {
         turretSubsytem = turret;
         swerveSubsystem = swerve;
         intakeSubsystem = intake;
-        intakeArmSubsystem = intakeArm;
+        intakeArmSubsystem = intakeArm; //Subject to be removed
         visionSubsystem = vision;
         spindexerSubsystem = spindexer;
         kickerSubsystem = kicker;
