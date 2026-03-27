@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
@@ -41,6 +42,7 @@ public class RobotContainer {
   private final Kicker kicker = new Kicker();                                                                              
   private final PowerDistribution pdh = new PowerDistribution(9, ModuleType.kRev);
   private final Intake intake = new Intake();
+  private final Hood hood = new Hood();
   
   // Replace with CommandPS4Controller or CommandXBoxController if needed
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
@@ -102,12 +104,13 @@ public class RobotContainer {
     m_driverController.R2().whileTrue(kicker.shoot());
     m_driverController.R1().whileTrue(kicker.flywheel());
 
+    m_driverController.L1().onTrue(hood.iterateRot());
+
     m_driverController.povDown().whileTrue(intake.setSetpoint(-15));
     m_driverController.povRight().whileTrue(intake.setSetpoint(-5));
     m_driverController.povUp().whileTrue(intake.setSetpoint(0));  
     
-     m_driverController.square().whileTrue(intake.runIntakeMotor());
-    
+    m_driverController.square().whileTrue(intake.runIntakeMotor());
   }
 
   /**
