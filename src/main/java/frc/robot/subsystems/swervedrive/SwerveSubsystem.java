@@ -22,13 +22,13 @@ import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
 import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-import frc.robot.subsystems.Vision;
+// import frc.robot.subsystems.Vision;
 
 public class SwerveSubsystem extends SubsystemBase {
 
 
     private final SwerveDrive swerveDrive;
-    private final Vision m_vision = new Vision();
+    // private final Vision m_vision = new Vision();
 
     public SwerveSubsystem(File directory){
 
@@ -83,7 +83,7 @@ public class SwerveSubsystem extends SubsystemBase {
     
     @Override
     public void periodic() {
-        m_vision.updatePoseEstimation(swerveDrive);
+        // m_vision.updatePoseEstimation(swerveDrive);
     }
 
     public void setUpPathplanner() {
