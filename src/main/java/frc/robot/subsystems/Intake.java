@@ -25,6 +25,10 @@ public class Intake extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public Intake() {
     encoder.setPosition(0);
+
+    Shuffleboard.getTab(getName()).addDouble("intake setpoint", () -> setpoint);
+    Shuffleboard.getTab(getName()).addDouble("intake encoder", () -> getPosition());
+    Shuffleboard.getTab(getName()).add(pid);
   }
 
   public void startIntake(){
@@ -49,7 +53,6 @@ public class Intake extends SubsystemBase {
 
   public void setSetpoint(double point){
     setpoint = point; //this is the method that will be called to change the setpoint of the PID controller
-    Shuffleboard.getTab(getName()).addDouble("intake setpoint", () -> setpoint);
-    Shuffleboard.getTab(getName()).addDouble("intake encoder", () -> getPosition());
+    
   }
 }
