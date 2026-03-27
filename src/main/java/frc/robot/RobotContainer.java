@@ -5,6 +5,8 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
 
@@ -13,6 +15,9 @@ import java.io.File;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,6 +38,10 @@ public class RobotContainer {
   private final SwerveSubsystem drivebase = new SwerveSubsystem(new File(Filesystem.getDeployDirectory(),
                                                                                 "swerve/comp")); // "swerve/test" or "swerve/comp" to set which swerve base we're using
 
+  private final Kicker kicker = new Kicker();                                                                              
+  private final PowerDistribution pdh = new PowerDistribution(9, ModuleType.kRev);
+  private final Intake intake = new Intake();
+  
   // Replace with CommandPS4Controller or CommandXBoxController if needed
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
 
@@ -70,6 +79,12 @@ public class RobotContainer {
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
 
+    Shuffleboard.getTab("TELEM").addDouble("Match Time", () -> Timer.getMatchTime());
+    Shuffleboard.getTab("TELEM").addDouble("Voltage", () -> pdh.getVoltage());
+    Shuffleboard.getTab("TELEM").addDouble("Current", () -> pdh.getTotalCurrent());
+    Shuffleboard.getTab("TELEM").addDouble("Power", () -> pdh.getTotalPower());
+
+
   }
 
   /**
@@ -83,6 +98,10 @@ public class RobotContainer {
    */
   private void configureBindings() {
     m_driverController.circle().whileTrue(drivebase.zeroGyro());
+
+    m_driverController.R2().whileTrue(kicker.shoot());
+    m_driverController.triangle().whileTrue(kicker.flywheel());
+    
   }
 
   /**

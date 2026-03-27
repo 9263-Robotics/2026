@@ -9,12 +9,6 @@
           "data": {
             "pathName": "Test Path 2"
           }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Testcommand"
-          }
         }
       ]
     }
