@@ -52,6 +52,14 @@ public Command shoot() {
     });
 }
 
+public Command unJam() {
+  return runEnd(() -> {
+    kicker.set(-0.2);
+  }, () -> {
+    kicker.set(0);
+  });
+}
+
 public Command flywheel() {
     return runEnd(() -> {
         FlywheelTop.set(-0.9);
