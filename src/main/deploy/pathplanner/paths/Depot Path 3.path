@@ -3,13 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.55,
-        "y": 4.0
+        "x": 1.7606880189798346,
+        "y": 5.137817319098458
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.3,
-        "y": 4.0
+        "x": 1.5106880189798346,
+        "y": 5.137817319098458
+      },
+      "isLocked": false,
+      "linkedName": "After Intake"
+    },
+    {
+      "anchor": {
+        "x": 1.792965599051009,
+        "y": 3.8789916963226565
+      },
+      "prevControl": {
+        "x": 2.373962040332148,
+        "y": 5.116298932384342
+      },
+      "nextControl": {
+        "x": 1.5526142006898627,
+        "y": 3.367132236849845
       },
       "isLocked": false,
       "linkedName": null
@@ -20,8 +36,8 @@
         "y": 4.0
       },
       "prevControl": {
-        "x": 3.25,
-        "y": 4.0
+        "x": 2.81702177450357,
+        "y": 3.8296504505606848
       },
       "nextControl": null,
       "isLocked": false,
@@ -48,7 +64,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 0.3493601795027966
+    "rotation": -123.8136435571391
   },
   "useDefaultConstraints": true
 }

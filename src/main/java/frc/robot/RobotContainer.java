@@ -139,7 +139,7 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("Shoot", kicker.shoot(-0.9));
 
-    NamedCommands.registerCommand("ShootIDK",  kicker.flywheel().withTimeout(0.8).andThen(kicker.shoot(-0.9)));
+    NamedCommands.registerCommand("ShootIDK",  kicker.flywheel().withTimeout(0.8).andThen(kicker.shoot(-0.9)).withTimeout(3));
 
     NamedCommands.registerCommand("IntakeDown", intake.setSetpoint(-15).withTimeout(0.2));
 
@@ -148,6 +148,10 @@ public class RobotContainer {
     NamedCommands.registerCommand("IntakeUp", intake.setSetpoint(-15).withTimeout(0.2));
 
     NamedCommands.registerCommand("ShakeIntake", intake.setSetpoint(-5).withTimeout(0.4).andThen(intake.setSetpoint(-15).withTimeout(0.4)));
+
+    NamedCommands.registerCommand("StartIntake", intake.run(intake::startIntake).withTimeout(0.1));
+
+    NamedCommands.registerCommand("StopIntake", intake.runOnce(intake::stopIntake));
 
 
     //First argument is the name of the command PathPlanner will use. Second argument is the actual command WITH parameters the robot will run.
