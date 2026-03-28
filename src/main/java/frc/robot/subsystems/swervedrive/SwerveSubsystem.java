@@ -74,6 +74,20 @@ public class SwerveSubsystem extends SubsystemBase {
         });
     }
 
+    
+
+    public void zeroGyroWithAlliance(){
+        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+            swerveDrive.zeroGyro();
+
+            swerveDrive.resetOdometry(new Pose2d(swerveDrive.getPose().getTranslation(), Rotation2d.fromDegrees(180)));
+        }
+
+        else {
+            swerveDrive.zeroGyro();
+        }
+    }
+
     // command for zeroing the gyro, it needs disabling and re-enabling to start moving again after calling, might want to look into that
     public Command zeroGyro() {
         return run( () -> {
