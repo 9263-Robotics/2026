@@ -1,10 +1,10 @@
 import DifferentialEquations as DE
 import Optimization as OPT
-# import CurveFit as CF
 using OptimizationNLopt
+using ForwardDiff, ADTypes
 using LinearAlgebra
-using Polynomials
 using Plots
+using SymbolicRegression
 
 const L = 0.1501 # Characteristic length (diameter)
 const A = pi * (L / 2)^2
@@ -19,18 +19,20 @@ const p = ( # Function parameters (apparently passing them like this is more con
     k = 0.02 # "Torque parameter"
 )
 
-const tspan = (0.0, 4.5)
-const goalHeight = 1.8288
+const tspan = (0.0, 4.5) # if not terminated
 const goal_dydx = -tand(51)
-const untilx = 6.54157776883 + 0.1
+const untild = 6.54157776883
+const untily = 1.8288
 const v00 = 6.3
-const vincrement = 0.025
-# const vincrement = 0.1
+const increment = 0.005
+# const increment = 0.1
 const optTime1 = 6
 const optTime = 1
-const slip = 0.9
+const slip = 1
+const atol = 5e-7
 
 function C_d(Re)
+    # Calculates the drag coefficient from Reynolds number
     24/Re +
     (2.6*(Re/5.0)) / (1 + (Re/5.0)^1.52) +
     (0.411*(Re/(2.63 * 10^5))^-7.94) / (1 + (Re/(2.63 * 10^5))^-8.0) +
@@ -46,7 +48,7 @@ function ballmotion!(du, u, p, t)
     speed = norm(V)
     Re = (speed * L) / v
     C = air * C_d(Re)
-    S = (L/2) * norm(omega) / speed
+    S = L/2 * norm(omega) / speed
     magnus = cross(omega, V)
 
     du[1:3] = V
@@ -57,63 +59,56 @@ function ballmotion!(du, u, p, t)
     nothing
 end
 
-stopCond(u, t, integrator) = u[5] < 0 ? u[2] - goalHeight : 1.0
-affect!(integrator) = DE.terminate!(integrator)
-cb = DE.ContinuousCallback(stopCond, affect!)
-
-function intermediate(v0, radians)
+function ode(v0, radians, goalHeight)
     V0y, V0z = sincos(radians) .* v0
     u0 = [0.0; 0.0; 0.0; 0.0; V0y; V0z; (v0/(pi * L)) * slip; 0.0; 0.0]
     prob = DE.ODEProblem(ballmotion!, u0, tspan, p)
-    DE.solve(prob, callback = cb)
+    stopCond(u, t, integrator) = u[5] < 0 ? u[2] - goalHeight : 1.0
+    affect!(integrator) = DE.terminate!(integrator)
+    cb = DE.ContinuousCallback(stopCond, affect!)
+    DE.solve(prob, callback=cb)
 end
 
-function saveResult!(x, v0, angle, error, plotdata)
-    push!(plotdata, (x = x, v0 = v0, angle = angle, error = error))
-    @show x, v0, angle, error
-    nothing
-end
-
-function compute!(v0, plotdata)
+function point(v0, goalHeight)
     function objective(x, p)
-        odesol = intermediate(v0, first(x))
+        odesol = ode(v0, first(x), goalHeight)
         dydx = odesol.u[end][5] / odesol.u[end][6]
         derivative = abs(dydx - goal_dydx)
         displacement = abs(odesol.u[end][2] - goalHeight)
         derivative + displacement
     end
-    optf = OPT.OptimizationFunction(objective)
-    prob = OPT.OptimizationProblem(optf, [0.0], lb = [0.0], ub = [pi/2])
-    optsol = OPT.solve(prob, NLopt.GN_DIRECT_L(), maxtime = v0 == v00 ? optTime1 : optTime)
+    optf = OPT.OptimizationFunction(objective, ADTypes.AutoForwardDiff())
+    prob = OPT.OptimizationProblem(optf, [0.0], lb=[0.0], ub=[pi/2])
+    # optsol = OPT.solve(prob, NLopt.GN_DIRECT_L(), maxtime=v0 == v00 ? optTime1 : optTime)
+    optsol = OPT.solve(prob, NLopt.GN_DIRECT_L(), abstol=atol)
     angle = optsol.u[end]
-    finalsol = intermediate(v0, angle)
-    x = finalsol.u[end][3]
-    if x > untilx
-        return
-    end
-    saveResult!(x, v0, angle, optsol.objective, plotdata)
-    compute!(trunc(v0 + vincrement, digits=3), plotdata)
-    nothing
+    finalsol = ode(v0, angle, goalHeight)
+    d = finalsol.u[end][3]
+    (d=d, v0=v0, angle=angle, obj=optsol.objective)
+end
+
+function regression()
+
 end
 
 function run()
-    plotdata = []
-    compute!(v00, plotdata)
-    d = getfield.(plotdata, :x)
-    v0 = getfield.(plotdata, :v0)
-    angle = getfield.(plotdata, :angle)
-    # error = filter(y -> y != 0.0, getfield.(plotdata, :error))
-    error = getfield.(plotdata, :error)
-
+    ys = []
+    ds = []
+    v0s = []
+    angles = []
+    objs = []
+    for goalHeight in 0.0:increment:untily
+        v0 = v00
+        while (print("y:", goalHeight, ": "); (_point = @show point(v0, goalHeight)).d < untild)
+            push!(ys, goalHeight)
+            push!(ds, _point.d)
+            push!(v0s, _point.v0)
+            push!(angles, _point.angle)
+            push!(objs, _point.obj)
+            v0 += increment
+        end
+    end
     #=
-    v0prob = CF.CurveFitProblem(d, v0)
-    v0fit = CF.solve(v0prob, CF.PolynomialFitAlgorithm(degree = 9))
-    angleprob = CF.CurveFitProblem(d, angle)
-    anglefit = CF.solve(angleprob, CF.PolynomialFitAlgorithm(degree = 9))
-    println("v0: ", CF.coef(v0fit))
-    println("angle: ", CF.coef(anglefit))
-    =#
-
     roundedpolyfit(vars, ydata) = map(coef -> round(coef, digits=trunc(Int, vars[1])), fit(d, ydata, trunc(Int, vars[2])))
 
     function regressionobj(x, p)
@@ -127,24 +122,25 @@ function run()
     @show v0fit = roundedpolyfit(v0sol, v0)
 
     angleprob = OPT.OptimizationProblem(optf, [1, 1], lb=[1, 1], ub=[8, 20], p=angle)
-    anglesol = OPT.solve(angleprob, NLopt.GN_DIRECT_L(), maxtime = 3)
+    anglesol = OPT.solve(angleprob, NLopt.GN_DIRECT_L(), maxtime=3)
     @show anglefit = roundedpolyfit(anglesol, angle)
+    =#
 
-    default(ms = 2)
+    default(ms=2)
 
-    pv0 = scatter(d, v0, ylabel = "v0")
-    plot!(d, x -> v0fit(x))
+    pv0 = scatter(ds, ys, v0s, ylabel="v0")
+    # plot!(d, x -> v0fit(x))
     # pv0r = scatter(d, CF.fitted(v0fit) .- v0)
-    pv0r = scatter(d, map(x -> v0fit(x), d) .- v0)
+    # pv0r = scatter(d, map(x -> v0fit(x), d) .- v0)
 
-    pangle = scatter(d, angle, ylabel = "rad")
-    plot!(d, x -> anglefit(x))
+    pangle = scatter(ds, ys, angles, ylabel="rad")
+    # plot!(d, x -> anglefit(x))
     # pangler = scatter(d, CF.fitted(anglefit) .- angle)
-    pangler = scatter(d, map(x -> anglefit(x), d) .- angle)
+    # pangler = scatter(d, map(x -> anglefit(x), d) .- angle)
 
-    pobj = scatter(d, error, ylabel = "obj")
+    pobj = scatter(ds, ys, objs, ylabel="obj")
 
-    plot(pv0, pv0r, pangle, pangler, pobj, layout = (5,1), legend = false, size = (600, 650))
+    plot(pv0, pangle, pobj, layout=(1,3), legend=false, size=(1920, 1080))
 end
 
 run()
