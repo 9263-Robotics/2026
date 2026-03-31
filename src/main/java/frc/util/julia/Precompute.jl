@@ -1,7 +1,6 @@
 import DifferentialEquations as DE
 import Optimization as OPT
 using OptimizationNLopt
-using ForwardDiff, ADTypes
 using LinearAlgebra
 using Plots
 using SymbolicRegression
@@ -24,12 +23,12 @@ const goal_dydx = -tand(51)
 const untild = 6.54157776883
 const untily = 1.8288
 const v00 = 6.3
-const increment = 0.005
-# const increment = 0.1
+# const increment = 0.01
+const increment = 0.1
 const optTime1 = 6
 const optTime = 1
 const slip = 1
-const atol = 5e-7
+const atol = 5e-5
 
 function C_d(Re)
     # Calculates the drag coefficient from Reynolds number
@@ -77,14 +76,14 @@ function point(v0, goalHeight)
         displacement = abs(odesol.u[end][2] - goalHeight)
         derivative + displacement
     end
-    optf = OPT.OptimizationFunction(objective, ADTypes.AutoForwardDiff())
-    prob = OPT.OptimizationProblem(optf, [0.0], lb=[0.0], ub=[pi/2])
+    # optf = OPT.OptimizationFunction(objective, ADTypes.AutoForwardDiff())
+    prob = OPT.OptimizationProblem(objective, [0.0], lb=[0.0], ub=[pi/2])
     # optsol = OPT.solve(prob, NLopt.GN_DIRECT_L(), maxtime=v0 == v00 ? optTime1 : optTime)
     optsol = OPT.solve(prob, NLopt.GN_DIRECT_L(), abstol=atol)
     angle = optsol.u[end]
     finalsol = ode(v0, angle, goalHeight)
     d = finalsol.u[end][3]
-    (d=d, v0=v0, angle=angle, obj=optsol.objective)
+    (d=d, angle=angle, obj=optsol.objective)
 end
 
 function regression()
@@ -99,15 +98,16 @@ function run()
     objs = []
     for goalHeight in 0.0:increment:untily
         v0 = v00
-        while (print("y:", goalHeight, ": "); (_point = @show point(v0, goalHeight)).d < untild)
+        while (print("height=", goalHeight, ": "); (_point = @show point(v0, goalHeight)).d < untild)
             push!(ys, goalHeight)
             push!(ds, _point.d)
-            push!(v0s, _point.v0)
+            push!(v0s, v0)
             push!(angles, _point.angle)
             push!(objs, _point.obj)
             v0 += increment
         end
     end
+
     #=
     roundedpolyfit(vars, ydata) = map(coef -> round(coef, digits=trunc(Int, vars[1])), fit(d, ydata, trunc(Int, vars[2])))
 
@@ -126,21 +126,23 @@ function run()
     @show anglefit = roundedpolyfit(anglesol, angle)
     =#
 
+    plotlyjs()
     default(ms=2)
 
-    pv0 = scatter(ds, ys, v0s, ylabel="v0")
+    pv0 = surface(ds, v0s, ys, ylabel="v0")
     # plot!(d, x -> v0fit(x))
     # pv0r = scatter(d, CF.fitted(v0fit) .- v0)
     # pv0r = scatter(d, map(x -> v0fit(x), d) .- v0)
 
-    pangle = scatter(ds, ys, angles, ylabel="rad")
+    pangle = surface(ds, angles, ys, ylabel="rad")
     # plot!(d, x -> anglefit(x))
     # pangler = scatter(d, CF.fitted(anglefit) .- angle)
     # pangler = scatter(d, map(x -> anglefit(x), d) .- angle)
 
-    pobj = scatter(ds, ys, objs, ylabel="obj")
+    pobj = scatter(ds, objs, ys, ylabel="obj")
 
     plot(pv0, pangle, pobj, layout=(1,3), legend=false, size=(1920, 1080))
+    
 end
 
 run()
