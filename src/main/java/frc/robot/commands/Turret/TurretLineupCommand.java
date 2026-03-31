@@ -20,6 +20,9 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Turret;
+import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.parser.json.modules.AngleConversionFactorsJson;
 import org.dyn4j.geometry.Vector2;
@@ -51,14 +54,18 @@ public class TurretLineupCommand extends Command {
 
   private final SwerveSubsystem drivebase;
   private final Turret turret;
+  private final Hood hood;
+  private final Kicker kicker;
   
   Rotation2d desiredTurretAngle = null;
 
   /** Creates a new TurretLineup. */
-  public TurretLineupCommand(SwerveSubsystem drivebase, Turret turret) {
+  public TurretLineupCommand(SwerveSubsystem drivebase, Turret turret, Hood hood, Kicker kicker) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.turret = turret;
     this.drivebase = drivebase;
+    this.hood = hood;
+    this.kicker = kicker;
   }
 
   public double getHoodAngle(double distanceMeters) {
@@ -115,6 +122,8 @@ public class TurretLineupCommand extends Command {
     desiredTurretAngle = fieldAngleToHub.minus(turret.getTurretRotation());
 
     turret.setTurretAngle(desiredTurretAngle);
+    hood.setHoodAngle(predictedVerticalAngle);
+    kicker.shoot(predictedFlywheelSpeed);
   }
 
   public Rotation2d getDesiredAngle(){
