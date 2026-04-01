@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -24,7 +25,7 @@ import frc.robot.Constants.OperatorConstants;
 // import frc.robot.commands.ShootAtTarget;
 // import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
-// import frc.robot.subsystems.Hood;
+import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Kicker;
 // import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -46,10 +47,12 @@ public class RobotContainer {
   // private final Turret turret = new Turret(drivebase);                                                                              
   private final PowerDistribution pdh = new PowerDistribution(9, ModuleType.kRev);
   private final Intake intake = new Intake();
-  // private final Hood hood = new Hood();
+  private final Hood hood = new Hood();
   
   // Replace with CommandPS4Controller or CommandXBoxController if needed
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
+
+  private final CommandPS5Controller m_operatorController = new CommandPS5Controller(OperatorConstants.kOperatorControllerPort);
 
 
    /**
@@ -72,6 +75,7 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     // Configure the trigger bindings
+    setupNamedCommands();
     configureBindings();
 
 
@@ -84,7 +88,7 @@ public class RobotContainer {
 
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
 
-    setupNamedCommands();
+    
 
     Shuffleboard.getTab("TELEM").addDouble("Match Time", () -> Timer.getMatchTime());
     Shuffleboard.getTab("TELEM").addDouble("Voltage", () -> pdh.getVoltage());
@@ -104,21 +108,26 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureBindings() {
-    m_driverController.circle().whileTrue(drivebase.zeroGyro());
+    // m_driverController.circle().whileTrue(drivebase.zeroGyro());
 
     m_driverController.R2().whileTrue(kicker.shoot(-0.9));
     // m_driverController.R2().whileTrue(new ShootAtTarget(turret, kicker, hood));
     m_driverController.R1().whileTrue(kicker.flywheel());
 
-    // m_driverController.L1().onTrue(hood.iterateRot());
+    m_driverController.L1().onTrue(hood.iterateRot());
+    m_driverController.L2().whileTrue(hood.HoodDown().repeatedly());
 
-    m_driverController.povDown().whileTrue(intake.setSetpoint(-15));
-    m_driverController.povRight().whileTrue(intake.setSetpoint(-5));
-    m_driverController.povUp().whileTrue(intake.setSetpoint(0));  
+    // m_driverController.povDown().whileTrue(intake.setSetpoint(-15));
+    // m_driverController.povRight().whileTrue(intake.setSetpoint(-5));
+    // m_driverController.povUp().whileTrue(intake.setSetpoint(0));  
     
     m_driverController.square().whileTrue(intake.runIntakeMotor());
 
     m_driverController.triangle().whileTrue(kicker.unJam());
+
+    m_operatorController.touchpad().whileTrue(hood.HoodDown().repeatedly());
+
+
   }
 
   /**
@@ -145,14 +154,15 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("IntakeMid", intake.setSetpoint(-5).withTimeout(0.2));
 
-    NamedCommands.registerCommand("IntakeUp", intake.setSetpoint(-15).withTimeout(0.2));
+    NamedCommands.registerCommand("IntakeUp", intake.setSetpoint(0).withTimeout(0.2));
 
-    NamedCommands.registerCommand("ShakeIntake", intake.setSetpoint(-5).withTimeout(0.4).andThen(intake.setSetpoint(-15).withTimeout(0.4)));
+    // NamedCommands.registerCommand("ShakeIntake", intake.setSetpoint(-5).withTimeout(0.4).andThen(intake.setSetpoint(-15).withTimeout(0.4)));
 
     NamedCommands.registerCommand("StartIntake", intake.run(intake::startIntake).withTimeout(0.1));
 
     NamedCommands.registerCommand("StopIntake", intake.runOnce(intake::stopIntake));
 
+    NamedCommands.registerCommand("ShakeIntake", Commands.none());
 
     //First argument is the name of the command PathPlanner will use. Second argument is the actual command WITH parameters the robot will run.
   }

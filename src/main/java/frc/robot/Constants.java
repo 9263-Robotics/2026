@@ -17,11 +17,13 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
     public static final double DEADBAND = 0.03;
   }
 
   public static class SwerveConstants {
     // max speed of the robot in m/s use Units.feetToMeters to use feet
-    public static final double MAX_SPEED = Units.feetToMeters(16.5);
+    public static final double MAX_SPEED = Units.feetToMeters(20
+    );
   }
 }
