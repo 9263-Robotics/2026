@@ -3,7 +3,7 @@ import Optimization as OPT
 using OptimizationNLopt
 using LinearAlgebra
 using Plots
-using SymbolicRegression
+# using SymbolicRegression
 
 const L = 0.1501 # Characteristic length (diameter)
 const A = pi * (L / 2)^2
@@ -98,7 +98,7 @@ function run()
     objs = []
     for goalHeight in 0.0:increment:untily
         v0 = v00
-        while (print("height=", goalHeight, ": "); (_point = @show point(v0, goalHeight)).d < untild)
+        while (print("height=", goalHeight, ", v0=", v0, "; "); (_point = @show point(v0, goalHeight)).d < untild)
             push!(ys, goalHeight)
             push!(ds, _point.d)
             push!(v0s, v0)
@@ -129,20 +129,19 @@ function run()
     plotlyjs()
     default(ms=2)
 
-    pv0 = surface(ds, v0s, ys, ylabel="v0")
+    pv0 = scatter(ds, v0s, ys, ylabel="v0")
     # plot!(d, x -> v0fit(x))
     # pv0r = scatter(d, CF.fitted(v0fit) .- v0)
     # pv0r = scatter(d, map(x -> v0fit(x), d) .- v0)
 
-    pangle = surface(ds, angles, ys, ylabel="rad")
+    pangle = scatter(ds, angles, ys, ylabel="rad")
     # plot!(d, x -> anglefit(x))
     # pangler = scatter(d, CF.fitted(anglefit) .- angle)
     # pangler = scatter(d, map(x -> anglefit(x), d) .- angle)
 
     pobj = scatter(ds, objs, ys, ylabel="obj")
 
-    plot(pv0, pangle, pobj, layout=(1,3), legend=false, size=(1920, 1080))
-    
+    plot(pv0, pangle, pobj, layout=(1,3), legend=false, size=(1100, 650))
 end
 
 run()
