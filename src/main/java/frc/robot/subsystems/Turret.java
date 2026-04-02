@@ -1,4 +1,6 @@
 package frc.robot.subsystems;
+import java.nio.channels.ShutdownChannelGroupException;
+
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkFlex;
@@ -12,6 +14,8 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 // import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -26,10 +30,12 @@ public class Turret extends SubsystemBase {
     private Pose2d turretPose = new Pose2d();
     private Rotation2d turretRotation = new Rotation2d();
 
+    boolean badWait = false;
+
     // private final DigitalInput limitSwitch = new DigitalInput(0);
     // private boolean Zeroed;
 
-    private DutyCycleEncoder absEncoder = new DutyCycleEncoder(0, 36,0);
+    private DutyCycleEncoder absEncoder = new DutyCycleEncoder(9, 36,13.5);
 
     private ProfiledPIDController turretPID = new ProfiledPIDController(0.0, 0.0, 0.0, new Constraints(0.0, 0.0));
 
@@ -50,10 +56,22 @@ public class Turret extends SubsystemBase {
         turretMotorConfig.smartCurrentLimit(50);
         turretMotor.configure(turretMotorConfig, ResetMode.kNoResetSafeParameters, PersistMode.kPersistParameters);
         
-        turretMotor.getEncoder().setPosition(absEncoder.get());
+        Shuffleboard.getTab(getName()).addDouble("Turret angle (robot relative)", turretMotor.getEncoder()::getPosition);
+        Shuffleboard.getTab(getName()).addDouble("Encoder value", absEncoder::get);
+        Shuffleboard.getTab(getName()).addBoolean("Bad sleep", () -> badWait);
+
+        try{
+            Thread.sleep(1000); //idk the encoder's not an early riser
+        } catch (InterruptedException e){
+            badWait = true;
+        }
+        double oldEncoder = absEncoder.get();
+        turretMotor.getEncoder().setPosition(oldEncoder/*absEncoder.get()*/);
 
         turretPID.setTolerance(3);
         turretPID.setGoal(turretMotor.getEncoder().getPosition());
+
+        Shuffleboard.getTab(getName()).addDouble("old encoder", () -> oldEncoder);
 
         // Rotation2d turretRotation = new Rotation2d(turretMotor.getEncoder().getPosition()).plus(drivetrain.getSwerveDrive().getPose().getRotation());
         
@@ -65,7 +83,7 @@ public class Turret extends SubsystemBase {
 
         runPID();
 
-        turretRotation = new Rotation2d(turretMotor.getEncoder().getPosition()).plus(drivetrain.getSwerveDrive().getPose().getRotation());
+        turretRotation = Rotation2d.fromDegrees(turretMotor.getEncoder().getPosition()).plus(drivetrain.getSwerveDrive().getPose().getRotation());
 
         turretPose = drivetrain.getSwerveDrive().getPose().plus(new Transform2d(-0.3,0.3, getTurretRotation()));
     }

@@ -94,14 +94,14 @@ public class ShootAtTarget extends Command {
 
     turret.setTurretAngle(desiredTurretAngle);
 
-    hood.setHoodAngle(hoodAngleMap.get(distanceToHub));
+    // hood.setHoodAngle(hoodAngleMap.get(distanceToHub));
 
-    outtake.setTargetVelocity(flywheelSpeedMap.get(distanceToHub));
+    // outtake.setTargetVelocity(flywheelSpeedMap.get(distanceToHub));
 
-    if (outtake.atSetpoint() && turret.isTurretAligned()){
-      outtake.Spindexer.set(-0.5);
-      outtake.kicker.set(0.4);
-    }
+    // if (outtake.atSetpoint() && turret.isTurretAligned()){
+    //   outtake.Spindexer.set(-0.5);
+    //   outtake.kicker.set(0.4);
+    // }
   }
 
   public Rotation2d getDesiredAngle(){

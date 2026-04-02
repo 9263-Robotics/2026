@@ -27,6 +27,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Kicker;
+import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.Vision;
 // import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
@@ -48,6 +49,7 @@ public class RobotContainer {
   private final PowerDistribution pdh = new PowerDistribution(9, ModuleType.kRev);
   private final Intake intake = new Intake();
   private final Hood hood = new Hood();
+  private final Turret turret = new Turret(drivebase);
   
   // Replace with CommandPS4Controller or CommandXBoxController if needed
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
