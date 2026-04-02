@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.SwerveConstants;
+import frc.robot.subsystems.Vision;
 import swervelib.SwerveDrive;
 import swervelib.parser.SwerveParser;
 import swervelib.telemetry.SwerveDriveTelemetry;
@@ -28,7 +29,7 @@ public class SwerveSubsystem extends SubsystemBase {
 
 
     private final SwerveDrive swerveDrive;
-    // private final Vision m_vision = new Vision();
+    private final Vision m_vision = new Vision();
 
     public SwerveSubsystem(File directory){
 
@@ -116,7 +117,7 @@ public class SwerveSubsystem extends SubsystemBase {
     
     @Override
     public void periodic() {
-        // m_vision.updatePoseEstimation(swerveDrive);
+        m_vision.updatePoseEstimation(swerveDrive);
     }
 
     public void setUpPathplanner() {
