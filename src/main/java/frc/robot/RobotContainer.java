@@ -10,6 +10,7 @@ import java.io.OutputStream;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -22,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ShootAtTarget;
 // import frc.robot.commands.ShootAtTarget;
 // import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
@@ -54,7 +56,7 @@ public class RobotContainer {
   // Replace with CommandPS4Controller or CommandXBoxController if needed
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
 
-  private final CommandPS5Controller m_operatorController = new CommandPS5Controller(OperatorConstants.kOperatorControllerPort);
+  // private final CommandPS5Controller m_operatorController = new CommandPS5Controller(OperatorConstants.kOperatorControllerPort);
 
 
    /**
@@ -126,6 +128,18 @@ public class RobotContainer {
     m_driverController.square().whileTrue(intake.runIntakeMotor());
 
     m_driverController.triangle().whileTrue(kicker.unJam());
+
+    // m_driverController.circle().onTrue(turret.runOnce(() -> {
+    //   turret.setTurretAngle(turret.getTurretRotation().plus(Rotation2d.fromDegrees(5)));
+    // }));
+
+    // m_driverController.cross().onTrue(turret.runOnce(() -> {
+    //   turret.setTurretAngle(turret.getTurretRotation().minus(Rotation2d.fromDegrees(5)));
+    // }));
+
+    m_driverController.cross().onTrue(new ShootAtTarget(turret, kicker, hood));
+
+
 
     // m_operatorController.touchpad().whileTrue(hood.HoodDown().repeatedly());
 
