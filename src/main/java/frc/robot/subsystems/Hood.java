@@ -12,8 +12,10 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -38,6 +40,8 @@ public class Hood extends SubsystemBase {
         Shuffleboard.getTab(getName()).addDouble("Hood output", () -> motor.getAppliedOutput());
 
         Shuffleboard.getTab(getName()).addBoolean("Trench Good", () -> trenchGood());
+
+        SmartDashboard.putNumber("Hood Angle", 0);
 
 
         // config.encoder.positionConversionFactor(360);
@@ -64,7 +68,9 @@ public boolean trenchGood() {
         if (DriverStation.isDisabled()){
             controller.setSetpoint(motor.getEncoder().getPosition(), ControlType.kPosition);
         } else {
-            controller.setSetpoint(rots[i], ControlType.kPosition);
+            // controller.setSetpoint(rots[i], ControlType.kPosition);
+            
+            controller.setSetpoint(MathUtil.clamp(SmartDashboard.getNumber("Hood Angle", 0), -26, 0),ControlType.kPosition);
         }
         
         

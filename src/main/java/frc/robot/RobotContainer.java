@@ -112,7 +112,7 @@ public class RobotContainer {
   private void configureBindings() {
     // m_driverController.circle().whileTrue(drivebase.zeroGyro());
 
-    m_driverController.R2().whileTrue(kicker.shoot(-0.9));
+    m_driverController.R2().whileTrue(kicker.shoot());
     // m_driverController.R2().whileTrue(new ShootAtTarget(turret, kicker, hood));
     m_driverController.R1().whileTrue(kicker.flywheel());
 
@@ -127,7 +127,7 @@ public class RobotContainer {
 
     m_driverController.triangle().whileTrue(kicker.unJam());
 
-    m_operatorController.touchpad().whileTrue(hood.HoodDown().repeatedly());
+    // m_operatorController.touchpad().whileTrue(hood.HoodDown().repeatedly());
 
 
   }
@@ -148,9 +148,9 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("SpinupFlywheel", kicker.flywheel().withTimeout(0.8));
 
-    NamedCommands.registerCommand("Shoot", kicker.shoot(-0.9));
+    NamedCommands.registerCommand("Shoot", kicker.shoot());
 
-    NamedCommands.registerCommand("ShootIDK",  kicker.flywheel().withTimeout(0.8).andThen(kicker.shoot(-0.9)).withTimeout(3));
+    NamedCommands.registerCommand("ShootIDK",  kicker.flywheel().withTimeout(0.8).andThen(kicker.shoot()).withTimeout(3));
 
     NamedCommands.registerCommand("IntakeDown", intake.setSetpoint(-15).withTimeout(0.2));
 
@@ -171,7 +171,7 @@ public class RobotContainer {
 
   private void setupAutoChooser() {
     // new PathPlannerAuto("Testauto"); //idk if this is actually nessessary lol, I think it worked without it last year, but we had it
-    autoChooser.addOption("Just Shoot v2", kicker.flywheel().withTimeout(0.8).andThen(kicker.shoot(-0.9)));
+    autoChooser.addOption("Just Shoot v2", kicker.flywheel().withTimeout(0.8).andThen(kicker.shoot()));
     Shuffleboard.getTab("AUTO").add("Auto Select", autoChooser);
     //Displays the dropdown menu for selecting the auto. (Use elastic?)
   }
