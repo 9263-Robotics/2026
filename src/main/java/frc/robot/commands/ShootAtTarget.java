@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Turret;
@@ -33,21 +34,37 @@ public class ShootAtTarget extends Command {
   private static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap();
   
     static { // x is distance, y is angle
-      hoodAngleMap.put(1.0,1.0);
-      hoodAngleMap.put(2.0,4.0);
-      hoodAngleMap.put(3.0,9.0);
+      hoodAngleMap.put(0.0,0.0);
+      hoodAngleMap.put(94.6404,0.0);
+      hoodAngleMap.put(154.6404,0.0);
+      hoodAngleMap.put(214.6404,0.0);
+      hoodAngleMap.put(244.6404, -1.0);
+      hoodAngleMap.put(329.6404,-4.0);
+      hoodAngleMap.put(369.6404,-6.0);
+      hoodAngleMap.put(469.6404,-8.0);
+      hoodAngleMap.put(538.6404,-12.0);
+      hoodAngleMap.put(689.6404,-17.0);
+
       
 
-      flywheelSpeedMap.put(1.0, 5000.0);
-      flywheelSpeedMap.put(2.0, 5000.0);
-      flywheelSpeedMap.put(3.0, 5000.0);
-      flywheelSpeedMap.put(4.5, 6700.0);
+      flywheelSpeedMap.put(0.0,-2500.0);
+      flywheelSpeedMap.put(94.6404,-2500.0);
+      flywheelSpeedMap.put(154.6404,-3500.0);
+      flywheelSpeedMap.put(214.6404,-3500.0);
+      flywheelSpeedMap.put(244.6404, -3500.0);
+      flywheelSpeedMap.put(329.6404,-3500.0);
+      flywheelSpeedMap.put(369.6404,-3700.0);
+      flywheelSpeedMap.put(469.6404,-4000.0);
+      flywheelSpeedMap.put(538.6404,-4250.0);
+      flywheelSpeedMap.put(689.6404,-5000.0);
 
   }
 
   private final Turret turret;
   private final Kicker outtake;
   private final Hood hood;
+  private final SwerveSubsystem drivetrain;
+  private final Flywheel flywheel;
 
 
   Rotation2d desiredTurretAngle = null;
@@ -58,10 +75,12 @@ public class ShootAtTarget extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-   public ShootAtTarget(Turret turret, Kicker outtake, Hood hood) {
+   public ShootAtTarget(Turret turret, Kicker outtake, Hood hood, SwerveSubsystem drivetrain, Flywheel flywheel) {
     this.turret = turret;
     this.outtake = outtake;
     this.hood = hood;
+    this.drivetrain = drivetrain;
+    this.flywheel = flywheel;
 
     addRequirements(turret);
   }
@@ -76,32 +95,47 @@ public class ShootAtTarget extends Command {
     Translation2d hub = null;
     // m_turret.
     if (DriverStation.getAlliance().get() == Alliance.Red){
-      hub = new Translation2d(39.05, 13.19);
+      // hub = new Translation2d(39.05, 13.19);
+      hub = new Translation2d(4.62, 4.03);
     }
     if (DriverStation.getAlliance().get() == Alliance.Blue){
-      hub = new Translation2d(15.13, 13.19);
+      // hub = new Translation2d(15.13, 13.19);
+      hub = new Translation2d(12, 4.03);
     }
+
+    double targetTOF = 1.2;
+    Translation2d targetPose = hub.plus(new Translation2d(drivetrain.getSwerveDrive().getFieldVelocity().vxMetersPerSecond,drivetrain.getSwerveDrive().getFieldVelocity().vyMetersPerSecond).times(targetTOF));
+    
+    // Translation2d targetPose = hub;
 
     //  Transform2d transformToHub = drivebase.getSwerveDrive().getPose().minus(hub);
     // Transform2d transformToHub = turret.getTurretPose();
-    Translation2d toHub = hub.minus(turret.getTurretPose().getTranslation());
+    Translation2d toTarget = targetPose.minus(turret.getTurretPose().getTranslation());
     // double distanceToHub = Math.sqrt(Math.pow(transformToHub.getX(), 2)+Math.pow(transformToHub.getY(), 2));
-    double distanceToHub = toHub.getNorm();
+    double distanceToTarget = toTarget.getNorm();
 
-    Rotation2d fieldAngleToHub = toHub.getAngle();
+    Rotation2d fieldAngleToTarget = toTarget.getAngle();
 
-    desiredTurretAngle = fieldAngleToHub.minus(turret.getTurretRotation());
+    // desiredTurretAngle = fieldAngleToTarget.minus(turret.getTurretRotation());
 
-    turret.setTurretAngle(desiredTurretAngle);
+    // turret.setTurretAngle(desiredTurretAngle);
+
+    hood.setHoodAngle(hoodAngleMap.get(distanceToTarget));
+    // outtake.setTargetVelocity(flywheelSpeedMap.get(distanceToTarget));
+    flywheel.setTargetVelocity(flywheelSpeedMap.get(distanceToTarget));
+    turret.setTurretGlobalAngle(fieldAngleToTarget.getDegrees());
+
+
+    
 
     // hood.setHoodAngle(hoodAngleMap.get(distanceToHub));
 
     // outtake.setTargetVelocity(flywheelSpeedMap.get(distanceToHub));
 
-    // if (outtake.atSetpoint() && turret.isTurretAligned()){
-    //   outtake.Spindexer.set(-0.5);
-    //   outtake.kicker.set(0.4);
-    // }
+    if (flywheel.atSetpoint() && turret.isTurretAligned()){
+      outtake.Spindexer.set(-0.5);
+      outtake.kicker.set(0.4);
+    }
   }
 
   public Rotation2d getDesiredAngle(){

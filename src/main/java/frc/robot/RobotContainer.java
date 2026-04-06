@@ -27,6 +27,7 @@ import frc.robot.commands.ShootAtTarget;
 // import frc.robot.commands.ShootAtTarget;
 // import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Flywheel;
 import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Turret;
@@ -52,6 +53,7 @@ public class RobotContainer {
   private final Intake intake = new Intake();
   private final Hood hood = new Hood();
   private final Turret turret = new Turret(drivebase);
+  private final Flywheel flywheel = new Flywheel();
   
   // Replace with CommandPS4Controller or CommandXBoxController if needed
   private final CommandPS5Controller m_driverController = new CommandPS5Controller(OperatorConstants.kDriverControllerPort);
@@ -116,7 +118,7 @@ public class RobotContainer {
 
     m_driverController.R2().whileTrue(kicker.shoot());
     // m_driverController.R2().whileTrue(new ShootAtTarget(turret, kicker, hood));
-    m_driverController.R1().whileTrue(kicker.flywheel());
+    m_driverController.R1().whileTrue(flywheel.flywheelSpinup());
 
     m_driverController.L1().onTrue(hood.iterateRot());
     m_driverController.L2().whileTrue(hood.HoodDown().repeatedly());
@@ -137,7 +139,7 @@ public class RobotContainer {
     //   turret.setTurretAngle(turret.getTurretRotation().minus(Rotation2d.fromDegrees(5)));
     // }));
 
-    m_driverController.cross().onTrue(new ShootAtTarget(turret, kicker, hood));
+    m_driverController.cross().onTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel));
 
 
 
@@ -160,11 +162,11 @@ public class RobotContainer {
   public void setupNamedCommands() {
     // NamedCommands.registerCommand("Testcommand", new PrintCommand("This is a test command"));
 
-    NamedCommands.registerCommand("SpinupFlywheel", kicker.flywheel().withTimeout(0.8));
+    NamedCommands.registerCommand("SpinupFlywheel", flywheel.flywheelSpinup().withTimeout(0.8));
 
     NamedCommands.registerCommand("Shoot", kicker.shoot());
 
-    NamedCommands.registerCommand("ShootIDK",  kicker.flywheel().withTimeout(0.8).andThen(kicker.shoot()).withTimeout(3));
+    NamedCommands.registerCommand("ShootIDK",  flywheel.flywheelSpinup().withTimeout(0.8).andThen(kicker.shoot()).withTimeout(3));
 
     NamedCommands.registerCommand("IntakeDown", intake.setSetpoint(-15).withTimeout(0.2));
 
@@ -185,7 +187,7 @@ public class RobotContainer {
 
   private void setupAutoChooser() {
     // new PathPlannerAuto("Testauto"); //idk if this is actually nessessary lol, I think it worked without it last year, but we had it
-    autoChooser.addOption("Just Shoot v2", kicker.flywheel().withTimeout(0.8).andThen(kicker.shoot()));
+    autoChooser.addOption("Just Shoot v2", flywheel.flywheelSpinup().withTimeout(0.8).andThen(kicker.shoot()));
     Shuffleboard.getTab("AUTO").add("Auto Select", autoChooser);
     //Displays the dropdown menu for selecting the auto. (Use elastic?)
   }

@@ -1,4 +1,6 @@
 package frc.robot.subsystems;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
+
 import java.nio.channels.ShutdownChannelGroupException;
 
 import com.revrobotics.PersistMode;
@@ -16,6 +18,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.wpilibj.DriverStation;
 // import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj2.command.Command;
@@ -98,7 +101,9 @@ public class Turret extends SubsystemBase {
             // desiredTurretAngle = turretRotation.getDegrees();
         }
 
-        turretPID.setSetpoint(desiredTurretAngle - drivetrain.getSwerveDrive().getPose().getRotation().getDegrees());
+        // turretPID.setSetpoint(desiredTurretAngle - drivetrain.getSwerveDrive().getPose().getRotation().getDegrees());
+
+        turretPID.setSetpoint((desiredTurretAngle - drivetrain.getSwerveDrive().getGyro().getRotation3d().getAngle()) +  (drivetrain.getSwerveDrive().getGyro().getYawAngularVelocity().in(DegreesPerSecond) * 0.02)); // idk, getting the gyro dicrectly might fix the werid laggyness we were getting? and then accounting for the robot rotation could also make it track a bit better aswell (if we increase 0.02 it might track better in motion, but have a breif overshoot when we stop)
 
         runPID();
 
