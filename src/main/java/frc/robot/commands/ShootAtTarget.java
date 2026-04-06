@@ -147,10 +147,10 @@ public class ShootAtTarget extends Command {
 
     // outtake.setTargetVelocity(flywheelSpeedMap.get(distanceToHub));
 
-    if (flywheel.atSetpoint() && turret.isTurretAligned()){
-      outtake.Spindexer.set(-0.5);
-      outtake.kicker.set(0.4);
-    }
+    // if (flywheel.atSetpoint() && turret.isTurretAligned()){
+    //   outtake.Spindexer.set(-0.5);
+    //   outtake.kicker.set(0.4);
+    // }
   }
 
   public Rotation2d getDesiredAngle(){
