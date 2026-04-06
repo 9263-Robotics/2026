@@ -1,9 +1,9 @@
 import DifferentialEquations as DE
-import Optimization as OPT
-using OptimizationNLopt
+import SimpleNonlinearSolve as NLS
 using LinearAlgebra
 using Plots
-# using SymbolicRegression
+using SymbolicRegression
+using DynamicQuantities: m, s, rad
 
 const L = 0.1501 # Characteristic length (diameter)
 const A = pi * (L / 2)^2
@@ -19,16 +19,15 @@ const p = ( # Function parameters (apparently passing them like this is more con
 )
 
 const tspan = (0.0, 4.5) # if not terminated
+const uspan = (0.0, pi/2)
 const goal_dydx = -tand(51)
 const untild = 6.54157776883
 const untily = 1.8288
 const v00 = 6.3
-# const increment = 0.01
-const increment = 0.1
-const optTime1 = 6
-const optTime = 1
+const increment = 0.05
+# const increment = 0.1
 const slip = 1
-const atol = 5e-5
+const abstol = 5e-6
 
 function C_d(Re)
     # Calculates the drag coefficient from Reynolds number
@@ -68,26 +67,30 @@ function ode(v0, radians, goalHeight)
     DE.solve(prob, callback=cb)
 end
 
-function point(v0, goalHeight)
-    function objective(x, p)
-        odesol = ode(v0, first(x), goalHeight)
-        dydx = odesol.u[end][5] / odesol.u[end][6]
-        derivative = abs(dydx - goal_dydx)
-        displacement = abs(odesol.u[end][2] - goalHeight)
-        derivative + displacement
-    end
-    # optf = OPT.OptimizationFunction(objective, ADTypes.AutoForwardDiff())
-    prob = OPT.OptimizationProblem(objective, [0.0], lb=[0.0], ub=[pi/2])
-    # optsol = OPT.solve(prob, NLopt.GN_DIRECT_L(), maxtime=v0 == v00 ? optTime1 : optTime)
-    optsol = OPT.solve(prob, NLopt.GN_DIRECT_L(), abstol=atol)
-    angle = optsol.u[end]
-    finalsol = ode(v0, angle, goalHeight)
-    d = finalsol.u[end][3]
-    (d=d, angle=angle, obj=optsol.objective)
+function objective(angle, p)
+    odesol = ode(p.v0, angle, p.goalHeight)
+    dydx = odesol.u[end][5] / odesol.u[end][6]
+    derivative = dydx - goal_dydx
+    # displacement = odesol.u[end][2] - p.goalHeight
+    derivative
 end
 
-function regression()
+function point(v0, goalHeight)
+    p = (v0=v0, goalHeight=goalHeight)
+    prob = NLS.IntervalNonlinearProblem(objective, uspan, p)
+    sol = NLS.solve(prob)
+    angle = sol.u
+    finalsol = ode(v0, angle, goalHeight)
+    d = finalsol.u[end][3]
+    (d=d, angle=angle, obj=sol.resid)
+end
 
+function regression(data)
+    ys = QuantityArray(data.ys, m)
+    ds = QuantityArray(data.ds, m)
+    v0s = QuantityArray(data.v0s, m/s)
+    angles = QuantityArray(data.angles, rad)
+    
 end
 
 function run()
@@ -98,7 +101,8 @@ function run()
     objs = []
     for goalHeight in 0.0:increment:untily
         v0 = v00
-        while (print("height=", goalHeight, ", v0=", v0, "; "); (_point = @show point(v0, goalHeight)).d < untild)
+        # while (print("height=", goalHeight, ", v0=", v0, "; "); (_point = @show point(v0, goalHeight)).d < untild)
+        while (_point = point(v0, goalHeight)).d < untild
             push!(ys, goalHeight)
             push!(ds, _point.d)
             push!(v0s, v0)
@@ -141,7 +145,7 @@ function run()
 
     pobj = scatter(ds, objs, ys, ylabel="obj")
 
-    plot(pv0, pangle, pobj, layout=(1,3), legend=false, size=(1100, 650))
+    plot(pv0, pangle, pobj, layout=(1,3), legend=false, size=(1200, 650))
 end
 
 run()
