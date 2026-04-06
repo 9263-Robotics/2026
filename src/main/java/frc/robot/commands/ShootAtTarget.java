@@ -92,21 +92,36 @@ public class ShootAtTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    Translation2d hub = null;
+    Translation2d target = null;
     // m_turret.
     if (DriverStation.getAlliance().get() == Alliance.Red){
       // hub = new Translation2d(39.05, 13.19);
-      hub = new Translation2d(4.62, 4.03);
+      // target = new Translation2d(4.62, 4.03);
+      if(drivetrain.getSwerveDrive().getPose().getX() > 5.5){
+        target = new Translation2d(4.62, 4.03);
+      } else if(drivetrain.getSwerveDrive().getPose().getY() >= 4.03){
+        target = new Translation2d(1, 3);
+      } else if (drivetrain.getSwerveDrive().getPose().getY() < 4.03) {
+        target = new Translation2d(1, 5);
+      }
     }
     if (DriverStation.getAlliance().get() == Alliance.Blue){
       // hub = new Translation2d(15.13, 13.19);
-      hub = new Translation2d(12, 4.03);
+      if(drivetrain.getSwerveDrive().getPose().getX() > 1.5){
+        target = new Translation2d(12, 4.03);
+      } else if(drivetrain.getSwerveDrive().getPose().getY() >= 4.03){
+        target = new Translation2d(14.5, 3);
+      } else if (drivetrain.getSwerveDrive().getPose().getY() < 4.03) {
+        target = new Translation2d(14.5, 5);
+      }
+      
     }
 
     double targetTOF = 1.2;
-    Translation2d targetPose = hub.plus(new Translation2d(drivetrain.getSwerveDrive().getFieldVelocity().vxMetersPerSecond,drivetrain.getSwerveDrive().getFieldVelocity().vyMetersPerSecond).times(targetTOF));
+    Translation2d targetPose = target.plus(new Translation2d(drivetrain.getSwerveDrive().getFieldVelocity().vxMetersPerSecond,drivetrain.getSwerveDrive().getFieldVelocity().vyMetersPerSecond).times(targetTOF));
     
     // Translation2d targetPose = hub;
+
 
     //  Transform2d transformToHub = drivebase.getSwerveDrive().getPose().minus(hub);
     // Transform2d transformToHub = turret.getTurretPose();
