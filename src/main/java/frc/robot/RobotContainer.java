@@ -5,12 +5,10 @@
 package frc.robot;
 
 import java.io.File;
-import java.io.OutputStream;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
@@ -19,19 +17,20 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.AimAtTarget;
 import frc.robot.commands.ShootAtTarget;
+import frc.robot.subsystems.Flywheel;
+import frc.robot.subsystems.Hood;
 // import frc.robot.commands.ShootAtTarget;
 // import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Flywheel;
-import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Turret;
-import frc.robot.subsystems.Vision;
 // import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
@@ -73,6 +72,11 @@ public class RobotContainer {
                                                             .allianceRelativeControl(true);
 
   Command driveFieldOrientedAngularVelocity = drivebase.driveFieldOriented(driveAngularVelocity);
+
+  public Command shakeIntake = new SequentialCommandGroup(
+    intake.setSetpoint(-5).withTimeout(0.4),
+    intake.setSetpoint(-15).withTimeout(0.4)
+  );
   
   
   private final SendableChooser<Command> autoChooser;
@@ -174,13 +178,24 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("IntakeUp", intake.setSetpoint(0).withTimeout(0.2));
 
+    
     // NamedCommands.registerCommand("ShakeIntake", intake.setSetpoint(-5).withTimeout(0.4).andThen(intake.setSetpoint(-15).withTimeout(0.4)));
 
     NamedCommands.registerCommand("StartIntake", intake.run(intake::startIntake).withTimeout(0.1));
 
     NamedCommands.registerCommand("StopIntake", intake.runOnce(intake::stopIntake));
 
-    NamedCommands.registerCommand("ShakeIntake", Commands.none());
+    
+    // NamedCommands.registerCommand("ShakeIntake", Commands.none());
+    NamedCommands.registerCommand("ShakeIntake", shakeIntake.repeatedly());
+
+
+
+
+    NamedCommands.registerCommand("ShootAtTarget", new ShootAtTarget(turret, kicker, hood, drivebase, flywheel));
+    NamedCommands.registerCommand("AimAtTarget", new AimAtTarget(turret, hood, drivebase, flywheel));
+
+
 
     //First argument is the name of the command PathPlanner will use. Second argument is the actual command WITH parameters the robot will run.
   }

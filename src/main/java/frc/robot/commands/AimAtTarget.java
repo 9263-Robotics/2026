@@ -26,7 +26,7 @@ import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 /** An example command that uses an example subsystem. */
-public class ShootAtTarget extends Command {
+public class AimAtTarget extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
 
   private static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap();
@@ -61,7 +61,6 @@ public class ShootAtTarget extends Command {
   }
 
   private final Turret turret;
-  private final Kicker outtake;
   private final Hood hood;
   private final SwerveSubsystem drivetrain;
   private final Flywheel flywheel;
@@ -75,9 +74,8 @@ public class ShootAtTarget extends Command {
    *
    * @param subsystem The subsystem used by this command.
    */
-   public ShootAtTarget(Turret turret, Kicker outtake, Hood hood, SwerveSubsystem drivetrain, Flywheel flywheel) {
+   public AimAtTarget(Turret turret, Hood hood, SwerveSubsystem drivetrain, Flywheel flywheel) {
     this.turret = turret;
-    this.outtake = outtake;
     this.hood = hood;
     this.drivetrain = drivetrain;
     this.flywheel = flywheel;
@@ -139,18 +137,6 @@ public class ShootAtTarget extends Command {
     // outtake.setTargetVelocity(flywheelSpeedMap.get(distanceToTarget));
     flywheel.setTargetVelocity(flywheelSpeedMap.get(distanceToTarget));
     turret.setTurretGlobalAngle(fieldAngleToTarget.getDegrees());
-
-
-    
-
-    // hood.setHoodAngle(hoodAngleMap.get(distanceToHub));
-
-    // outtake.setTargetVelocity(flywheelSpeedMap.get(distanceToHub));
-
-    if (flywheel.atSetpoint() && turret.isTurretAligned()){
-      outtake.Spindexer.set(-0.5);
-      outtake.kicker.set(0.4);
-    }
   }
 
   public Rotation2d getDesiredAngle(){
@@ -160,8 +146,6 @@ public class ShootAtTarget extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    outtake.kicker.set(0);
-    outtake.Spindexer.set(0);
   }
 
   // Returns true when the command should end.

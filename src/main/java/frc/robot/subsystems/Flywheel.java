@@ -71,6 +71,12 @@ public class Flywheel extends SubsystemBase {
     });
   }
 
+  public Command setFlywheelSpeed(double RPM) {
+    return run( () -> {
+      setTargetVelocity(RPM);
+    });
+  }
+
   public void setTargetVelocity(double RPM){
       FlywheelTop.setControl(request.withVelocity(RPM/60 / (4/3)));
   }
