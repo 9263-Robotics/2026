@@ -54,8 +54,8 @@ public class Intake extends SubsystemBase {
 
     double output = pid.calculate(getPosition(), pid.getSetpoint()); // takes the current position and the desired setpoint and calculates the output
     output = MathUtil.clamp(output, -0.5, 0.5); // limits the output to be between -0.5 and 0.5
-    // pidMotor1.set(output); // sets the motor output to the calculated value
-    // pidMotor2.set(-output); //negative cuz facing other way
+    pidMotor1.set(output); // sets the motor output to the calculated value
+    pidMotor2.set(-output); //negative cuz facing other way
   } //positive for counter clockwise, negative for clockwise
 
   public Command setSetpoint(double point){

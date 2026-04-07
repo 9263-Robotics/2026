@@ -73,6 +73,7 @@ public class Turret extends SubsystemBase {
 
         Shuffleboard.getTab(getName()).addDouble("Turret Pose Rotation", () -> turretPose.getRotation().getDegrees());
         Shuffleboard.getTab(getName()).addDouble("Turret Global Rotation", () -> turretRotation.getDegrees());
+        Shuffleboard.getTab(getName()).addDouble("Turret Desired Pos", () -> this.desiredTurretAngle);
 
         try{
             Thread.sleep(10000); //idk the encoder's not an early riser
@@ -101,9 +102,11 @@ public class Turret extends SubsystemBase {
             // desiredTurretAngle = turretRotation.getDegrees();
         }
 
-        // turretPID.setSetpoint(desiredTurretAngle - drivetrain.getSwerveDrive().getPose().getRotation().getDegrees());
+        turretPID.setSetpoint(desiredTurretAngle - drivetrain.getSwerveDrive().getPose().getRotation().getDegrees());
 
-        turretPID.setSetpoint((desiredTurretAngle - drivetrain.getSwerveDrive().getGyro().getRotation3d().getAngle()) +  (drivetrain.getSwerveDrive().getGyro().getYawAngularVelocity().in(DegreesPerSecond) * 0.02)); // idk, getting the gyro dicrectly might fix the werid laggyness we were getting? and then accounting for the robot rotation could also make it track a bit better aswell (if we increase 0.02 it might track better in motion, but have a breif overshoot when we stop)
+        // turretPID.setSetpoint((desiredTurretAngle - drivetrain.getSwerveDrive().getGyro().getRotation3d().getAngle()) +  (drivetrain.getSwerveDrive().getGyro().getYawAngularVelocity().in(DegreesPerSecond) * 0.02)); // idk, getting the gyro dicrectly might fix the werid laggyness we were getting? and then accounting for the robot rotation could also make it track a bit better aswell (if we increase 0.02 it might track better in motion, but have a breif overshoot when we stop)
+
+        // turretPID.setSetpoint(desiredTurretAngle - drivetrain.getSwerveDrive().getGyro().getRotation3d().getAngle());
 
         runPID();
 

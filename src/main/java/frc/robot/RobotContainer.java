@@ -127,9 +127,9 @@ public class RobotContainer {
     m_driverController.L1().onTrue(hood.iterateRot());
     m_driverController.L2().whileTrue(hood.HoodDown().repeatedly());
 
-    // m_driverController.povDown().whileTrue(intake.setSetpoint(-15));
-    // m_driverController.povRight().whileTrue(intake.setSetpoint(-5));
-    // m_driverController.povUp().whileTrue(intake.setSetpoint(0));  
+    m_driverController.povDown().whileTrue(intake.setSetpoint(-15));
+    m_driverController.povRight().whileTrue(intake.setSetpoint(-5));
+    m_driverController.povUp().whileTrue(intake.setSetpoint(0));  
     
     m_driverController.square().whileTrue(intake.runIntakeMotor());
 
@@ -144,6 +144,7 @@ public class RobotContainer {
     // }));
 
     m_driverController.cross().onTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel));
+    m_driverController.circle().whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel));
 
 
 
