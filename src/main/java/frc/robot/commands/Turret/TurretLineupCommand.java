@@ -101,21 +101,13 @@ public class TurretLineupCommand extends Command {
     if (DriverStation.getAlliance().get() == Alliance.Blue){
       hub = new Translation2d(15.13, 13.19);
     }
-
-    double dx = turret.getTurretPose().getX() + drivebase.getSwerveDrive().getRobotVelocity().vxMetersPerSecond*0.05;
-    double dy = turret.getTurretPose().getY() + drivebase.getSwerveDrive().getRobotVelocity().vyMetersPerSecond*0.05;
-
-    // Transform2d transformToHub = drivebase.getSwerveDrive().getPose().minus(hub);
-    // Transform2d transformToHub = turret.getTurretPose();
+    
     Translation2d toHub = hub.minus(new Translation2d(
           turret.getTurretPose().getX() + drivebase.getSwerveDrive().getRobotVelocity().vxMetersPerSecond*0.05, 
           turret.getTurretPose().getY() + drivebase.getSwerveDrive().getRobotVelocity().vyMetersPerSecond*0.05));
-    // double distanceToHub = Math.sqrt(Math.pow(transformToHub.getX(), 2)+Math.pow(transformToHub.getY(), 2));
     double distanceToHub = toHub.getNorm();
 
     double predictedVerticalAngle = hoodAngleMap.get(distanceToHub);
-    double turret_horizontal_angle = 90 - Math.toDegrees(Math.atan2(dx, dy));
-
     double predictedFlywheelSpeed = flywheelSpeedMap.get(distanceToHub);
     Rotation2d fieldAngleToHub = toHub.getAngle();
 
