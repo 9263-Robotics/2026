@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
+import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.nio.channels.ShutdownChannelGroupException;
 
@@ -9,6 +11,7 @@ import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -76,7 +79,7 @@ public class Turret extends SubsystemBase {
         Shuffleboard.getTab(getName()).addDouble("Turret Desired Pos", () -> this.desiredTurretAngle);
 
         try{
-            Thread.sleep(10000); //idk the encoder's not an early riser
+            Thread.sleep(5000); //idk the encoder's not an early riser
         } catch (InterruptedException e){
             badWait = true;
         }
@@ -101,8 +104,12 @@ public class Turret extends SubsystemBase {
             // turretPID.setGoal(getMotorEncoder());
             // desiredTurretAngle = turretRotation.getDegrees();
         }
-
-        turretPID.setSetpoint(desiredTurretAngle - drivetrain.getSwerveDrive().getPose().getRotation().getDegrees());
+        double calculatedRotation = desiredTurretAngle - drivetrain.getSwerveDrive().getPose().getRotation().getDegrees() + (DegreesPerSecond.convertFrom(drivetrain.getSwerveDrive().getRobotVelocity().omegaRadiansPerSecond, RadiansPerSecond) * 0.03);
+        if(calculatedRotation > -70 && calculatedRotation < 70){
+            // turretPID.setSetpoint(MathUtil.clamp(calculatedRotation, -50, 50));
+            turretPID.setSetpoint(calculatedRotation);
+        }
+        
 
         // turretPID.setSetpoint((desiredTurretAngle - drivetrain.getSwerveDrive().getGyro().getRotation3d().getAngle()) +  (drivetrain.getSwerveDrive().getGyro().getYawAngularVelocity().in(DegreesPerSecond) * 0.02)); // idk, getting the gyro dicrectly might fix the werid laggyness we were getting? and then accounting for the robot rotation could also make it track a bit better aswell (if we increase 0.02 it might track better in motion, but have a breif overshoot when we stop)
 
@@ -145,12 +152,12 @@ public class Turret extends SubsystemBase {
 
     private void runPID(){
         // if(Zeroed){
-        if (getMotorEncoder() < 45 && getMotorEncoder() > -45){
-            turretMotor.setVoltage(-turretPID.calculate(getMotorEncoder()));
-        } else if (getMotorEncoder() > 45 && turretPID.calculate(getMotorEncoder())<0){
-            turretMotor.setVoltage(-turretPID.calculate(getMotorEncoder()));
-        }else if (getMotorEncoder() < -45 && turretPID.calculate(getMotorEncoder())>0){
-            turretMotor.setVoltage(-turretPID.calculate(getMotorEncoder()));
+        if (getMotorEncoder() < 90 && getMotorEncoder() > -90){
+            turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
+        } else if (getMotorEncoder() > 90 && turretPID.calculate(getMotorEncoder())<0){
+            turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
+        }else if (getMotorEncoder() < -90 && turretPID.calculate(getMotorEncoder())>0){
+            turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
         } else {
             turretMotor.setVoltage(0);
         }

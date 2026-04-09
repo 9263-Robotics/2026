@@ -162,6 +162,7 @@ public class ShootAtTarget extends Command {
   public void end(boolean interrupted) {
     outtake.kicker.set(0);
     outtake.Spindexer.set(0);
+    flywheel.setTargetVelocity(0);
   }
 
   // Returns true when the command should end.

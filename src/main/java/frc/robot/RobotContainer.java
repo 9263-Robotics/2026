@@ -8,6 +8,7 @@ import java.io.File;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.reduxrobotics.canand.CanandEventLoop;
 
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
@@ -34,6 +35,7 @@ import frc.robot.subsystems.Turret;
 // import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 import swervelib.SwerveInputStream;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -84,6 +86,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    CanandEventLoop.getInstance();
     // Configure the trigger bindings
     setupNamedCommands();
     configureBindings();
@@ -122,12 +125,12 @@ public class RobotContainer {
 
     m_driverController.R2().whileTrue(kicker.shoot());
     // m_driverController.R2().whileTrue(new ShootAtTarget(turret, kicker, hood));
-    m_driverController.R1().whileTrue(flywheel.flywheelSpinup());
+    // m_driverController.R1().whileTrue(flywheel.flywheelSpinup());
 
     m_driverController.L1().onTrue(hood.iterateRot());
     m_driverController.L2().whileTrue(hood.HoodDown().repeatedly());
 
-    m_driverController.povDown().whileTrue(intake.setSetpoint(-15));
+    m_driverController.povDown().whileTrue(intake.setSetpoint(-16));
     m_driverController.povRight().whileTrue(intake.setSetpoint(-5));
     m_driverController.povUp().whileTrue(intake.setSetpoint(0));  
     
@@ -143,8 +146,8 @@ public class RobotContainer {
     //   turret.setTurretAngle(turret.getTurretRotation().minus(Rotation2d.fromDegrees(5)));
     // }));
 
-    m_driverController.cross().onTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel));
-    m_driverController.circle().whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel));
+    // m_driverController.R2().onTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel));
+    m_driverController.R1().whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel));
 
 
 

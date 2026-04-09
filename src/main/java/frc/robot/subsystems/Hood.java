@@ -24,6 +24,8 @@ public class Hood extends SubsystemBase {
     private final SparkClosedLoopController controller = motor.getClosedLoopController();
     private final SparkMaxConfig config = new SparkMaxConfig();
 
+    private double DesiredHoodAngle = 0;
+
     private final double[] rots = {0.0, -11, -26};
     private int i = 0;
 
@@ -48,6 +50,7 @@ public class Hood extends SubsystemBase {
     }
 public boolean trenchGood() {
     return motor.getEncoder().getPosition() > -2;
+    
 }
     
 
@@ -66,12 +69,13 @@ public boolean trenchGood() {
         // SmartDashboard.putNumber("Hood angle", motor.getEncoder().getPosition());
         // SmartDashboard.putNumber("Hood setpoint", getSetpoint());
         if (DriverStation.isDisabled()){
-            controller.setSetpoint(motor.getEncoder().getPosition(), ControlType.kPosition);
+            DesiredHoodAngle = motor.getEncoder().getPosition();
+            controller.setSetpoint(DesiredHoodAngle, ControlType.kPosition);
         } else {
             // controller.setSetpoint(rots[i], ControlType.kPosition);
             // controller.setSetpoint(, ControlType.kPosition);
 
-            
+            controller.setSetpoint(DesiredHoodAngle, ControlType.kPosition);
             // controller.setSetpoint(MathUtil.clamp(SmartDashboard.getNumber("Hood Angle", 0), -26, 0),ControlType.kPosition);
 
         }
@@ -83,6 +87,19 @@ public boolean trenchGood() {
         return defer(() -> {
             return setHoodAngle(radianSupplier.getAsDouble());
         });
+    }
+
+    public void setHoodAngleFunc(double hoodAngle) {
+        if(hoodAngle > -26 && hoodAngle < 0) {
+            DesiredHoodAngle = hoodAngle;
+            controller.setSetpoint(hoodAngle, ControlType.kPosition);
+        } else if(hoodAngle < -26) {
+            DesiredHoodAngle = -26;
+            controller.setSetpoint(-26, ControlType.kPosition);
+        } else {
+            DesiredHoodAngle = 0;
+            controller.setSetpoint(0, ControlType.kPosition);
+        }
     }
 
     public double getSetpoint(){

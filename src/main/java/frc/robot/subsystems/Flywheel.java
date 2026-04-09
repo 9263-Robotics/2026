@@ -46,7 +46,8 @@ public class Flywheel extends SubsystemBase {
     // Shuffleboard.getTab(getName()).addDouble("Flywheel Setpoint", () -> DesiredFlywheelSpeed);
     // Shuffleboard.getTab(getName()).addDouble("FlywheelOutput", () -> FlywheelTop.get());
     Shuffleboard.getTab(getName()).addDouble("Flywheel Speed", () -> FlywheelTop.getVelocity().getValueAsDouble() * (4/3) *60);
-    SmartDashboard.putNumber("Flyhweel AHAHJJHA", DesiredFlywheelSpeed);
+    // SmartDashboard.putNumber("Flyhweel AHAHJJHA", DesiredFlywheelSpeed);
+    Shuffleboard.getTab(getName()).addDouble("Flywheel Setpoint", () -> FlywheelTop.getControlMode().getValueAsDouble());
   }
 
   @Override
