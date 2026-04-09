@@ -115,7 +115,7 @@ public class Turret extends SubsystemBase {
 
         // turretPID.setSetpoint(desiredTurretAngle - drivetrain.getSwerveDrive().getGyro().getRotation3d().getAngle());
 
-        runPID();
+        // runPID();
 
         turretRotation = Rotation2d.fromDegrees(getMotorEncoder()).plus(drivetrain.getSwerveDrive().getPose().getRotation());
 

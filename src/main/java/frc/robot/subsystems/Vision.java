@@ -50,15 +50,29 @@ public class Vision extends SubsystemBase {
   }
 
   public enum Cameras {
-    BACK_RIGHT_CAM("Camera-1 (1)",
+    // BACK_RIGHT_CAM("Camera-1 (1)",
+    //                 new Translation3d(-0.304, -0.304, 0.29), 
+    //                 new Rotation3d(0,Math.toRadians(40),Math.toRadians(183))),
+    //                 //40 vertical, 15 left (away from robot)
+    BACK_RIGHT_CAM("BackRightCam",
                     new Translation3d(-0.304, -0.304, 0.29), 
-                    new Rotation3d(0,Math.toRadians(40),Math.toRadians(183))),
+                    new Rotation3d(Math.toRadians(-10.3),Math.toRadians(38.6),Math.toRadians(180+15.9))),
+                    //40 vertical, 15 left (away from robot)
+    
+    BACK_RIGHT_CAM("BackLeftCam",
+                    new Translation3d(-0.304, 0.304, 0.29), 
+                    new Rotation3d(Math.toRadians(10.3),Math.toRadians(38.6),Math.toRadians(180-15.9))),
                     //40 vertical, 15 left (away from robot)
 
-    LEFT_SIDE_CAM("Camera-2v2",
-                    new Translation3d(-0.0075, 0.3193, 0.415), 
+    LEFT_SIDE_CAM("FrontLeftCam",
+                    new Translation3d(-0.0075, 0.3193, 0.41), 
                     new Rotation3d(0,0,Math.toRadians(70)));
-                    //70 vertical
+                    //70 out
+    
+    LEFT_SIDE_CAM("FrontRightCam",
+                    new Translation3d(-0.0075, -0.3193, 0.40), 
+                    new Rotation3d(0,0,Math.toRadians(-70)));
+                    //70 out
 
     // BACK_LEFT_CAM("Camera-1",
     //                 new Translation3d(-0, 0, 0), 
