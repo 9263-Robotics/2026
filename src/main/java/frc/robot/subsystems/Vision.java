@@ -59,17 +59,17 @@ public class Vision extends SubsystemBase {
                     new Rotation3d(Math.toRadians(-10.3),Math.toRadians(38.6),Math.toRadians(180+15.9))),
                     //40 vertical, 15 left (away from robot)
     
-    BACK_RIGHT_CAM("BackLeftCam",
+    BACK_LEFT_CAM("BackLeftCam",
                     new Translation3d(-0.304, 0.304, 0.29), 
                     new Rotation3d(Math.toRadians(10.3),Math.toRadians(38.6),Math.toRadians(180-15.9))),
                     //40 vertical, 15 left (away from robot)
 
     LEFT_SIDE_CAM("FrontLeftCam",
                     new Translation3d(-0.0075, 0.3193, 0.41), 
-                    new Rotation3d(0,0,Math.toRadians(70)));
+                    new Rotation3d(0,0,Math.toRadians(70))),
                     //70 out
     
-    LEFT_SIDE_CAM("FrontRightCam",
+    RIGHT_SIDE_CAM("FrontRightCam",
                     new Translation3d(-0.0075, -0.3193, 0.40), 
                     new Rotation3d(0,0,Math.toRadians(-70)));
                     //70 out
