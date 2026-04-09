@@ -111,7 +111,7 @@ public class AddressableLEDs extends SubsystemBase {
               if (i < m_LedSection1.getLength()) {
                 m_ledBuffer.setRGB(i, 255, 255, 255); // bright flash
               }
-              else if (m_LedSection1.getLength() < i && i < m_LedSection1.getLength() + m_LedSection2.getLength()) {
+              else if (m_LedSection1.getLength()-1 < i && i < m_LedSection1.getLength() + m_LedSection2.getLength()) {
                 m_ledBuffer.setRGB(i, 0, 255, 0); // bright flash
               }
               else {
