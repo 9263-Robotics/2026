@@ -52,7 +52,7 @@ public class Vision extends SubsystemBase {
   public enum Cameras {
     BACK_RIGHT_CAM("Camera-1 (1)",
                     new Translation3d(-0.304, -0.304, 0.29), 
-                    new Rotation3d(0,Math.toRadians(15),Math.toRadians(40))),
+                    new Rotation3d(0,Math.toRadians(40),Math.toRadians(183))),
                     //40 vertical, 15 left (away from robot)
 
     LEFT_SIDE_CAM("Camera-2v2",
