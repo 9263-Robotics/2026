@@ -18,18 +18,27 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class Hood extends SubsystemBase {
     public final SparkMax motor = new SparkMax(17, MotorType.kBrushless);
     private final SparkClosedLoopController controller = motor.getClosedLoopController();
     private final SparkMaxConfig config = new SparkMaxConfig();
+    private final SwerveSubsystem drivetrain;
 
     private double DesiredHoodAngle = 0;
 
     private final double[] rots = {0.0, -11, -26};
     private int i = 0;
 
-    public Hood() {
+    private final double blueTrenchXL = 4.00;
+    private final double blueTrenchXR = 5.25;
+    private final double redTrenchXL = 11.25;
+    private final double redTrenchXR = 12.55;
+    private final double dropTime = 0.2; //in seconds
+
+    public Hood(SwerveSubsystem m_Subsystem) {
+        drivetrain = m_Subsystem;
         config.closedLoop.pid(0.13
         , 0, 0);
         config.closedLoop.outputRange(-1, 1); // PLACEHOLDER
@@ -68,16 +77,24 @@ public boolean trenchGood() {
     public void periodic(){
         // SmartDashboard.putNumber("Hood angle", motor.getEncoder().getPosition());
         // SmartDashboard.putNumber("Hood setpoint", getSetpoint());
+        double posX = drivetrain.getSwerveDrive().getPose().getX();
+        // double posY = drivetrain.getSwerveDrive().getPose().getY();
+        double veloX = drivetrain.getSwerveDrive().getFieldVelocity().vxMetersPerSecond;
+        // double veloY = drivetrain.getSwerveDrive().getFieldVelocity().vyMetersPerSecond;
+        double expX = posX + veloX * dropTime; //expected X
+
+        if((expX > blueTrenchXL && expX < blueTrenchXR) || (expX > redTrenchXL && expX < redTrenchXR)) {
+            HoodDown();
+        }
+
         if (DriverStation.isDisabled()){
             DesiredHoodAngle = motor.getEncoder().getPosition();
             controller.setSetpoint(DesiredHoodAngle, ControlType.kPosition);
         } else {
             // controller.setSetpoint(rots[i], ControlType.kPosition);
             // controller.setSetpoint(, ControlType.kPosition);
-
             controller.setSetpoint(DesiredHoodAngle, ControlType.kPosition);
             // controller.setSetpoint(MathUtil.clamp(SmartDashboard.getNumber("Hood Angle", 0), -26, 0),ControlType.kPosition);
-
         }
         
         
