@@ -100,9 +100,9 @@ public class AimAtTarget extends Command {
       if(drivetrain.getSwerveDrive().getPose().getX() < 5.5){
         target = new Translation2d(4.62, 4.03);
       } else if(drivetrain.getSwerveDrive().getPose().getY() >= 4.03){
-        target = new Translation2d(1, 3);
-      } else if (drivetrain.getSwerveDrive().getPose().getY() < 4.03) {
         target = new Translation2d(1, 5);
+      } else if (drivetrain.getSwerveDrive().getPose().getY() < 4.03) {
+        target = new Translation2d(1, 3);
       }
     }
     if (DriverStation.getAlliance().get() == Alliance.Red){
@@ -110,9 +110,9 @@ public class AimAtTarget extends Command {
       if(drivetrain.getSwerveDrive().getPose().getX() > 13){
         target = new Translation2d(12, 4.03);
       } else if(drivetrain.getSwerveDrive().getPose().getY() >= 4.03){
-        target = new Translation2d(14.5, 3);
-      } else if (drivetrain.getSwerveDrive().getPose().getY() < 4.03) {
         target = new Translation2d(14.5, 5);
+      } else if (drivetrain.getSwerveDrive().getPose().getY() < 4.03) {
+        target = new Translation2d(14.5, 3);
       }
       
     }

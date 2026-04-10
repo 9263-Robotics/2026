@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.function.DoubleBinaryOperator;
+
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -25,5 +27,10 @@ public final class Constants {
     // max speed of the robot in m/s use Units.feetToMeters to use feet
     public static final double MAX_SPEED = Units.feetToMeters(20
     );
+  }
+
+  public static class TurretConstants {
+    public static final double minSoftStop = -70;
+    public static final double maxSoftStop = 70;
   }
 }

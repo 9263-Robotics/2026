@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.TurretConstants;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
 
 public class Turret extends SubsystemBase {
@@ -57,6 +58,9 @@ public class Turret extends SubsystemBase {
     private Targets target = Targets.IDLE;
 
     private double desiredTurretAngle = 0;
+    private double robotrotation = 0;
+
+    private double calculatedRotation = 0;
 
     public Turret(SwerveSubsystem drivetrain) {
         this.drivetrain = drivetrain;
@@ -76,6 +80,9 @@ public class Turret extends SubsystemBase {
 
         Shuffleboard.getTab(getName()).addDouble("Turret Pose Rotation", () -> turretPose.getRotation().getDegrees());
         Shuffleboard.getTab(getName()).addDouble("Turret Global Rotation", () -> turretRotation.getDegrees());
+
+        Shuffleboard.getTab(getName()).addDouble("robotrotation", () -> robotrotation);
+        Shuffleboard.getTab(getName()).addDouble("calculatedRotation", () -> calculatedRotation);
         Shuffleboard.getTab(getName()).addDouble("Turret Desired Pos", () -> this.desiredTurretAngle);
 
         try{
@@ -104,8 +111,20 @@ public class Turret extends SubsystemBase {
             // turretPID.setGoal(getMotorEncoder());
             // desiredTurretAngle = turretRotation.getDegrees();
         }
-        double calculatedRotation = desiredTurretAngle - drivetrain.getSwerveDrive().getPose().getRotation().getDegrees() + (DegreesPerSecond.convertFrom(drivetrain.getSwerveDrive().getRobotVelocity().omegaRadiansPerSecond, RadiansPerSecond) * 0.03);
-        if(calculatedRotation > -70 && calculatedRotation < 70){
+        
+        // if(DriverStation.getAlliance() )
+        // robotrotation = ((drivetrain.getSwerveDrive().getPose().getRotation().getDegrees() < 0) ? (drivetrain.getSwerveDrive().getPose().getRotation().getDegrees() + 360) : (drivetrain.getSwerveDrive().getPose().getRotation().getDegrees()));
+        // robotrotation = robotrotation % 180;
+
+        robotrotation = drivetrain.getSwerveDrive().getPose().getRotation().getDegrees();
+        calculatedRotation = desiredTurretAngle - robotrotation + (DegreesPerSecond.convertFrom(drivetrain.getSwerveDrive().getRobotVelocity().omegaRadiansPerSecond, RadiansPerSecond) * 0.03);
+        if (calculatedRotation < TurretConstants.minSoftStop) {
+            calculatedRotation += 360;
+        } else if (calculatedRotation > TurretConstants.maxSoftStop) {
+            calculatedRotation -= 360;
+        }
+
+        if(calculatedRotation > TurretConstants.minSoftStop && calculatedRotation < TurretConstants.maxSoftStop){
             // turretPID.setSetpoint(MathUtil.clamp(calculatedRotation, -50, 50));
             turretPID.setSetpoint(calculatedRotation);
         }
@@ -115,7 +134,7 @@ public class Turret extends SubsystemBase {
 
         // turretPID.setSetpoint(desiredTurretAngle - drivetrain.getSwerveDrive().getGyro().getRotation3d().getAngle());
 
-        // runPID();
+        runPID();
 
         turretRotation = Rotation2d.fromDegrees(getMotorEncoder()).plus(drivetrain.getSwerveDrive().getPose().getRotation());
 
@@ -153,11 +172,14 @@ public class Turret extends SubsystemBase {
     private void runPID(){
         // if(Zeroed){
         if (getMotorEncoder() < 90 && getMotorEncoder() > -90){
-            turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
+            // turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
+            turretMotor.setVoltage(-turretPID.calculate(getMotorEncoder()));
         } else if (getMotorEncoder() > 90 && turretPID.calculate(getMotorEncoder())<0){
-            turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
+            // turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
+            turretMotor.setVoltage(-turretPID.calculate(getMotorEncoder()));
         }else if (getMotorEncoder() < -90 && turretPID.calculate(getMotorEncoder())>0){
-            turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
+            // turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
+            turretMotor.setVoltage(-turretPID.calculate(getMotorEncoder()));
         } else {
             turretMotor.setVoltage(0);
         }

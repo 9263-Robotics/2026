@@ -84,6 +84,7 @@ public Command shoot() {
 public Command unJam() {
   return runEnd(() -> {
     kicker.set(-0.2);
+    Spindexer.set(0.3);
   }, () -> {
     kicker.set(0);
   });
