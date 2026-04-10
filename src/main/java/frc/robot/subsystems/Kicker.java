@@ -87,6 +87,7 @@ public Command unJam() {
     Spindexer.set(0.3);
   }, () -> {
     kicker.set(0);
+    Spindexer.set(0);
   });
 }
 

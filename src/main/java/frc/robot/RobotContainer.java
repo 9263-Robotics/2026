@@ -100,6 +100,7 @@ public class RobotContainer {
     
 
     drivebase.setDefaultCommand(driveFieldOrientedAngularVelocity);
+    hood.setDefaultCommand(hood.HoodDown());
 
     
 
@@ -147,7 +148,7 @@ public class RobotContainer {
     // }));
 
     // m_driverController.R2().onTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel));
-    m_driverController.R1().whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel));
+    m_driverController.R1().whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
 
 
 

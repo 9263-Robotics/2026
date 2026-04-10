@@ -109,12 +109,20 @@ public boolean trenchGood() {
     public Command HoodDown (){
         return runEnd(
             () -> {
-                i = 0;
+                DesiredHoodAngle = 0;
+                controller.setSetpoint(0, ControlType.kPosition);
             },
             () -> {
-                i = 0;
+                DesiredHoodAngle = 0;
+                controller.setSetpoint(0, ControlType.kPosition);
             }
         );
+    }
+
+    public Command HoodRunAnlge (){
+        return run(() -> {
+            controller.setSetpoint(DesiredHoodAngle, ControlType.kPosition);
+        });
     }
 
     public Command iterateRot() { 
