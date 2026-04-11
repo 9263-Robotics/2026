@@ -141,13 +141,13 @@ public class Turret extends SubsystemBase {
         turretPose = drivetrain.getSwerveDrive().getPose().plus(new Transform2d(-0.3,0.3, Rotation2d.fromDegrees(getMotorEncoder())));
     }
 
-    public void setTurretAngle(Rotation2d rot) {
-        if (rot.getDegrees() < -80 || rot.getDegrees() > 76)
-            return;
-        double delta1 = rot.getDegrees()/* - getTurretRotation().getDegrees()*/;
-        delta1 = Math.IEEEremainder(delta1, 360);
-        // turretPID.setGoal(delta1);
-    }
+    // public void setTurretAngle(Rotation2d rot) {
+    //     if (rot.getDegrees() < -80 || rot.getDegrees() > 76)
+    //         return;
+    //     double delta1 = rot.getDegrees()/* - getTurretRotation().getDegrees()*/;
+    //     delta1 = Math.IEEEremainder(delta1, 360);
+    //     // turretPID.setGoal(delta1);
+    // }
 
     public void setTurretGlobalAngle(double desAngle) {
         desiredTurretAngle = desAngle;
@@ -171,13 +171,13 @@ public class Turret extends SubsystemBase {
 
     private void runPID(){
         // if(Zeroed){
-        if (getMotorEncoder() < 90 && getMotorEncoder() > -90){
+        if (getMotorEncoder() < TurretConstants.AbsMaxSoftStop && getMotorEncoder() > TurretConstants.AbsMinSoftStop){
             // turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
             turretMotor.setVoltage(-turretPID.calculate(getMotorEncoder()));
-        } else if (getMotorEncoder() > 90 && turretPID.calculate(getMotorEncoder())<0){
+        } else if (getMotorEncoder() > TurretConstants.AbsMaxSoftStop && turretPID.calculate(getMotorEncoder()) < 0){
             // turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
             turretMotor.setVoltage(-turretPID.calculate(getMotorEncoder()));
-        }else if (getMotorEncoder() < -90 && turretPID.calculate(getMotorEncoder())>0){
+        }else if (getMotorEncoder() < TurretConstants.AbsMinSoftStop && turretPID.calculate(getMotorEncoder()) > 0){
             // turretMotor.setVoltage(MathUtil.clamp(-turretPID.calculate(getMotorEncoder()), -5, 5));
             turretMotor.setVoltage(-turretPID.calculate(getMotorEncoder()));
         } else {

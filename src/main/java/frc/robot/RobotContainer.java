@@ -124,20 +124,28 @@ public class RobotContainer {
   private void configureBindings() {
     // m_driverController.circle().whileTrue(drivebase.zeroGyro());
 
-    m_driverController.R2().whileTrue(kicker.shoot());
+    // m_driverController.R2().whileTrue(kicker.shoot());
     // m_driverController.R2().whileTrue(new ShootAtTarget(turret, kicker, hood));
     // m_driverController.R1().whileTrue(flywheel.flywheelSpinup());
 
-    m_driverController.L1().onTrue(hood.iterateRot());
-    m_driverController.L2().whileTrue(hood.HoodDown().repeatedly());
+    // m_driverController.L1().onTrue(hood.iterateRot());
+    // m_driverController.L2().whileTrue(hood.HoodDown().repeatedly());
 
-    m_driverController.povDown().whileTrue(intake.setSetpoint(-16));
-    m_driverController.povRight().whileTrue(intake.setSetpoint(-5));
-    m_driverController.povUp().whileTrue(intake.setSetpoint(0));  
+    // m_driverController.povDown().whileTrue(intake.setSetpoint(-16));
+    // m_driverController.povRight().whileTrue(intake.setSetpoint(-5));
+    // m_driverController.povUp().whileTrue(intake.setSetpoint(0));  
+
+    m_driverController.povDown().onTrue(intake.IntakeDown());
+    m_driverController.povUp().onTrue(intake.IntakeUp());
+    m_driverController.povRight().onTrue(intake.IntakeMiddle());
+
+    m_driverController.L1().whileTrue(intake.IntakeShake());
+
+    m_driverController.L2().whileTrue(intake.runIntakeWithPID());
     
-    m_driverController.square().whileTrue(intake.runIntakeMotor());
+    // m_driverController.square().whileTrue(intake.runIntakeMotor());
 
-    m_driverController.triangle().whileTrue(kicker.unJam());
+    m_driverController.square().whileTrue(kicker.unJam());
 
     // m_driverController.circle().onTrue(turret.runOnce(() -> {
     //   turret.setTurretAngle(turret.getTurretRotation().plus(Rotation2d.fromDegrees(5)));
@@ -147,7 +155,7 @@ public class RobotContainer {
     //   turret.setTurretAngle(turret.getTurretRotation().minus(Rotation2d.fromDegrees(5)));
     // }));
 
-    // m_driverController.R2().onTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel));
+    m_driverController.R2().onTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
     m_driverController.R1().whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
 
 
