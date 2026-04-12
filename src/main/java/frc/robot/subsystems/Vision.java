@@ -12,6 +12,7 @@ import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -38,11 +39,13 @@ public class Vision extends SubsystemBase {
       for (PhotonPipelineResult result: curCamera.resultList) {
         if(result.getTargets().size() == 1) {
           curCamera.estimatedPose = curCamera.poseEstimator.estimateLowestAmbiguityPose(result);
-          swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
+          // swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
+          swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(4,4,8));
         } else if (result.getTargets().size() > 1) {
           curCamera.estimatedPose = curCamera.poseEstimator.estimateCoprocMultiTagPose(result);
           if (curCamera.estimatedPose.isPresent()){
-            swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
+            // swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
+            swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(0.5,0.5,1));
           }
         }
       }
