@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 // import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants;
@@ -85,6 +86,8 @@ public class Turret extends SubsystemBase {
         Shuffleboard.getTab(getName()).addDouble("calculatedRotation", () -> calculatedRotation);
         Shuffleboard.getTab(getName()).addDouble("Turret Desired Pos", () -> this.desiredTurretAngle);
 
+        Shuffleboard.getTab(getName()).addBoolean("Turret Aligned", this::isTurretAligned);
+
         try{
             Thread.sleep(5000); //idk the encoder's not an early riser
         } catch (InterruptedException e){
@@ -103,6 +106,8 @@ public class Turret extends SubsystemBase {
         turretPose = drivetrain.getSwerveDrive().getPose().plus(new Transform2d(-0.3,0.3, getTurretRotation()));
 
         desiredTurretAngle =  Rotation2d.fromDegrees(getMotorEncoder()).plus(drivetrain.getSwerveDrive().getPose().getRotation()).getDegrees();
+
+        // setDefaultCommand(this.setTrurretPIDCommand());
     }
 
     @Override
@@ -125,8 +130,8 @@ public class Turret extends SubsystemBase {
         }
 
         if(calculatedRotation > TurretConstants.minSoftStop && calculatedRotation < TurretConstants.maxSoftStop){
-            // turretPID.setSetpoint(MathUtil.clamp(calculatedRotation, -50, 50));
-            turretPID.setSetpoint(calculatedRotation);
+                // turretPID.setSetpoint(MathUtil.clamp(calculatedRotation, -50, 50));
+                turretPID.setSetpoint(calculatedRotation);
         }
         
 
@@ -151,6 +156,21 @@ public class Turret extends SubsystemBase {
 
     public void setTurretGlobalAngle(double desAngle) {
         desiredTurretAngle = desAngle;
+    }
+
+    public Command setTrurretPIDCommand(){
+        return run(() -> {
+            if(calculatedRotation > TurretConstants.minSoftStop && calculatedRotation < TurretConstants.maxSoftStop){
+                // turretPID.setSetpoint(MathUtil.clamp(calculatedRotation, -50, 50));
+                turretPID.setSetpoint(calculatedRotation);
+            }
+        });
+    }
+
+    public Command setTurretToZeroCommand() {
+        return run(() -> {
+            turretPID.setSetpoint(0);
+        });
     }
 
     public boolean isTurretAligned(){

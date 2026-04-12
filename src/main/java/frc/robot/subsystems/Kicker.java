@@ -73,8 +73,8 @@ public void stopIntake(){
 
 public Command shoot() {
     return runEnd(() -> {
-        Spindexer.set(-0.5);
-        kicker.set(0.4);
+        Spindexer.set(-0.75);
+        kicker.set(0.65);
     }, () -> {
         Spindexer.set(0);
         kicker.set(0);
@@ -83,8 +83,8 @@ public Command shoot() {
 
 public Command unJam() {
   return runEnd(() -> {
-    kicker.set(-0.2);
-    Spindexer.set(0.3);
+    kicker.set(-0.5);
+    Spindexer.set(0.6);
   }, () -> {
     kicker.set(0);
     Spindexer.set(0);

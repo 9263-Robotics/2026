@@ -154,32 +154,8 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "ShootAtTarget",
-      "waypointRelativePos": 0,
-      "endWaypointRelativePos": null,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "ShootAtTarget"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "ShakeIntake"
-              }
-            }
-          ]
-        }
-      }
-    },
-    {
       "name": "IntakeDown",
-      "waypointRelativePos": 1.0106951871657759,
+      "waypointRelativePos": 0.23333333333333334,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -190,7 +166,7 @@
     },
     {
       "name": "StartIntake",
-      "waypointRelativePos": 1.6096256684491972,
+      "waypointRelativePos": 1.0166666666666664,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -215,6 +191,36 @@
       "waypointRelativePos": 6.092245989304825,
       "endWaypointRelativePos": null,
       "command": null
+    },
+    {
+      "name": "ShootAtTarget",
+      "waypointRelativePos": 6.866666666666659,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "ShootAtTarget"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "ShakeIntake"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {

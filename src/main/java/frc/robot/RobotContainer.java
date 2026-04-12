@@ -135,17 +135,11 @@ public class RobotContainer {
     // m_driverController.povRight().whileTrue(intake.setSetpoint(-5));
     // m_driverController.povUp().whileTrue(intake.setSetpoint(0));  
 
-    m_driverController.povDown().onTrue(intake.IntakeDown());
-    m_driverController.povUp().onTrue(intake.IntakeUp());
-    m_driverController.povRight().onTrue(intake.IntakeMiddle());
-
-    m_driverController.L1().whileTrue(intake.IntakeShake());
-
-    m_driverController.L2().whileTrue(intake.runIntakeWithPID());
+    
     
     // m_driverController.square().whileTrue(intake.runIntakeMotor());
 
-    m_driverController.square().whileTrue(kicker.unJam());
+    
 
     // m_driverController.circle().onTrue(turret.runOnce(() -> {
     //   turret.setTurretAngle(turret.getTurretRotation().plus(Rotation2d.fromDegrees(5)));
@@ -155,14 +149,30 @@ public class RobotContainer {
     //   turret.setTurretAngle(turret.getTurretRotation().minus(Rotation2d.fromDegrees(5)));
     // }));
 
-    m_driverController.R2().onTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
-    m_driverController.R1().whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
+    
 
 
 
     // m_operatorController.touchpad().whileTrue(hood.HoodDown().repeatedly());
 
+    m_driverController.R2().whileTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
+    m_driverController.R1().whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
 
+    m_driverController.povDown().onTrue(intake.IntakeDown());
+    m_driverController.povUp().onTrue(intake.IntakeUp());
+    m_driverController.povRight().onTrue(intake.IntakeMiddle());
+
+    m_driverController.triangle().whileTrue(intake.runIntakeMotor());
+
+    m_driverController.L1().whileTrue(intake.IntakeShake());
+
+    m_driverController.L2().whileTrue(intake.runIntakeWithPID());
+
+    m_driverController.square().whileTrue(kicker.unJam());
+
+    m_driverController.circle().whileTrue(turret.setTurretToZeroCommand());
+
+    m_driverController.cross().whileTrue(flywheel.flywheelSpinup());
   }
 
   /**
@@ -175,6 +185,7 @@ public class RobotContainer {
     return autoChooser.getSelected();
   }
 
+  
 
   public void setupNamedCommands() {
     // NamedCommands.registerCommand("Testcommand", new PrintCommand("This is a test command"));
@@ -185,11 +196,13 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("ShootIDK",  flywheel.flywheelSpinup().withTimeout(0.8).andThen(kicker.shoot()).withTimeout(3));
 
-    NamedCommands.registerCommand("IntakeDown", intake.setSetpoint(-15).withTimeout(0.2));
+    NamedCommands.registerCommand("IntakeDown", intake.IntakeDown().withTimeout(0.2));
 
-    NamedCommands.registerCommand("IntakeMid", intake.setSetpoint(-5).withTimeout(0.2));
+    NamedCommands.registerCommand("IntakeDownRun", intake.runIntakeWithPID().withTimeout(0.2));
 
-    NamedCommands.registerCommand("IntakeUp", intake.setSetpoint(0).withTimeout(0.2));
+    NamedCommands.registerCommand("IntakeMid", intake.IntakeMiddle().withTimeout(0.2));
+
+    NamedCommands.registerCommand("IntakeUp", intake.IntakeUp().withTimeout(0.2));
 
     
     // NamedCommands.registerCommand("ShakeIntake", intake.setSetpoint(-5).withTimeout(0.4).andThen(intake.setSetpoint(-15).withTimeout(0.4)));
@@ -200,7 +213,7 @@ public class RobotContainer {
 
     
     // NamedCommands.registerCommand("ShakeIntake", Commands.none());
-    NamedCommands.registerCommand("ShakeIntake", shakeIntake.repeatedly());
+    NamedCommands.registerCommand("ShakeIntake", intake.IntakeShake());
 
 
 

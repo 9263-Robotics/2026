@@ -45,7 +45,11 @@ public class AimAtTarget extends Command {
       hoodAngleMap.put(4.696404,-8.0);
       hoodAngleMap.put(5.386404,-12.0);
       hoodAngleMap.put(6.896404,-17.0);
-      // hoodAngleMap.put(15.0, -17.0);
+      
+
+      // this is made up:
+      hoodAngleMap.put(10.0,-23.0);
+      hoodAngleMap.put(16.0,-25.5);
 
       
 
@@ -59,6 +63,12 @@ public class AimAtTarget extends Command {
       flywheelSpeedMap.put(4.696404,-4000.0);
       flywheelSpeedMap.put(5.386404,-4250.0);
       flywheelSpeedMap.put(6.896404,-5000.0);
+      
+      // This is made up:
+      flywheelSpeedMap.put(10.0,-5800.0);
+
+      flywheelSpeedMap.put(16.0, -6000.0);
+      
 
   }
 
@@ -117,7 +127,7 @@ public class AimAtTarget extends Command {
       
     }
 
-    double targetTOF = 1.3;
+    double targetTOF = 1.15;
     Translation2d targetPose = target.minus(new Translation2d(drivetrain.getSwerveDrive().getFieldVelocity().vxMetersPerSecond,drivetrain.getSwerveDrive().getFieldVelocity().vyMetersPerSecond).times(targetTOF));
     
     // Translation2d targetPose = hub;

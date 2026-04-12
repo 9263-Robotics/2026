@@ -155,7 +155,7 @@
   "eventMarkers": [
     {
       "name": "IntakeDown",
-      "waypointRelativePos": 0.9999999999999989,
+      "waypointRelativePos": 0.10000000000000005,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -166,7 +166,7 @@
     },
     {
       "name": "StartIntake",
-      "waypointRelativePos": 1.3523809523809514,
+      "waypointRelativePos": 1.3166666666666664,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -177,7 +177,7 @@
     },
     {
       "name": "StopIntake",
-      "waypointRelativePos": 4.4077540106951885,
+      "waypointRelativePos": 5.299999999999997,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -199,7 +199,7 @@
     },
     {
       "name": "Shoot Time!",
-      "waypointRelativePos": 7.0,
+      "waypointRelativePos": 6.933333333333333,
       "endWaypointRelativePos": null,
       "command": {
         "type": "parallel",
@@ -215,6 +215,12 @@
               "type": "named",
               "data": {
                 "name": "ShootAtTarget"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "Shoot"
               }
             }
           ]

@@ -19,8 +19,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Flywheel extends SubsystemBase {
   public final TalonFX kicker = new TalonFX(15);
 
-  private final TalonFX FlywheelTop = new TalonFX(18);
   private final TalonFX FlywheelBottom = new TalonFX(19);
+  private final TalonFX FlywheelTop = new TalonFX(18);
 
 
   private final Slot0Configs configs = new Slot0Configs();
@@ -35,19 +35,26 @@ public class Flywheel extends SubsystemBase {
   /** Creates a new ExampleSubsystem. */
   public Flywheel() {
     
-    FlywheelBottom.setControl(new Follower(18, MotorAlignmentValue.Aligned));
+    FlywheelTop.setControl(new Follower(19, MotorAlignmentValue.Aligned));
     configs.kP = 0.3;
     configs.kI = 0;
     configs.kD = 0;
     configs.kV = 0.13;
-    FlywheelTop.getConfigurator().apply(configs);
+
+    
+    FlywheelBottom.getConfigurator().apply(configs);
     DesiredFlywheelSpeed = -2500;
+
+
     // Shuffleboard.getTab(getName()).add("Flyhweel Setpoint", pid);
     // Shuffleboard.getTab(getName()).addDouble("Flywheel Setpoint", () -> DesiredFlywheelSpeed);
     // Shuffleboard.getTab(getName()).addDouble("FlywheelOutput", () -> FlywheelTop.get());
-    Shuffleboard.getTab(getName()).addDouble("Flywheel Speed", () -> FlywheelTop.getVelocity().getValueAsDouble() * (4/3) *60);
+    Shuffleboard.getTab(getName()).addDouble("Flywheel Speed", () -> FlywheelBottom.getVelocity().getValueAsDouble() * (4/3) *60);
+    // Shuffleboard.getTab(getName()).addDouble("Flywheel Speed", () -> FlywheelTop.getVelocity().getValueAsDouble() * (4/3) *60);
     // SmartDashboard.putNumber("Flyhweel AHAHJJHA", DesiredFlywheelSpeed);
-    Shuffleboard.getTab(getName()).addDouble("Flywheel Setpoint", () -> FlywheelTop.getControlMode().getValueAsDouble());
+    Shuffleboard.getTab(getName()).addDouble("Flywheel Setpoint", () -> FlywheelBottom.getControlMode().getValueAsDouble());
+
+    Shuffleboard.getTab(getName()).addBoolean("Flywheel At Setpoint", this::atSetpoint);
   }
 
   @Override
@@ -67,7 +74,7 @@ public class Flywheel extends SubsystemBase {
     return runEnd(() -> {
         setTargetVelocity(SmartDashboard.getNumber("Flyhweel AHAHJJHA", DesiredFlywheelSpeed));
     }, () -> {
-        FlywheelTop.set(-0);
+        FlywheelBottom.set(-0);
         setTargetVelocity(0);
     });
   }
@@ -79,10 +86,11 @@ public class Flywheel extends SubsystemBase {
   }
 
   public void setTargetVelocity(double RPM){
-      FlywheelTop.setControl(request.withVelocity(RPM/60 / (4/3)));
+      FlywheelBottom.setControl(request.withVelocity(RPM/60 / (4/3)));
   }
 
   public boolean atSetpoint() {
-      return 1.0 > Math.abs(FlywheelTop.getClosedLoopError().getValueAsDouble()); //1.0 as tolerance
+
+      return (10 > Math.abs(FlywheelBottom.getClosedLoopError().getValueAsDouble())); //1.0 as tolerance
   }
 }

@@ -9,6 +9,12 @@
           "data": {
             "pathName": "Right Side Single Dip"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ShootAtTarget"
+          }
         }
       ]
     }
