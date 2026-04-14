@@ -36,20 +36,28 @@ public class Vision extends SubsystemBase {
     for(Cameras curCamera: Cameras.values()) {
       curCamera.resultList = curCamera.camera.getAllUnreadResults();
 
-      for (PhotonPipelineResult result: curCamera.resultList) {
+      for (PhotonPipelineResult result : curCamera.resultList) {
+        double avg = distanceAvg(result) / 16;
         if(result.getTargets().size() == 1) {
           curCamera.estimatedPose = curCamera.poseEstimator.estimateLowestAmbiguityPose(result);
           // swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
-          swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(4,4,8));
+          swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(0.5 * avg, 0.5 * avg, 1 * avg));
         } else if (result.getTargets().size() > 1) {
           curCamera.estimatedPose = curCamera.poseEstimator.estimateCoprocMultiTagPose(result);
           if (curCamera.estimatedPose.isPresent()){
             // swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
-            swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(0.5,0.5,1));
+            swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(0.5 * avg, 0.5 * avg, 1 * avg));
           }
         }
       }
     }
+  }
+
+  public double distanceAvg(PhotonPipelineResult result) {
+    double value = 0.0;
+    for(int i = 0; i < result.getTargets().size(); i++) 
+      value += result.getTargets().get(i).getBestCameraToTarget().getTranslation().getNorm();
+    return value / result.getTargets().size();
   }
 
   public enum Cameras {
