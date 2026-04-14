@@ -33,7 +33,7 @@ public class Intake extends SubsystemBase {
 
 
   
-  private final ProfiledPIDController intakePID = new ProfiledPIDController(0.035, 0.0, 0.0, new Constraints(25,50));
+  private final ProfiledPIDController intakePID = new ProfiledPIDController(0.035, 0.0, 0.0, new Constraints(25,60));
   // private final PIDController intakePID = new PIDController(0.035, 0.0, 0.0);
   private double setpoint = 0.0;
 
@@ -82,18 +82,37 @@ public class Intake extends SubsystemBase {
 
   public Command IntakeDown() {
     return runOnce (() -> {
+      intakePID.setConstraints(new Constraints(25,60));
       intakePID.setGoal(IntakeConstants.DownPos);
     });
   }
 
   public Command IntakeUp() {
     return runOnce(() -> {
+      intakePID.setConstraints(new Constraints(25,60));
       intakePID.setGoal(IntakeConstants.UpPos);
     });
   }
 
+  public Command IntakeShootIn() {
+    return runOnce(() -> {
+      intakePID.setConstraints(new Constraints(5,60));
+      intakePID.setGoal(IntakeConstants.MiddlePos);
+    });
+  }
+
+  public Command IntakeShootInConstant() {
+    return new SequentialCommandGroup(
+      IntakeShootIn(),
+      new WaitUntilCommand(() -> intakePID.atGoal()),
+      IntakeDown(),
+      new WaitUntilCommand(() -> intakePID.atGoal())
+    );
+  }
+
   public Command IntakeMiddle() {
     return runOnce(() -> {
+      intakePID.setConstraints(new Constraints(25,60));
       intakePID.setGoal(IntakeConstants.MiddlePos);
     });
   }

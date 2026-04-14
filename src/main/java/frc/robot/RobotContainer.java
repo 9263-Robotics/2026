@@ -165,7 +165,8 @@ public class RobotContainer {
     // m_driverController.triangle().whileTrue(intake.runIntakeMotor());
     //  m_driverController.triangle().whileTrue(kicker.shoot());
 
-    m_driverController.L1().whileTrue(intake.IntakeShake());
+    // m_driverController.L1().whileTrue(intake.IntakeShake());
+    m_driverController.L1().whileTrue(intake.IntakeShootInConstant());
 
     m_driverController.L2().whileTrue(intake.runIntakeWithPID());
 
