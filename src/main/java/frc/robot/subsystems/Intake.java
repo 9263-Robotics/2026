@@ -107,7 +107,7 @@ public class Intake extends SubsystemBase {
       new WaitUntilCommand(() -> intakePID.atGoal()),
       IntakeDown(),
       new WaitUntilCommand(() -> intakePID.atGoal())
-    );
+    ).repeatedly();
   }
 
   public Command IntakeMiddle() {
