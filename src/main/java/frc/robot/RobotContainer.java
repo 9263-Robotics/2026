@@ -162,7 +162,8 @@ public class RobotContainer {
     m_driverController.povUp().onTrue(intake.IntakeUp());
     m_driverController.povRight().onTrue(intake.IntakeMiddle());
 
-    m_driverController.triangle().whileTrue(intake.runIntakeMotor());
+    // m_driverController.triangle().whileTrue(intake.runIntakeMotor());
+    //  m_driverController.triangle().whileTrue(kicker.shoot());
 
     m_driverController.L1().whileTrue(intake.IntakeShake());
 
@@ -171,8 +172,9 @@ public class RobotContainer {
     m_driverController.square().whileTrue(kicker.unJam());
 
     m_driverController.circle().whileTrue(turret.setTurretToZeroCommand());
+    // m_driverController.circle().whileTrue()
 
-    m_driverController.cross().whileTrue(flywheel.flywheelSpinup());
+    // m_driverController.cross().whileTrue(flywheel.flywheelSpinup());
   }
 
   /**

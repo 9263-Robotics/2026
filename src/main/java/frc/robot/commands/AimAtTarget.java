@@ -25,52 +25,13 @@ import frc.robot.subsystems.Hood;
 import frc.robot.subsystems.Kicker;
 import frc.robot.subsystems.Turret;
 import frc.robot.subsystems.swervedrive.SwerveSubsystem;
+import frc.robot.Constants.ShooterLookupTables;
 
 /** An example command that uses an example subsystem. */
 public class AimAtTarget extends Command {
   @SuppressWarnings("PMD.UnusedPrivateField")
 
-  private static final InterpolatingDoubleTreeMap hoodAngleMap = new InterpolatingDoubleTreeMap();
 
-  private static final InterpolatingDoubleTreeMap flywheelSpeedMap = new InterpolatingDoubleTreeMap();
-  
-    static { // x is distance, y is angle
-      hoodAngleMap.put(0.0,0.0);
-      hoodAngleMap.put(0.946404,0.0);
-      hoodAngleMap.put(1.546404,0.0);
-      hoodAngleMap.put(2.146404,0.0);
-      hoodAngleMap.put(2.446404, -1.0);
-      hoodAngleMap.put(3.296404,-4.0);
-      hoodAngleMap.put(3.696404,-6.0);
-      hoodAngleMap.put(4.696404,-8.0);
-      hoodAngleMap.put(5.386404,-12.0);
-      hoodAngleMap.put(6.896404,-17.0);
-      
-
-      // this is made up:
-      hoodAngleMap.put(10.0,-23.0);
-      hoodAngleMap.put(16.0,-25.5);
-
-      
-
-      flywheelSpeedMap.put(0.0,-2500.0);
-      flywheelSpeedMap.put(0.946404,-2500.0);
-      flywheelSpeedMap.put(1.546404,-3500.0);
-      flywheelSpeedMap.put(2.146404,-3500.0);
-      flywheelSpeedMap.put(2.446404, -3500.0);
-      flywheelSpeedMap.put(3.296404,-3500.0);
-      flywheelSpeedMap.put(3.696404,-3700.0);
-      flywheelSpeedMap.put(4.696404,-4000.0);
-      flywheelSpeedMap.put(5.386404,-4250.0);
-      flywheelSpeedMap.put(6.896404,-5000.0);
-      
-      // This is made up:
-      flywheelSpeedMap.put(10.0,-5800.0);
-
-      flywheelSpeedMap.put(16.0, -6000.0);
-      
-
-  }
 
   private final Turret turret;
   private final Hood hood;
@@ -145,13 +106,13 @@ public class AimAtTarget extends Command {
 
     // turret.setTurretAngle(desiredTurretAngle);
 
-    hood.setHoodAngleFunc(hoodAngleMap.get(distanceToTarget));
+    hood.setHoodAngleFunc(ShooterLookupTables.hoodAngleMap.get(distanceToTarget));
     // outtake.setTargetVelocity(flywheelSpeedMap.get(distanceToTarget));
-    flywheel.setTargetVelocity(flywheelSpeedMap.get(distanceToTarget));
+    flywheel.setTargetVelocity(ShooterLookupTables.flywheelSpeedMap.get(distanceToTarget));
     turret.setTurretGlobalAngle(fieldAngleToTarget.getDegrees());
     SmartDashboard.putNumber("Hub Distance", distanceToTarget);
-    SmartDashboard.putNumber("Hood Table", hoodAngleMap.get(distanceToTarget));
-    SmartDashboard.putNumber("Flywheel Table", flywheelSpeedMap.get(distanceToTarget));
+    SmartDashboard.putNumber("Hood Table", ShooterLookupTables.hoodAngleMap.get(distanceToTarget));
+    SmartDashboard.putNumber("Flywheel Table", ShooterLookupTables.flywheelSpeedMap.get(distanceToTarget));
   }
 
   public Rotation2d getDesiredAngle(){
