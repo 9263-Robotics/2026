@@ -79,7 +79,7 @@ public class RobotContainer {
 
     m_driverController.cross().whileTrue(
     Commands.startEnd(
-        () -> m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.FLASHBANG),
+        () -> m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.PATTERN0),
         () -> m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.OFF),
         m_AddressableLEDs
     ).ignoringDisable(true)

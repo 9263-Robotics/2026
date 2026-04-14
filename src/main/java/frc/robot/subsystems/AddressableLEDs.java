@@ -1,10 +1,14 @@
 package frc.robot.subsystems;
 
+import java.io.Serial;
+
+import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 
@@ -57,12 +61,22 @@ public class AddressableLEDs extends SubsystemBase {
 
   // Variables for patterns
 
+  // flashbang
   private boolean flashState = false;
   private double lastFlashTime = 0;
   private static final double FLASH_INTERVAL = 0.05; // seconds between flashes
+  // green/gold blinking pattern
+  private double lastChangeTime = 0;
+  private static final float colourChangeTime = 1; // time it waits for before changing colour in seconds
+  private static final Color ALDgold = new Color(255, 165, 0); // Aldershot Gold
+  private static final Color ALDgreen = Color.kDarkGreen; // Aldershot Green
+  private static final Color[] Colours = new Color[] { ALDgold, ALDgreen };
+  private int currentColour = 0;
+  private int ledGroupCounter = 0;
 
   public enum PatternMode {
     FLASHBANG,
+    PATTERN0,
     OFF
   }
 
@@ -110,11 +124,10 @@ public class AddressableLEDs extends SubsystemBase {
             if (flashState) {
               if (i < m_LedSection1.getLength()) {
                 m_ledBuffer.setRGB(i, 255, 255, 255); // bright flash
-              }
-              else if (m_LedSection1.getLength()-1 < i && i < m_LedSection1.getLength() + m_LedSection2.getLength()) {
+              } else if (m_LedSection1.getLength() - 1 < i
+                  && i < m_LedSection1.getLength() + m_LedSection2.getLength()) {
                 m_ledBuffer.setRGB(i, 0, 255, 0); // bright flash
-              }
-              else {
+              } else {
                 m_ledBuffer.setRGB(i, 0, 0, 255); // bright flash
               }
             } else {
@@ -122,6 +135,26 @@ public class AddressableLEDs extends SubsystemBase {
             }
           }
         }
+        break;
+
+      case PATTERN0:
+        if (Timer.getFPGATimestamp() - lastChangeTime > colourChangeTime) {
+          lastChangeTime = Timer.getFPGATimestamp();
+          currentColour = (currentColour + 1) % Colours.length;
+
+          for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+            if (ledGroupCounter <= 4) {
+              m_ledBuffer.setLED(i, Colours[currentColour]);
+              ledGroupCounter++;
+              System.out.println("led set to " + Colours[currentColour].toString());
+            } else {
+              currentColour = (currentColour + 1) % Colours.length;
+              ledGroupCounter = 0;
+              System.out.println("colour changed to " + Colours[currentColour].toString());
+            }
+          }
+        }
+
         break;
 
       case OFF:
