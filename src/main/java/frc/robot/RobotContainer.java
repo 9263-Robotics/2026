@@ -163,7 +163,7 @@ public class RobotContainer {
     m_driverController.povRight().onTrue(intake.IntakeMiddle());
 
     // m_driverController.triangle().whileTrue(intake.runIntakeMotor());
-    //  m_driverController.triangle().whileTrue(kicker.shoot());
+     m_driverController.triangle().whileTrue(kicker.shoot().alongWith(flywheel.manualFlywheelCommand()));
 
     // m_driverController.L1().whileTrue(intake.IntakeShake());
     m_driverController.L1().whileTrue(intake.IntakeShootInConstant());
@@ -175,7 +175,7 @@ public class RobotContainer {
     m_driverController.circle().whileTrue(turret.setTurretToZeroCommand());
     // m_driverController.circle().whileTrue()
 
-    // m_driverController.cross().whileTrue(flywheel.flywheelSpinup());
+    m_driverController.cross().whileTrue(flywheel.flywheelSpinup());
   }
 
   /**
@@ -199,21 +199,24 @@ public class RobotContainer {
 
     NamedCommands.registerCommand("ShootIDK",  flywheel.flywheelSpinup().withTimeout(0.8).andThen(kicker.shoot()).withTimeout(3));
 
-    NamedCommands.registerCommand("IntakeDown", intake.IntakeDown().withTimeout(0.2));
+    NamedCommands.registerCommand("IntakeDown", intake.IntakeDown());
 
     NamedCommands.registerCommand("IntakeDownRun", intake.runIntakeWithPID().withTimeout(0.2));
 
     NamedCommands.registerCommand("IntakeMid", intake.IntakeMiddle().withTimeout(0.2));
 
-    NamedCommands.registerCommand("IntakeUp", intake.IntakeUp().withTimeout(0.2));
+    NamedCommands.registerCommand("IntakeUp", intake.IntakeUp());
 
     
     // NamedCommands.registerCommand("ShakeIntake", intake.setSetpoint(-5).withTimeout(0.4).andThen(intake.setSetpoint(-15).withTimeout(0.4)));
 
-    NamedCommands.registerCommand("StartIntake", intake.run(intake::startIntake).withTimeout(0.1));
+    NamedCommands.registerCommand("StartIntake", intake.StartIntake());
 
-    NamedCommands.registerCommand("StopIntake", intake.runOnce(intake::stopIntake));
+    NamedCommands.registerCommand("StopIntake", intake.StopIntake());
 
+    NamedCommands.registerCommand("ManualShoot", flywheel.manualFlywheelCommand());
+
+    NamedCommands.registerCommand("TurretZero", turret.FaceForward());
     
     // NamedCommands.registerCommand("ShakeIntake", Commands.none());
     NamedCommands.registerCommand("ShakeIntake", intake.IntakeShake());

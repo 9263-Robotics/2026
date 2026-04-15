@@ -108,6 +108,8 @@ public class ShootAtTarget extends Command {
 
     // turret.setTurretAngle(desiredTurretAngle);
 
+    // distanceToTarget -= 1;
+
     hood.setHoodAngleFunc(ShooterLookupTables.hoodAngleMap.get(distanceToTarget));
     // outtake.setTargetVelocity(flywheelSpeedMap.get(distanceToTarget));
     flywheel.setTargetVelocity(ShooterLookupTables.flywheelSpeedMap.get(distanceToTarget));

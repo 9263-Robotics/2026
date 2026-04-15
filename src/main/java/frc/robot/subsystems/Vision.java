@@ -16,12 +16,16 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.SwerveDrive;
 
 public class Vision extends SubsystemBase {
   PhotonCamera camera1 = new PhotonCamera("Camera-1");
   PhotonCamera camera2 = new PhotonCamera("Camera-2v2");
+
+
+  public Field2d visionField = new Field2d();
 
   public static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
@@ -39,13 +43,15 @@ public class Vision extends SubsystemBase {
       for (PhotonPipelineResult result: curCamera.resultList) {
         if(result.getTargets().size() == 1) {
           curCamera.estimatedPose = curCamera.poseEstimator.estimateLowestAmbiguityPose(result);
-          // swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
-          swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(4,4,8));
+          swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
+
+          visionField.getObject(curCamera.toString()).setPose(curCamera.estimatedPose.get().estimatedPose.toPose2d());
+          // swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(4,4,8));
         } else if (result.getTargets().size() > 1) {
           curCamera.estimatedPose = curCamera.poseEstimator.estimateCoprocMultiTagPose(result);
           if (curCamera.estimatedPose.isPresent()){
-            // swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
-            swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(0.5,0.5,1));
+            swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
+            // swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(0.5,0.5,1));
           }
         }
       }
@@ -57,24 +63,24 @@ public class Vision extends SubsystemBase {
     //                 new Translation3d(-0.304, -0.304, 0.29), 
     //                 new Rotation3d(0,Math.toRadians(40),Math.toRadians(183))),
     //                 //40 vertical, 15 left (away from robot)
-    BACK_RIGHT_CAM("BackRightCam",
-                    new Translation3d(-0.304, -0.304, 0.29), 
-                    new Rotation3d(Math.toRadians(0),Math.toRadians(-40),Math.toRadians(15)).plus(new Rotation3d(0,0, Math.toRadians(180)))),
-                    //40 vertical, 15 left (away from robot)
+    // BACK_RIGHT_CAM("BackRightCam",
+    //                 new Translation3d(-0.304, -0.304, 0.29), 
+    //                 new Rotation3d(Math.toRadians(0),Math.toRadians(-40),Math.toRadians(15)).plus(new Rotation3d(0,0, Math.toRadians(180)))),
+    //                 //40 vertical, 15 left (away from robot)
     
-    BACK_LEFT_CAM("BackLeftCam",
-                    new Translation3d(-0.304, 0.304, 0.29), 
-                    new Rotation3d(0,Math.toRadians(-40),Math.toRadians(-15)).plus(new Rotation3d(0,0,Math.toRadians(180)))),
-                    //40 vertical, 15 left (away from robot)
+    // BACK_LEFT_CAM("BackLeftCam",
+    //                 new Translation3d(-0.304, 0.304, 0.29), 
+    //                 new Rotation3d(0,Math.toRadians(-40),Math.toRadians(-15)).plus(new Rotation3d(0,0,Math.toRadians(180)))),
+    //                 //40 vertical, 15 left (away from robot)
 
     LEFT_SIDE_CAM("FrontLeftCam",
                     new Translation3d(-0.0075, 0.3193, 0.41), 
-                    new Rotation3d(0,0,Math.toRadians(70))),
+                    new Rotation3d(0,0,Math.toRadians(70)));
                     //70 out
     
-    RIGHT_SIDE_CAM("FrontRightCam",
-                    new Translation3d(-0.0075, -0.3193, 0.40), 
-                    new Rotation3d(0,0,Math.toRadians(-70)));
+    // RIGHT_SIDE_CAM("FrontRightCam",
+    //                 new Translation3d(-0.0075, -0.3193, 0.40), 
+    //                 new Rotation3d(0,0,Math.toRadians(-70)));
                     //70 out
 
     // BACK_LEFT_CAM("Camera-1",
