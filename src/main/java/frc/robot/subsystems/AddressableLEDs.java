@@ -139,18 +139,22 @@ public class AddressableLEDs extends SubsystemBase {
 
       case PATTERN0:
         if (Timer.getFPGATimestamp() - lastChangeTime > colourChangeTime) {
+          // for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+          //   m_ledBuffer.setLED(i, Color.kBlack);
+          // }
+
           lastChangeTime = Timer.getFPGATimestamp();
           currentColour = (currentColour + 1) % Colours.length;
 
           for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-            if (ledGroupCounter <= 4) {
+            if (ledGroupCounter < 4) {
               m_ledBuffer.setLED(i, Colours[currentColour]);
               ledGroupCounter++;
-              System.out.println("led set to " + Colours[currentColour].toString());
+              // System.out.println("led set to " + Colours[currentColour].toString());
             } else {
               currentColour = (currentColour + 1) % Colours.length;
               ledGroupCounter = 0;
-              System.out.println("colour changed to " + Colours[currentColour].toString());
+              // System.out.println("colour changed to " + Colours[currentColour].toString());
             }
           }
         }
