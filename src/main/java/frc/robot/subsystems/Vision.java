@@ -26,6 +26,8 @@ public class Vision extends SubsystemBase {
   public static final AprilTagFieldLayout fieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2026RebuiltWelded);
 
   public static PoseStrategy primaryStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
+
+  private static final double avgFactor = 16;
   
   // //TODO: add correct offsets to the estimators. need  cameras mounted tho.
   
@@ -37,7 +39,7 @@ public class Vision extends SubsystemBase {
       curCamera.resultList = curCamera.camera.getAllUnreadResults();
 
       for (PhotonPipelineResult result : curCamera.resultList) {
-        double avg = distanceAvg(result) / 16;
+        double avg = distanceAvg(result) / avgFactor;
         if(result.getTargets().size() == 1) {
           curCamera.estimatedPose = curCamera.poseEstimator.estimateLowestAmbiguityPose(result);
           // swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
