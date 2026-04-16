@@ -93,7 +93,7 @@ public class RobotContainer {
       intake.setSetpoint(-15).withTimeout(0.4));
 
   // Define Addressable LED subsystem
-  private final AddressableLEDs m_AddressableLEDs = new AddressableLEDs();
+  private final AddressableLEDs m_AddressableLEDs = new AddressableLEDs(true); // set to false to disable all LED code
 
   private final SendableChooser<Command> autoChooser;
   // List of autos to display.
@@ -103,6 +103,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     instance = this;
+
+    m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.PATTERN0); // Change to set the patternMode, disabled if AddressableLEDs.enabled is false when initiallized
 
     CanandEventLoop.getInstance();
     // Configure the trigger bindings
@@ -162,11 +164,11 @@ public class RobotContainer {
     // turret.setTurretAngle(turret.getTurretRotation().minus(Rotation2d.fromDegrees(5)));
     // }));
 
-    m_driverController.cross().whileTrue(
-        Commands.startEnd(
-            () -> m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.PATTERN0),
-            () -> m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.OFF),
-            m_AddressableLEDs).ignoringDisable(true));
+    // m_driverController.cross().whileTrue( // On button press, enable LED pattern (unused)
+    //     Commands.startEnd(
+    //         () -> m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.PATTERN0),
+    //         () -> m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.OFF),
+    //         m_AddressableLEDs).ignoringDisable(true));
 
     // m_operatorController.touchpad().whileTrue(hood.HoodDown().repeatedly());
 

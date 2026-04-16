@@ -6,6 +6,7 @@ import edu.wpi.first.units.measure.Time;
 import edu.wpi.first.wpilibj.AddressableLED;
 import edu.wpi.first.wpilibj.AddressableLEDBuffer;
 import edu.wpi.first.wpilibj.AddressableLEDBufferView;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.LEDPattern;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.util.Color;
@@ -22,7 +23,8 @@ import frc.robot.RobotContainer;
 public class AddressableLEDs extends SubsystemBase {
 
   private final AddressableLED m_led;
-  private final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(kLedStripLength);;
+  private final AddressableLEDBuffer m_ledBuffer = new AddressableLEDBuffer(kLedStripLength);
+  private boolean enabled;
 
   // PWM port for the LED strip. This must be a PWM header on the roboRIO.
   private static final int kLedPort = 0;
@@ -83,7 +85,9 @@ public class AddressableLEDs extends SubsystemBase {
   private PatternMode currentMode = PatternMode.OFF;
 
   /** Creates a new WhiteLED subsystem. */
-  public AddressableLEDs() {
+  public AddressableLEDs(boolean enabled) {
+    this.enabled = enabled;
+
     setPatternMode(PatternMode.OFF); // Can be changed, should set the pattern on startup
 
     m_led = new AddressableLED(kLedPort);
@@ -92,8 +96,10 @@ public class AddressableLEDs extends SubsystemBase {
     m_led.setLength(m_ledBuffer.getLength());
 
     // Set the data and start the LED output.
-    m_led.setData(m_ledBuffer);
-    m_led.start();
+    if (enabled) {
+      m_led.setData(m_ledBuffer);
+      m_led.start();
+    }
 
     // Set the default command to turn the strip off, otherwise the last colors
     // written by
@@ -109,64 +115,66 @@ public class AddressableLEDs extends SubsystemBase {
 
   @Override
   public void periodic() { // Loop for running light patterns. Warning: RUNS WHILE DISABLED
+    if (enabled) {
 
-    double maxSpeed = 0.5;
-    double minSpeed = 0.2;
+      double maxSpeed = 0.5;
+      double minSpeed = 0.2;
 
-    // run current pattern
-    switch (currentMode) {
-      case FLASHBANG:
-        if (Timer.getFPGATimestamp() - lastFlashTime > FLASH_INTERVAL) {
-          lastFlashTime = Timer.getFPGATimestamp();
-          flashState = !flashState;
+      // run current pattern
+      switch (currentMode) {
+        case FLASHBANG:
+          if (Timer.getFPGATimestamp() - lastFlashTime > FLASH_INTERVAL) {
+            lastFlashTime = Timer.getFPGATimestamp();
+            flashState = !flashState;
 
-          for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-            if (flashState) {
-              if (i < m_LedSection1.getLength()) {
-                m_ledBuffer.setRGB(i, 255, 255, 255); // bright flash
-              } else if (m_LedSection1.getLength() - 1 < i
-                  && i < m_LedSection1.getLength() + m_LedSection2.getLength()) {
-                m_ledBuffer.setRGB(i, 0, 255, 0); // bright flash
+            for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+              if (flashState) {
+                if (i < m_LedSection1.getLength()) {
+                  m_ledBuffer.setRGB(i, 255, 255, 255); // bright flash
+                } else if (m_LedSection1.getLength() - 1 < i
+                    && i < m_LedSection1.getLength() + m_LedSection2.getLength()) {
+                  m_ledBuffer.setRGB(i, 0, 255, 0); // bright flash
+                } else {
+                  m_ledBuffer.setRGB(i, 0, 0, 255); // bright flash
+                }
               } else {
-                m_ledBuffer.setRGB(i, 0, 0, 255); // bright flash
+                m_ledBuffer.setRGB(i, 0, 0, 0); // off
               }
-            } else {
-              m_ledBuffer.setRGB(i, 0, 0, 0); // off
             }
           }
-        }
-        break;
+          break;
 
-      case PATTERN0:
-        if (Timer.getFPGATimestamp() - lastChangeTime > colourChangeTime) {
-          // for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-          //   m_ledBuffer.setLED(i, Color.kBlack);
-          // }
+        case PATTERN0:
+          if (Timer.getFPGATimestamp() - lastChangeTime > colourChangeTime) {
+            // for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+            // m_ledBuffer.setLED(i, Color.kBlack);
+            // }
 
-          lastChangeTime = Timer.getFPGATimestamp();
-          currentColour = (currentColour + 1) % Colours.length;
+            lastChangeTime = Timer.getFPGATimestamp();
+            currentColour = (currentColour + 1) % Colours.length;
 
-          for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-            if (ledGroupCounter < 4) {
+            for (int i = 0; i < m_ledBuffer.getLength(); i++) {
               m_ledBuffer.setLED(i, Colours[currentColour]);
-              ledGroupCounter++;
-              // System.out.println("led set to " + Colours[currentColour].toString());
-            } else {
-              currentColour = (currentColour + 1) % Colours.length;
-              ledGroupCounter = 0;
-              // System.out.println("colour changed to " + Colours[currentColour].toString());
+              if (ledGroupCounter < 7) {
+                ledGroupCounter++;
+                // System.out.println("led set to " + Colours[currentColour].toString());
+              } else {
+                currentColour = (currentColour + 1) % Colours.length;
+                ledGroupCounter = 0;
+                // System.out.println("colour changed to " + Colours[currentColour].toString());
+              }
             }
           }
-        }
 
-        break;
+          break;
 
-      case OFF:
-        for (int i = 0; i < m_ledBuffer.getLength(); i++)
-          m_ledBuffer.setRGB(i, 0, 0, 0);
-        break;
+        case OFF:
+          for (int i = 0; i < m_ledBuffer.getLength(); i++)
+            m_ledBuffer.setRGB(i, 0, 0, 0);
+          break;
+      }
+
+      m_led.setData(m_ledBuffer);
     }
-
-    m_led.setData(m_ledBuffer);
   }
 }
