@@ -33,12 +33,12 @@ public class AddressableLEDs extends SubsystemBase {
   private static final int shortLedStrip1 = 26;
   private static final int shortLedStrip2 = 26;
   // Number of LEDs on the strip.
-  private static final int kLedStripLength = longLedStrip + shortLedStrip1 + shortLedStrip2;
+  private static final int kLedStripLength = /*longLedStrip + */shortLedStrip1 + shortLedStrip2;
 
-  AddressableLEDBufferView m_LedSection1 = m_ledBuffer.createView(0, longLedStrip - 1); // Sections of controllable
+  // AddressableLEDBufferView m_LedSection1 = m_ledBuffer.createView(0, longLedStrip - 1); // Sections of controllable
                                                                                         // LEDs, can be used for
                                                                                         // different patterns/effects -
-  AddressableLEDBufferView m_LedSection2 = m_ledBuffer.createView(longLedStrip, (longLedStrip - 1) + shortLedStrip1); // This
+  // AddressableLEDBufferView m_LedSection2 = m_ledBuffer.createView(longLedStrip, (longLedStrip - 1) + shortLedStrip1); // This
                                                                                                                       // should
                                                                                                                       // probably
                                                                                                                       // be
@@ -52,8 +52,8 @@ public class AddressableLEDs extends SubsystemBase {
                                                                                                                       // conected
                                                                                                                       // with
                                                                                                                       // wires.
-  AddressableLEDBufferView m_LedSection3 = m_ledBuffer.createView((longLedStrip - 1) + shortLedStrip1,
-      (longLedStrip - 1) + shortLedStrip1 + shortLedStrip2); // Also sections may need to be reversed to adjust for
+  // AddressableLEDBufferView m_LedSection3 = m_ledBuffer.createView((longLedStrip - 1) + shortLedStrip1,
+      // (longLedStrip - 1) + shortLedStrip1 + shortLedStrip2); // Also sections may need to be reversed to adjust for
                                                              // wiring direction
   // AddressableLEDBufferView m_LedSection4 = m_ledBuffer.createView(164, 182);
 
@@ -122,27 +122,27 @@ public class AddressableLEDs extends SubsystemBase {
 
       // run current pattern
       switch (currentMode) {
-        case FLASHBANG:
-          if (Timer.getFPGATimestamp() - lastFlashTime > FLASH_INTERVAL) {
-            lastFlashTime = Timer.getFPGATimestamp();
-            flashState = !flashState;
+        // case FLASHBANG:
+        //   if (Timer.getFPGATimestamp() - lastFlashTime > FLASH_INTERVAL) {
+        //     lastFlashTime = Timer.getFPGATimestamp();
+        //     flashState = !flashState;
 
-            for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-              if (flashState) {
-                if (i < m_LedSection1.getLength()) {
-                  m_ledBuffer.setRGB(i, 255, 255, 255); // bright flash
-                } else if (m_LedSection1.getLength() - 1 < i
-                    && i < m_LedSection1.getLength() + m_LedSection2.getLength()) {
-                  m_ledBuffer.setRGB(i, 0, 255, 0); // bright flash
-                } else {
-                  m_ledBuffer.setRGB(i, 0, 0, 255); // bright flash
-                }
-              } else {
-                m_ledBuffer.setRGB(i, 0, 0, 0); // off
-              }
-            }
-          }
-          break;
+        //     for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+        //       if (flashState) {
+        //         if (i < m_LedSection1.getLength()) {
+        //           m_ledBuffer.setRGB(i, 255, 255, 255); // bright flash
+        //         } else if (m_LedSection1.getLength() - 1 < i
+        //             && i < m_LedSection1.getLength() + m_LedSection2.getLength()) {
+        //           m_ledBuffer.setRGB(i, 0, 255, 0); // bright flash
+        //         } else {
+        //           m_ledBuffer.setRGB(i, 0, 0, 255); // bright flash
+        //         }
+        //       } else {
+        //         m_ledBuffer.setRGB(i, 0, 0, 0); // off
+        //       }
+        //     }
+        //   }
+        //   break;
 
         case PATTERN0:
           if (Timer.getFPGATimestamp() - lastChangeTime > colourChangeTime) {
@@ -155,7 +155,7 @@ public class AddressableLEDs extends SubsystemBase {
 
             for (int i = 0; i < m_ledBuffer.getLength(); i++) {
               m_ledBuffer.setLED(i, Colours[currentColour]);
-              if (ledGroupCounter < 7) {
+              if (ledGroupCounter < 4) {
                 ledGroupCounter++;
                 // System.out.println("led set to " + Colours[currentColour].toString());
               } else {
