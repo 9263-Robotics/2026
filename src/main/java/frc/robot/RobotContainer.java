@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.AddressableLEDs;
+import frc.robot.subsystems.AddressableLEDs.PatternMode;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.AimAtTarget;
 import frc.robot.commands.ShootAtTarget;
@@ -103,9 +104,10 @@ public class RobotContainer {
   public RobotContainer() {
     instance = this;
 
-    m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.PATTERNSHOOT); // Change to set the patternMode, disabled
-                                                                            // if AddressableLEDs.enabled is false when
-                                                                            // initiallized
+    // m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.PATTERNBLUE); //
+    // Change to set the patternMode, disabled
+    // if AddressableLEDs.enabled is false when
+    // initiallized
 
     CanandEventLoop.getInstance();
     // Configure the trigger bindings
@@ -196,6 +198,11 @@ public class RobotContainer {
     m_driverController.circle().whileTrue(turret.setTurretToZeroCommand());
     // m_driverController.circle().whileTrue()
 
+    m_driverController.cross()
+        .onTrue(Commands.runOnce(() -> m_AddressableLEDs.setPatternMode(PatternMode.PATTERNSPINUP)));
+    m_driverController.cross().onFalse(
+    Commands.runOnce(() -> m_AddressableLEDs.setPatternMode(PatternMode.PATTERNGREENGOLD))
+);
     m_driverController.cross().whileTrue(flywheel.flywheelSpinup());
   }
 

@@ -33,28 +33,20 @@ public class AddressableLEDs extends SubsystemBase {
   private static final int shortLedStrip1 = 26;
   private static final int shortLedStrip2 = 26;
   // Number of LEDs on the strip.
-  private static final int kLedStripLength = /*longLedStrip + */shortLedStrip1 + shortLedStrip2;
+  private static final int kLedStripLength = /* longLedStrip + */shortLedStrip1 + shortLedStrip2;
 
-  // AddressableLEDBufferView m_LedSection1 = m_ledBuffer.createView(0, longLedStrip - 1); // Sections of controllable
-                                                                                        // LEDs, can be used for
-                                                                                        // different patterns/effects -
-  // AddressableLEDBufferView m_LedSection2 = m_ledBuffer.createView(longLedStrip, (longLedStrip - 1) + shortLedStrip1); // This
-                                                                                                                      // should
-                                                                                                                      // probably
-                                                                                                                      // be
-                                                                                                                      // split
-                                                                                                                      // where
-                                                                                                                      // the
-                                                                                                                      // strips
-                                                                                                                      // are
-                                                                                                                      // split
-                                                                                                                      // and
-                                                                                                                      // conected
-                                                                                                                      // with
-                                                                                                                      // wires.
-  // AddressableLEDBufferView m_LedSection3 = m_ledBuffer.createView((longLedStrip - 1) + shortLedStrip1,
-      // (longLedStrip - 1) + shortLedStrip1 + shortLedStrip2); // Also sections may need to be reversed to adjust for
-                                                             // wiring direction
+  // AddressableLEDBufferView m_LedSection1 = m_ledBuffer.createView(0,
+  // longLedStrip - 1); // Sections of controllable
+  // LEDs, can be used for
+  // different patterns/effects -
+  // AddressableLEDBufferView m_LedSection2 = m_ledBuffer.createView(longLedStrip,
+  // (longLedStrip - 1) + shortLedStrip1); // This should probably be split where the strips are split and conected with wires.
+
+  // AddressableLEDBufferView m_LedSection3 = m_ledBuffer.createView((longLedStrip
+  // - 1) + shortLedStrip1,
+  // (longLedStrip - 1) + shortLedStrip1 + shortLedStrip2); // Also sections may
+  // need to be reversed to adjust for
+  // wiring direction
   // AddressableLEDBufferView m_LedSection4 = m_ledBuffer.createView(164, 182);
 
   // set up patterns
@@ -64,17 +56,28 @@ public class AddressableLEDs extends SubsystemBase {
   // Variables for patterns
 
   // blue fade pattern
-  private static final double BLUE_FADE_SPEED = 2.0;
+  private static final double BLUE_FADE_SPEED = 3.5;
+
+  // Turret spinning up pattern
+  // (time is in seconds)
+  private double timeStarted = 0;
+  private static final double timeToSpinUp = 0.7;
 
   // Shoot Pattern
   private int shootState = 0;
   private double lastShootChange = 0;
-  private static final double SHOOT_INTERVAL = 0.1; // speed of pattern
+  private static final double SHOOT_INTERVAL = 0.4; // speed of pattern
+
+  // Fade Pattern
+  private int colourState = 0;
+  private double lastColourChange = 0;
+  private static final double FADE_INTERVAL = 2.0; // time it takes to fade between colours in seconds
 
   // flashbang
   private boolean flashState = false;
   private double lastFlashTime = 0;
   private static final double FLASH_INTERVAL = 0.05; // seconds between flashes
+
   // green/gold blinking pattern
   private double lastChangeTime = 0;
   private static final float colourChangeTime = 1; // time it waits for before changing colour in seconds
@@ -88,6 +91,8 @@ public class AddressableLEDs extends SubsystemBase {
     FLASHBANG,
     PATTERNGREENGOLD,
     PATTERNBLUE,
+    PATTERNFADE,
+    PATTERNSPINUP,
     PATTERNSHOOT,
     OFF
   }
@@ -121,6 +126,7 @@ public class AddressableLEDs extends SubsystemBase {
 
   public void setPatternMode(PatternMode mode) {
     currentMode = mode;
+    timeStarted = Timer.getFPGATimestamp();
   }
 
   @Override
@@ -132,27 +138,32 @@ public class AddressableLEDs extends SubsystemBase {
 
       // run current pattern
       switch (currentMode) {
-        // case FLASHBANG:
-        //   if (Timer.getFPGATimestamp() - lastFlashTime > FLASH_INTERVAL) {
-        //     lastFlashTime = Timer.getFPGATimestamp();
-        //     flashState = !flashState;
+        // PATTERN IDEAS:
+        // Red/Blue pulsing patterns for each alliance
+        // Flashing green/gold for shooting
+        // Loading bar/fade for showing turret spinning up
 
-        //     for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-        //       if (flashState) {
-        //         if (i < m_LedSection1.getLength()) {
-        //           m_ledBuffer.setRGB(i, 255, 255, 255); // bright flash
-        //         } else if (m_LedSection1.getLength() - 1 < i
-        //             && i < m_LedSection1.getLength() + m_LedSection2.getLength()) {
-        //           m_ledBuffer.setRGB(i, 0, 255, 0); // bright flash
-        //         } else {
-        //           m_ledBuffer.setRGB(i, 0, 0, 255); // bright flash
-        //         }
-        //       } else {
-        //         m_ledBuffer.setRGB(i, 0, 0, 0); // off
-        //       }
-        //     }
-        //   }
-        //   break;
+        // case FLASHBANG:
+        // if (Timer.getFPGATimestamp() - lastFlashTime > FLASH_INTERVAL) {
+        // lastFlashTime = Timer.getFPGATimestamp();
+        // flashState = !flashState;
+
+        // for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+        // if (flashState) {
+        // if (i < m_LedSection1.getLength()) {
+        // m_ledBuffer.setRGB(i, 255, 255, 255); // bright flash
+        // } else if (m_LedSection1.getLength() - 1 < i
+        // && i < m_LedSection1.getLength() + m_LedSection2.getLength()) {
+        // m_ledBuffer.setRGB(i, 0, 255, 0); // bright flash
+        // } else {
+        // m_ledBuffer.setRGB(i, 0, 0, 255); // bright flash
+        // }
+        // } else {
+        // m_ledBuffer.setRGB(i, 0, 0, 0); // off
+        // }
+        // }
+        // }
+        // break;
 
         case PATTERNGREENGOLD:
           if (Timer.getFPGATimestamp() - lastChangeTime > colourChangeTime) {
@@ -191,38 +202,90 @@ public class AddressableLEDs extends SubsystemBase {
           }
           break;
 
+        case PATTERNFADE:
+          double t = (Timer.getFPGATimestamp() - lastColourChange) / FADE_INTERVAL;
+
+          if (t >= 1.0) {
+            lastColourChange = Timer.getFPGATimestamp();
+            colourState = (colourState + 1) % 4;
+            t = 0.0;
+          }
+
+          Color start;
+          Color end;
+
+          switch (colourState) {
+            case 0:
+              start = ALDgreen;
+              end = Color.kBlack;
+              break;
+            case 1:
+              start = Color.kBlack;
+              end = ALDgold;
+              break;
+            case 2:
+              start = ALDgold;
+              end = Color.kBlack;
+              break;
+            default:
+              start = Color.kBlack;
+              end = ALDgreen;
+              break;
+          }
+
+          // blend the colours
+          int r = (int) ((start.red * (1 - t) + end.red * t) * 255);
+          int g = (int) ((start.green * (1 - t) + end.green * t) * 255);
+          int b = (int) ((start.blue * (1 - t) + end.blue * t) * 255);
+
+          for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+            m_ledBuffer.setRGB(i, r, g, b);
+          }
+
+          break;
+
         case OFF:
           for (int i = 0; i < m_ledBuffer.getLength(); i++)
             m_ledBuffer.setRGB(i, 0, 0, 0);
           break;
 
-          case PATTERNSHOOT:
-            if (Timer.getFPGATimestamp() - lastShootChange > SHOOT_INTERVAL) {
-              lastShootChange = Timer.getFPGATimestamp();
-              shootState = (shootState + 1) % 4;
-            }
+        case PATTERNSHOOT:
+          if (Timer.getFPGATimestamp() - lastShootChange > SHOOT_INTERVAL) {
+            lastShootChange = Timer.getFPGATimestamp();
+            shootState = (shootState + 1) % 4;
+          }
 
-            Color current;
+          Color current;
 
-            switch (shootState) {
-              case 0:
-                current = ALDgreen;
-                break;
-              case 1:
-                current = Color.kBlack;
-                break;
-              case 2:
-                current = ALDgold;
-                break;
-              default:
-                current = Color.kBlack;
-                break;
-            }
+          switch (shootState) {
+            case 0:
+              current = ALDgreen;
+              break;
+            case 1:
+              current = Color.kBlack;
+              break;
+            case 2:
+              current = ALDgold;
+              break;
+            default:
+              current = Color.kBlack;
+              break;
+          }
 
-            for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-              m_ledBuffer.setLED(i, current);
-            }
-            break;
+          for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+            m_ledBuffer.setLED(i, current);
+          }
+          break;
+
+        case PATTERNSPINUP:
+          int brightness1 = (int) (Math.min((Timer.getFPGATimestamp() - timeStarted) / timeToSpinUp, 1.0) * 255);
+          for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+            m_ledBuffer.setRGB(i, 0, brightness1, 0);
+          }
+          if (brightness1 >= 254) {
+            setPatternMode(PatternMode.PATTERNSHOOT);
+          }
+          break;
 
       }
 
