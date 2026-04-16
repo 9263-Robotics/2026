@@ -103,7 +103,7 @@ public class RobotContainer {
   public RobotContainer() {
     instance = this;
 
-    m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.PATTERN0); // Change to set the patternMode, disabled
+    m_AddressableLEDs.setPatternMode(AddressableLEDs.PatternMode.PATTERNBLUE); // Change to set the patternMode, disabled
                                                                             // if AddressableLEDs.enabled is false when
                                                                             // initiallized
 

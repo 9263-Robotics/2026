@@ -63,6 +63,9 @@ public class AddressableLEDs extends SubsystemBase {
 
   // Variables for patterns
 
+  // blue fade pattern
+  private static final double BLUE_FADE_SPEED = 2.0;
+
   // flashbang
   private boolean flashState = false;
   private double lastFlashTime = 0;
@@ -78,7 +81,8 @@ public class AddressableLEDs extends SubsystemBase {
 
   public enum PatternMode {
     FLASHBANG,
-    PATTERN0,
+    PATTERNGREENGOLD,
+    PATTERNBLUE,
     OFF
   }
 
@@ -144,7 +148,7 @@ public class AddressableLEDs extends SubsystemBase {
         //   }
         //   break;
 
-        case PATTERN0:
+        case PATTERNGREENGOLD:
           if (Timer.getFPGATimestamp() - lastChangeTime > colourChangeTime) {
             // for (int i = 0; i < m_ledBuffer.getLength(); i++) {
             // m_ledBuffer.setLED(i, Color.kBlack);
@@ -166,6 +170,19 @@ public class AddressableLEDs extends SubsystemBase {
             }
           }
 
+          break;
+
+        case PATTERNBLUE:
+          double time = Timer.getFPGATimestamp();
+
+          // sine wave from 0 → 1
+          double brightness = (Math.sin(time * BLUE_FADE_SPEED) + 1) / 2.0;
+
+          int blueValue = (int) (brightness * 255);
+
+          for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+            m_ledBuffer.setRGB(i, 0, 0, blueValue);
+          }
           break;
 
         case OFF:
