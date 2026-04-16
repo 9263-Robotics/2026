@@ -66,6 +66,11 @@ public class AddressableLEDs extends SubsystemBase {
   // blue fade pattern
   private static final double BLUE_FADE_SPEED = 2.0;
 
+  // Shoot Pattern
+  private int shootState = 0;
+  private double lastShootChange = 0;
+  private static final double SHOOT_INTERVAL = 0.1; // speed of pattern
+
   // flashbang
   private boolean flashState = false;
   private double lastFlashTime = 0;
@@ -83,6 +88,7 @@ public class AddressableLEDs extends SubsystemBase {
     FLASHBANG,
     PATTERNGREENGOLD,
     PATTERNBLUE,
+    PATTERNSHOOT,
     OFF
   }
 
@@ -189,6 +195,35 @@ public class AddressableLEDs extends SubsystemBase {
           for (int i = 0; i < m_ledBuffer.getLength(); i++)
             m_ledBuffer.setRGB(i, 0, 0, 0);
           break;
+
+          case PATTERNSHOOT:
+            if (Timer.getFPGATimestamp() - lastShootChange > SHOOT_INTERVAL) {
+              lastShootChange = Timer.getFPGATimestamp();
+              shootState = (shootState + 1) % 4;
+            }
+
+            Color current;
+
+            switch (shootState) {
+              case 0:
+                current = ALDgreen;
+                break;
+              case 1:
+                current = Color.kBlack;
+                break;
+              case 2:
+                current = ALDgold;
+                break;
+              default:
+                current = Color.kBlack;
+                break;
+            }
+
+            for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+              m_ledBuffer.setLED(i, current);
+            }
+            break;
+
       }
 
       m_led.setData(m_ledBuffer);
