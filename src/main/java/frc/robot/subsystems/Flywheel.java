@@ -90,6 +90,15 @@ public class Flywheel extends SubsystemBase {
       FlywheelBottom.setControl(request.withVelocity(RPM/60 / (4/3)));
   }
 
+  public Command manualFlywheelCommand() {
+    return runEnd(() -> {
+      setTargetVelocity(-1900);
+    }, 
+    () -> {
+      setTargetVelocity(0);
+    });
+  }
+
   public boolean atSetpoint() {
 
       return (10 > Math.abs(FlywheelBottom.getClosedLoopError().getValueAsDouble())); //1.0 as tolerance

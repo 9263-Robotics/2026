@@ -94,20 +94,33 @@ public class Intake extends SubsystemBase {
     });
   }
 
+  public Command StartIntake() {
+    return runOnce(() -> {
+      startIntake();
+    });
+  }
+
+  public Command StopIntake() {
+    return runOnce(() -> {
+      stopIntake();
+    });
+  }
+
   public Command IntakeShootIn() {
     return runOnce(() -> {
       intakePID.setConstraints(new Constraints(5,60));
       intakePID.setGoal(IntakeConstants.MiddlePos);
+      intakeMotor.set(-0.2);
     });
   }
 
   public Command IntakeShootInConstant() {
     return new SequentialCommandGroup(
       IntakeShootIn(),
-      new WaitUntilCommand(() -> intakePID.atGoal()),
+      new WaitCommand(2.5),
       IntakeDown(),
-      new WaitUntilCommand(() -> intakePID.atGoal())
-    ).repeatedly();
+      new WaitCommand(1)
+    ).repeatedly().finallyDo(() -> stopIntake());
   }
 
   public Command IntakeMiddle() {

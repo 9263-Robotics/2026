@@ -205,6 +205,12 @@ public class Turret extends SubsystemBase {
         }
     }
 
+    public Command FaceForward() {
+        return runOnce(() -> {
+            turretPID.setSetpoint(0);
+        });
+    }
+
     // public Command zeroTurret() {
     //     return runEnd(() -> {
     //         turretMotor.setVoltage(0.1);

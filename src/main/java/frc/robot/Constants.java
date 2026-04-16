@@ -66,19 +66,44 @@ public final class Constants {
       // flywheelSpeedMap.put(16.0, -6000.0);
 
       /* NEW HOOD DATA */
+      // flywheelSpeedMap.put(0.0,-1900.0);
+      // flywheelSpeedMap.put(1.046404,-1900.0);
+      // flywheelSpeedMap.put(1.596404,-2000.0);
+      // flywheelSpeedMap.put(2.216404,-2200.0);
+      // flywheelSpeedMap.put(2.956404, -2450.0);
+      // flywheelSpeedMap.put(3.426404,-2600.0);
+      // flywheelSpeedMap.put(4.646404,-2850.0);
+      // flywheelSpeedMap.put(5.506404,-3500.0);
+      // flywheelSpeedMap.put(7.176404,-4300.0);
+      // flywheelSpeedMap.put(8.146404, -5000.0);
+      // flywheelSpeedMap.put(9.566404,-5250.0);
+      // flywheelSpeedMap.put(11.096404, -5400.0);
+
+      /* NEW NEW HOOD DATA */
       flywheelSpeedMap.put(0.0,-1900.0);
-      flywheelSpeedMap.put(1.046404,-1900.0);
-      flywheelSpeedMap.put(1.596404,-2000.0);
-      flywheelSpeedMap.put(2.216404,-2200.0);
-      flywheelSpeedMap.put(2.956404, -2450.0);
-      flywheelSpeedMap.put(3.426404,-2600.0);
-      flywheelSpeedMap.put(4.646404,-2850.0);
-      flywheelSpeedMap.put(5.506404,-3500.0);
-      flywheelSpeedMap.put(7.176404,-4300.0);
-      flywheelSpeedMap.put(8.146404, -5000.0);
-      flywheelSpeedMap.put(9.566404,-5250.0);
-      flywheelSpeedMap.put(11.096404, -5400.0);
-      
+      flywheelSpeedMap.put(1.036404,-1900.0);
+      flywheelSpeedMap.put(1.438404,-2000.0);
+      flywheelSpeedMap.put(2.201404,-2300.0);
+      flywheelSpeedMap.put(2.776404,-2600.0);
+      flywheelSpeedMap.put(3.146404,-2700.0);
+      flywheelSpeedMap.put(3.896404,-2700.0);
+      flywheelSpeedMap.put(4.696404,-3100.0);
+      flywheelSpeedMap.put(6.036404,-4000.0);
+      flywheelSpeedMap.put(7.646404,-4700.0);
+      flywheelSpeedMap.put(9.196404,-5000.0);
+
+
+      // flywheelSpeedMap.put(0.0,-1900.0);
+      // flywheelSpeedMap.put(1.036404,-1900.0);
+      // flywheelSpeedMap.put(1.438404,-2000.0);
+      // flywheelSpeedMap.put(2.201404,-2300.0);
+      // flywheelSpeedMap.put(2.776404,-2600.0);
+      // flywheelSpeedMap.put(3.146404,-2700.0);
+      // flywheelSpeedMap.put(3.896404,-2700.0);
+      // flywheelSpeedMap.put(4.696404,-3100.0);
+      // flywheelSpeedMap.put(6.036404,-4000.0);
+      // flywheelSpeedMap.put(7.646404,-4700.0);
+      // flywheelSpeedMap.put(9.196404,-5000.0);
 
     }
 
@@ -102,18 +127,32 @@ public final class Constants {
 
 
       /* NEW HOOD DATA */
+      // hoodAngleMap.put(0.0,0.0);
+      // hoodAngleMap.put(1.046404,0.0);
+      // hoodAngleMap.put(1.596404,-1.0);
+      // hoodAngleMap.put(2.216404,-3.0);
+      // hoodAngleMap.put(2.956404, -6.0);
+      // hoodAngleMap.put(3.426404,-7.0);
+      // hoodAngleMap.put(4.646404,-10.0);
+      // hoodAngleMap.put(5.506404,-17.0);
+      // hoodAngleMap.put(7.176404,-12.0);
+      // hoodAngleMap.put(8.146404, -22.0);
+      // hoodAngleMap.put(9.566404,-24.0);
+      // hoodAngleMap.put(11.096404, -25.0);
+
+      /* NEW NEW HOOD DATA */
       hoodAngleMap.put(0.0,0.0);
-      hoodAngleMap.put(1.046404,0.0);
-      hoodAngleMap.put(1.596404,-1.0);
-      hoodAngleMap.put(2.216404,-3.0);
-      hoodAngleMap.put(2.956404, -6.0);
-      hoodAngleMap.put(3.426404,-7.0);
-      hoodAngleMap.put(4.646404,-10.0);
-      hoodAngleMap.put(5.506404,-17.0);
-      hoodAngleMap.put(7.176404,-12.0);
-      hoodAngleMap.put(8.146404, -22.0);
-      hoodAngleMap.put(9.566404,-24.0);
-      hoodAngleMap.put(11.096404, -25.0);
+      hoodAngleMap.put(1.036404,0.0);
+      hoodAngleMap.put(1.438404,0.0);
+      hoodAngleMap.put(2.201404,0.0);
+      hoodAngleMap.put(2.776404,-1.0);
+      hoodAngleMap.put(3.146404,-2.0);
+      hoodAngleMap.put(3.896404,-4.0);
+      hoodAngleMap.put(4.696404,-7.0);
+      hoodAngleMap.put(6.036404,-10.0);
+      hoodAngleMap.put(7.646404,-15.0);
+      hoodAngleMap.put(9.196404,-23.0);
+
       
 
     }
