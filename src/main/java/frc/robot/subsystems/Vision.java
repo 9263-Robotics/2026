@@ -16,6 +16,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import swervelib.SwerveDrive;
@@ -31,28 +32,47 @@ public class Vision extends SubsystemBase {
 
   public static PoseStrategy primaryStrategy = PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR;
 
-  private static final double avgFactor = 16;
+  private static double avgFactor = 16.0; //Factor value for avg distance (n / avgFactor)
+
+  private static double oneCamNA = 0.5; //N values for standard divation if there are is one april tag
+  private static double oneCamNB = 0.5;
+  private static double oneCamNC = 1.0;
+
+  private static double multiCamNA = 0.5; //N values for standard divation if there are multiple april tags
+  private static double multiCamNB = 0.5;
+  private static double multiCamNC = 1.0;
+
   
   // //TODO: add correct offsets to the estimators. need  cameras mounted tho.
   
   /** Creates a new ExampleSubsystem. */
-  public Vision() { }
+  public Vision() { //Shuffleboard tabs for standard divation tuning.
+    Shuffleboard.getTab(getName()).addDouble("avgFactor", () -> avgFactor);
+
+    Shuffleboard.getTab(getName()).addDouble("oneCamNA", () -> oneCamNA);
+    Shuffleboard.getTab(getName()).addDouble("oneCamNB", () -> oneCamNB);
+    Shuffleboard.getTab(getName()).addDouble("oneCamNC", () -> oneCamNC);
+
+    Shuffleboard.getTab(getName()).addDouble("multiCamNA", () -> multiCamNA);
+    Shuffleboard.getTab(getName()).addDouble("multiCamNB", () -> multiCamNB);
+    Shuffleboard.getTab(getName()).addDouble("multiCamNC", () -> multiCamNC);
+  }
 
   public void updatePoseEstimation(SwerveDrive swerveDrive){
     for(Cameras curCamera: Cameras.values()) {
       curCamera.resultList = curCamera.camera.getAllUnreadResults();
 
       for (PhotonPipelineResult result : curCamera.resultList) {
-        double avg = distanceAvg(result) / avgFactor;
+        double avg = distanceAvg(result) / avgFactor; //Average distance factor regarding trust value vs april tag at far distance
         if(result.getTargets().size() == 1) {
           curCamera.estimatedPose = curCamera.poseEstimator.estimateLowestAmbiguityPose(result);
           // swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
-          swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(0.5 * avg, 0.5 * avg, 1 * avg));
+          swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(oneCamNA * avg, oneCamNB * avg, oneCamNC * avg));
         } else if (result.getTargets().size() > 1) {
           curCamera.estimatedPose = curCamera.poseEstimator.estimateCoprocMultiTagPose(result);
           if (curCamera.estimatedPose.isPresent()){
             // swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds);
-            swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(0.5 * avg, 0.5 * avg, 1 * avg));
+            swerveDrive.addVisionMeasurement(curCamera.estimatedPose.get().estimatedPose.toPose2d(), curCamera.estimatedPose.get().timestampSeconds, VecBuilder.fill(multiCamNA * avg, multiCamNB * avg, multiCamNC * avg));
           }
         }
       }
