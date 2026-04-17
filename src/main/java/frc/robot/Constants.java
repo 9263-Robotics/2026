@@ -41,7 +41,7 @@ public final class Constants {
   }
   public static class IntakeConstants {
     public static final double UpPos = 0;
-    public static final double DownPos = -16.1;
+    public static final double DownPos = -16.3;
     public static final double MiddlePos = -5.5;
   }
 

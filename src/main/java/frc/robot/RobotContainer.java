@@ -198,12 +198,14 @@ public class RobotContainer {
     m_driverController.circle().whileTrue(turret.setTurretToZeroCommand());
     // m_driverController.circle().whileTrue()
 
-    m_driverController.cross()
+    m_driverController.R2()
         .onTrue(Commands.runOnce(() -> m_AddressableLEDs.setPatternMode(PatternMode.PATTERNSPINUP)));
-    m_driverController.cross().onFalse(
+    m_driverController.R2().onFalse(
     Commands.runOnce(() -> m_AddressableLEDs.setPatternMode(PatternMode.PATTERNGREENGOLD))
-);
-    m_driverController.cross().whileTrue(flywheel.flywheelSpinup());
+  );
+    // m_driverController.cross().whileTrue(flywheel.flywheelSpinup());
+    // m_driverController.cross().whileTrue(flywheel.flywheelSpinup());
+    m_driverController.cross().whileTrue(intake.IntakeOut().alongWith(kicker.unJam()));
   }
 
   /**
@@ -248,6 +250,7 @@ public class RobotContainer {
 
     // NamedCommands.registerCommand("ShakeIntake", Commands.none());
     NamedCommands.registerCommand("ShakeIntake", intake.IntakeShake());
+    NamedCommands.registerCommand("NewShakeIntake", intake.IntakeShootInConstant());
 
     NamedCommands.registerCommand("ShootAtTarget", new ShootAtTarget(turret, kicker, hood, drivebase, flywheel));
     NamedCommands.registerCommand("AimAtTarget", new AimAtTarget(turret, hood, drivebase, flywheel));

@@ -83,12 +83,12 @@ public class Vision extends SubsystemBase {
 
     LEFT_SIDE_CAM("FrontLeftCam",
                     new Translation3d(-0.0075, 0.3193, 0.41), 
-                    new Rotation3d(0,0,Math.toRadians(70)));
+                    new Rotation3d(0,0,Math.toRadians(70))),
                     //70 out
     
-    // RIGHT_SIDE_CAM("FrontRightCam",
-    //                 new Translation3d(-0.0075, -0.3193, 0.40), 
-    //                 new Rotation3d(0,0,Math.toRadians(-70)));
+    RIGHT_SIDE_CAM("FrontRightCam",
+                    new Translation3d(-0.0075, -0.3193, 0.40), 
+                    new Rotation3d(0,0,Math.toRadians(-70)));
                     //70 out
 
     // BACK_LEFT_CAM("Camera-1",

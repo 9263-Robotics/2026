@@ -92,7 +92,7 @@ public class Flywheel extends SubsystemBase {
 
   public Command manualFlywheelCommand() {
     return runEnd(() -> {
-      setTargetVelocity(-1900);
+      setTargetVelocity(-2100);
     }, 
     () -> {
       setTargetVelocity(0);

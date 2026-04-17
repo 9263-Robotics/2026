@@ -56,22 +56,22 @@ public class AddressableLEDs extends SubsystemBase {
   // Variables for patterns
 
   // blue fade pattern
-  private static final double BLUE_FADE_SPEED = 3.5;
+  private static final double BLUE_FADE_SPEED = 1.5;
 
   // Turret spinning up pattern
   // (time is in seconds)
   private double timeStarted = 0;
-  private static final double timeToSpinUp = 0.7;
+  private static final double timeToSpinUp = 0.4;
 
   // Shoot Pattern
   private int shootState = 0;
   private double lastShootChange = 0;
-  private static final double SHOOT_INTERVAL = 0.4; // speed of pattern
+  private static final double SHOOT_INTERVAL = 0.1; // speed of pattern
 
   // Fade Pattern
   private int colourState = 0;
   private double lastColourChange = 0;
-  private static final double FADE_INTERVAL = 2.0; // time it takes to fade between colours in seconds
+  private static final double FADE_INTERVAL = 0.75; // time it takes to fade between colours in seconds
 
   // flashbang
   private boolean flashState = false;
@@ -80,7 +80,7 @@ public class AddressableLEDs extends SubsystemBase {
 
   // green/gold blinking pattern
   private double lastChangeTime = 0;
-  private static final float colourChangeTime = 1; // time it waits for before changing colour in seconds
+  private static final double colourChangeTime = 0.5; // time it waits for before changing colour in seconds
   private static final Color ALDgold = new Color(255, 165, 0); // Aldershot Gold
   private static final Color ALDgreen = Color.kDarkGreen; // Aldershot Green
   private static final Color[] Colours = new Color[] { ALDgold, ALDgreen };
