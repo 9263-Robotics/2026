@@ -110,7 +110,15 @@ public class Intake extends SubsystemBase {
     return runOnce(() -> {
       intakePID.setConstraints(new Constraints(5,60));
       intakePID.setGoal(IntakeConstants.MiddlePos);
-      intakeMotor.set(-0.2);
+      intakeMotor.set(-0.4);
+    });
+  }
+
+  public Command IntakeOut() {
+    return runEnd(() -> {
+      intakeMotor.set(0.6);
+    }, () -> {
+      intakeMotor.set(0);
     });
   }
 
@@ -137,6 +145,14 @@ public class Intake extends SubsystemBase {
       IntakeDown(),
       new WaitCommand(0.4)
     ).repeatedly();
+  }
+
+  public Command DrumShooterIntake() {
+    return runEnd(() -> {
+      intakeMotor.set(1);
+    }, () -> {
+      intakeMotor.set(0);
+    });
   }
   
   public Command runIntakeMotor() {
