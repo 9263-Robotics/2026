@@ -96,6 +96,7 @@ public class ShootAtTarget extends Command {
     // Translation2d targetPose = hub;
 
 
+  
     //  Transform2d transformToHub = drivetrain.getSwerveDrive().getPose()
     // Transform2d transformToHub = turret.getTurretPose();
     Translation2d toTarget = targetPose.minus(turret.getTurretPose().getTranslation());
@@ -103,6 +104,10 @@ public class ShootAtTarget extends Command {
     double distanceToTarget = toTarget.getNorm() ;
 
     Rotation2d fieldAngleToTarget = toTarget.getAngle();
+
+    SmartDashboard.putNumber("toTargetAnlge", fieldAngleToTarget.getDegrees());
+    SmartDashboard.putNumber("toTargetX", toTarget.getX());
+    SmartDashboard.putNumber("toTargetY", toTarget.getY());
 
     // desiredTurretAngle = fieldAngleToTarget.minus(turret.getTurretRotation());
 
@@ -118,7 +123,7 @@ public class ShootAtTarget extends Command {
     SmartDashboard.putNumber("Hood Table", ShooterLookupTables.hoodAngleMap.get(distanceToTarget));
     SmartDashboard.putNumber("Flywheel Table", ShooterLookupTables.flywheelSpeedMap.get(distanceToTarget));
 
-    if (flywheel.atSetpoint() && turret.isTurretAligned()){
+    if ((Math.abs(flywheel.getCurrentFlywheelSpeedRPM()) > Math.abs(ShooterLookupTables.flywheelSpeedMap.get(distanceToTarget)) * 0.9)&& turret.isTurretAligned()){
       kicker.Spindexer.set(-0.5);
       kicker.kicker.set(0.4);
     }

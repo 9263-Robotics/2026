@@ -51,7 +51,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void startIntake(){
-      intakeMotor.set(1.0); //full speed
+      intakeMotor.set(-0.7); //full speed
   }
 
   public void stopIntake(){

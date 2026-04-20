@@ -75,8 +75,8 @@ public boolean trenchGood() {
             // controller.setSetpoint(rots[i], ControlType.kPosition);
             // controller.setSetpoint(, ControlType.kPosition);
 
-            // controller.setSetpoint(DesiredHoodAngle, ControlType.kPosition);
-            controller.setSetpoint(MathUtil.clamp(SmartDashboard.getNumber("Hood Angle", 0), -26, 0),ControlType.kPosition);
+            controller.setSetpoint(DesiredHoodAngle, ControlType.kPosition);
+            // controller.setSetpoint(MathUtil.clamp(SmartDashboard.getNumber("Hood Angle", 0), -26, 0),ControlType.kPosition);
 
         }
         

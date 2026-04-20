@@ -61,6 +61,9 @@ public class Turret extends SubsystemBase {
     private double desiredTurretAngle = 0;
     private double robotrotation = 0;
 
+    private boolean turretToZero = false;
+
+
     private double calculatedRotation = 0;
 
     public Turret(SwerveSubsystem drivetrain) {
@@ -133,6 +136,10 @@ public class Turret extends SubsystemBase {
                 // turretPID.setSetpoint(MathUtil.clamp(calculatedRotation, -50, 50));
                 turretPID.setSetpoint(calculatedRotation);
         }
+
+        if(turretToZero) {
+            turretPID.setSetpoint(0);
+        }
         
 
         // turretPID.setSetpoint((desiredTurretAngle - drivetrain.getSwerveDrive().getGyro().getRotation3d().getAngle()) +  (drivetrain.getSwerveDrive().getGyro().getYawAngularVelocity().in(DegreesPerSecond) * 0.02)); // idk, getting the gyro dicrectly might fix the werid laggyness we were getting? and then accounting for the robot rotation could also make it track a bit better aswell (if we increase 0.02 it might track better in motion, but have a breif overshoot when we stop)
@@ -143,7 +150,7 @@ public class Turret extends SubsystemBase {
 
         turretRotation = Rotation2d.fromDegrees(getMotorEncoder()).plus(drivetrain.getSwerveDrive().getPose().getRotation());
 
-        turretPose = drivetrain.getSwerveDrive().getPose().plus(new Transform2d(-0.3,0.3, Rotation2d.fromDegrees(getMotorEncoder())));
+        turretPose = drivetrain.getSwerveDrive().getPose().plus(new Transform2d(-0.1,0.1, Rotation2d.fromDegrees(getMotorEncoder())));
     }
 
     // public void setTurretAngle(Rotation2d rot) {
@@ -168,8 +175,11 @@ public class Turret extends SubsystemBase {
     }
 
     public Command setTurretToZeroCommand() {
-        return run(() -> {
-            turretPID.setSetpoint(0);
+        return runEnd(() -> {
+            turretToZero = true;
+        },
+        () -> {
+            turretToZero = false;
         });
     }
 

@@ -53,9 +53,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "ShootAtTarget"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "NewShakeIntake"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootAtTarget"
+                }
+              }
+            ]
           }
         }
       ]

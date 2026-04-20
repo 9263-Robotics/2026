@@ -11,21 +11,28 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "ShootIDK"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootAtTarget"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "NewShakeIntake"
+                }
+              }
+            ]
           }
         },
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "Depot Path 1"
+            "waitTime": 3.5
           }
         },
         {
@@ -38,6 +45,12 @@
           "type": "named",
           "data": {
             "name": "StartIntake"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Depot Path 1"
           }
         },
         {
@@ -65,9 +78,22 @@
           }
         },
         {
-          "type": "named",
+          "type": "parallel",
           "data": {
-            "name": "ShootIDK"
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "ShootAtTarget"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "NewShakeIntake"
+                }
+              }
+            ]
           }
         }
       ]

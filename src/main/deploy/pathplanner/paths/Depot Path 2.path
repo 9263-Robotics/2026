@@ -16,16 +16,16 @@
     },
     {
       "anchor": {
-        "x": 1.599,
+        "x": 1.0821466905187833,
         "y": 5.923
       },
       "prevControl": {
-        "x": 0.835397390277454,
-        "y": 5.933997627516869
+        "x": 1.3417531305903396,
+        "y": 5.990161001788908
       },
       "nextControl": {
-        "x": 2.557304622916777,
-        "y": 5.909198217297395
+        "x": 0.6916275870894836,
+        "y": 5.821971480843122
       },
       "isLocked": false,
       "linkedName": null
@@ -44,7 +44,12 @@
       "linkedName": "After Intake"
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.9625668449197877,
+      "rotationDegrees": 180.0
+    }
+  ],
   "constraintZones": [],
   "pointTowardsZones": [],
   "eventMarkers": [],

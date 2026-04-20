@@ -80,6 +80,10 @@ public class Flywheel extends SubsystemBase {
     });
   }
 
+  public double getCurrentFlywheelSpeedRPM() { 
+    return FlywheelBottom.getVelocity().getValueAsDouble() * 60;
+  }
+
   public Command setFlywheelSpeed(double RPM) {
     return run( () -> {
       setTargetVelocity(RPM);

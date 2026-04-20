@@ -78,18 +78,28 @@ public class Vision extends SubsystemBase {
     
     // BACK_LEFT_CAM("BackLeftCam",
     //                 new Translation3d(-0.304, 0.304, 0.29), 
-    //                 new Rotation3d(0,Math.toRadians(-40),Math.toRadians(-15)).plus(new Rotation3d(0,0,Math.toRadians(180)))),
+    //                 new Rotation3d(Math.toRadians(0),Math.toRadians(-40),Math.toRadians(-15)).plus(new Rotation3d(0,0,Math.toRadians(180)))),
     //                 //40 vertical, 15 left (away from robot)
 
+    // LEFT_SIDE_CAM("FrontLeftCam",
+    //                 new Translation3d(-0.0075, 0.3193, 0.41), 
+    //                 new Rotation3d(0,0,Math.toRadians(70))),
+    //                 //70 out
+    
+    // RIGHT_SIDE_CAM("FrontRightCam",
+    //                 new Translation3d(-0.0075, -0.3193, 0.40), 
+    //                 new Rotation3d(0,0,Math.toRadians(-70)));
+    //                 //70 out
+
     LEFT_SIDE_CAM("FrontLeftCam",
-                    new Translation3d(-0.0075, 0.3193, 0.41), 
-                    new Rotation3d(0,0,Math.toRadians(70))),
+                    new Translation3d(-0.045, 0.3145, 0.42), 
+                    new Rotation3d(0,0,Math.toRadians(71.3)).plus(new Rotation3d(0,-0.8,0)));
                     //70 out
     
-    RIGHT_SIDE_CAM("FrontRightCam",
-                    new Translation3d(-0.0075, -0.3193, 0.40), 
-                    new Rotation3d(0,0,Math.toRadians(-70)));
-                    //70 out
+    // RIGHT_SIDE_CAM("FrontRightCam",
+    //                 new Translation3d(-0.045, -0.3145, 0.40), 
+    //                 new Rotation3d(0,0,Math.toRadians(-73.7)).plus(new Rotation3d(0,-1,0)));
+    //                 //70 out
 
     // BACK_LEFT_CAM("Camera-1",
     //                 new Translation3d(-0, 0, 0), 
