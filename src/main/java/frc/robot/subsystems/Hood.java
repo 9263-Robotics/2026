@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Hood extends SubsystemBase {
@@ -25,6 +26,7 @@ public class Hood extends SubsystemBase {
     private final SparkMaxConfig config = new SparkMaxConfig();
 
     private double DesiredHoodAngle = 0;
+    private boolean hoodToggle = true;
 
     private final double[] rots = {0.0, -11, -26};
     private int i = 0;
@@ -48,13 +50,16 @@ public class Hood extends SubsystemBase {
 
         // config.encoder.positionConversionFactor(360);
     }
-public boolean trenchGood() {
-    return motor.getEncoder().getPosition() > -2;
-    
-}
+
+    public boolean trenchGood() {
+        return motor.getEncoder().getPosition() > -2;
+        
+    }
     
 
     public Command setHoodAngle(double angle) {
+        if(!hoodToggle) //No turn if hood off
+            return Commands.none();
         return runOnce(
             () -> {
                 // if (angle >= MINANGLEROT && angle <= MAXANGLEROT) shouldnt be necessary with only three setpoints
@@ -90,6 +95,8 @@ public boolean trenchGood() {
     }
 
     public void setHoodAngleFunc(double hoodAngle) {
+        if(!hoodToggle) //No turn if hood off
+            return;
         if(hoodAngle > -26 && hoodAngle < 0) {
             DesiredHoodAngle = hoodAngle;
             controller.setSetpoint(hoodAngle, ControlType.kPosition);
@@ -108,7 +115,7 @@ public boolean trenchGood() {
         return controller.getSetpoint();
     }
 
-    public Command HoodDown (){
+    public Command HoodDown(){
         return runEnd(
             () -> {
                 DesiredHoodAngle = 0;
@@ -121,7 +128,7 @@ public boolean trenchGood() {
         );
     }
 
-    public Command HoodRunAnlge (){
+    public Command HoodRunAnlge(){
         return run(() -> {
             controller.setSetpoint(DesiredHoodAngle, ControlType.kPosition);
         });
@@ -134,5 +141,15 @@ public boolean trenchGood() {
                 i %= rots.length; 
             }
         );
+    }
+
+    public Command toggleHood() {
+        return runOnce(
+            () -> {
+                hoodToggle = !hoodToggle; //Toggle
+                if(!hoodToggle) // Turn off hood and have at max set point to shoot forward
+                    controller.setSetpoint(-26, ControlType.kPosition);
+            }
+        ); 
     }
 }

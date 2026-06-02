@@ -186,7 +186,8 @@ public class RobotContainer {
     m_driverController.povRight().onTrue(intake.IntakeMiddle());
 
     // m_driverController.triangle().whileTrue(intake.runIntakeMotor());
-    m_driverController.triangle().whileTrue(kicker.shoot().alongWith(flywheel.manualFlywheelCommand()));
+    // m_driverController.triangle().whileTrue(kicker.shoot().alongWith(flywheel.manualFlywheelCommand()));
+    m_driverController.triangle().onTrue(hood.toggleHood()); //Toggle hood on-off (for showcase shooting at target)
 
     // m_driverController.L1().whileTrue(intake.IntakeShake());
     m_driverController.L1().whileTrue(intake.IntakeShootInConstant());
