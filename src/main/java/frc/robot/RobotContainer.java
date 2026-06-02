@@ -199,6 +199,12 @@ public class RobotContainer {
     m_driverController.circle().whileTrue(turret.setTurretToZeroCommand());
     // m_driverController.circle().whileTrue()
 
+    m_driverController.R1()
+        .onTrue(Commands.runOnce(() -> m_AddressableLEDs.setPatternMode(PatternMode.PATTERNSPINUP)));
+    m_driverController.R1().onFalse(
+    Commands.runOnce(() -> m_AddressableLEDs.setPatternMode(PatternMode.PATTERNGREENGOLD))
+  );
+
     m_driverController.R2()
         .onTrue(Commands.runOnce(() -> m_AddressableLEDs.setPatternMode(PatternMode.PATTERNSPINUP)));
     m_driverController.R2().onFalse(
