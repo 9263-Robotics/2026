@@ -31,12 +31,12 @@ public final class Constants {
   }
 
   public static class TurretConstants {
-    // 230 deg of rotation
-    public static final double minSoftStop = -111;
-    public static final double maxSoftStop = 119;
+    // 90 deg of rotation
+    public static final double minSoftStop = -45;
+    public static final double maxSoftStop = 45;
 
-    public static final double AbsMinSoftStop = -116;
-    public static final double AbsMaxSoftStop = 124;
+    public static final double AbsMinSoftStop = -55;
+    public static final double AbsMaxSoftStop = 55;
 
   }
   public static class IntakeConstants {

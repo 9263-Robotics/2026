@@ -180,10 +180,15 @@ public class RobotContainer {
     // m_operatorController.touchpad().whileTrue(hood.HoodDown().repeatedly());
 
     
+    // m_driverController.rightTrigger()
+    //     .whileTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
+    // m_driverController.rightBumper()
+    //     .whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
     m_driverController.rightTrigger()
-        .whileTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
+           .whileTrue(turret.incrementTurretAngle);
+
     m_driverController.rightBumper()
-        .whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
+           .whileTrue(turret.decrementTurretAngle);
 
     m_driverController.povDown().onTrue(intake.IntakeDown());
     m_driverController.povUp().onTrue(intake.IntakeUp());
@@ -199,7 +204,8 @@ public class RobotContainer {
 
     m_driverController.x().whileTrue(kicker.unJam());
 
-    m_driverController.b().whileTrue(turret.setTurretToZeroCommand());
+    // m_driverController.b().whileTrue(turret.setTurretToZeroCommand());
+    m_driverController.b().whileTrue(flywheel.manualFlywheelCommand());
     // m_driverController.circle().whileTrue()
 
     m_driverController.rightTrigger()

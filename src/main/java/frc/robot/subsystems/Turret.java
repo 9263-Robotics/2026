@@ -40,6 +40,9 @@ public class Turret extends SubsystemBase {
     private Pose2d turretPose = new Pose2d();
     private Rotation2d turretRotation = new Rotation2d();
 
+    public final Command incrementTurretAngle;
+    public final Command decrementTurretAngle;
+
     boolean badWait = false;
 
     // private final DigitalInput limitSwitch = new DigitalInput(0);
@@ -68,6 +71,9 @@ public class Turret extends SubsystemBase {
 
     public Turret(SwerveSubsystem drivetrain) {
         this.drivetrain = drivetrain;
+
+        decrementTurretAngle = runOnce(() -> {desiredTurretAngle -= 5;});
+        incrementTurretAngle = runOnce(() -> {desiredTurretAngle += 5;});
 
         turretMotorConfig.encoder.positionConversionFactor(360.0 / 50)
                                 .velocityConversionFactor((360.0 / 50) / 60.0);
@@ -108,7 +114,7 @@ public class Turret extends SubsystemBase {
         
         turretPose = drivetrain.getSwerveDrive().getPose().plus(new Transform2d(-0.3,0.3, getTurretRotation()));
 
-        desiredTurretAngle =  Rotation2d.fromDegrees(getMotorEncoder()).plus(drivetrain.getSwerveDrive().getPose().getRotation()).getDegrees();
+        // desiredTurretAngle =  Rotation2d.fromDegrees(getMotorEncoder()).plus(drivetrain.getSwerveDrive().getPose().getRotation()).getDegrees();
 
         // setDefaultCommand(this.setTrurretPIDCommand());
     }
