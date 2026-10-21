@@ -13,7 +13,9 @@ import com.reduxrobotics.canand.CanandEventLoop;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -51,6 +53,7 @@ public class RobotContainer {
   // Getter for singleton instance of RobotContainer, which can be used to access
   // subsystems in the Robot class and other places
   private static RobotContainer instance;
+  EventLoop loop;
 
   public static RobotContainer getInstance() {
     return instance;
@@ -68,7 +71,7 @@ public class RobotContainer {
   private final Flywheel flywheel = new Flywheel();
 
   // Replace with CommandPS4Controller or CommandXBoxController if needed
-  private final CommandPS5Controller m_driverController = new CommandPS5Controller(
+  private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.kDriverControllerPort);
 
   // private final CommandPS5Controller m_operatorController = new
@@ -176,9 +179,10 @@ public class RobotContainer {
 
     // m_operatorController.touchpad().whileTrue(hood.HoodDown().repeatedly());
 
-    m_driverController.R2()
+    
+    m_driverController.rightTrigger()
         .whileTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
-    m_driverController.R1()
+    m_driverController.rightBumper()
         .whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
 
     m_driverController.povDown().onTrue(intake.IntakeDown());
@@ -186,26 +190,26 @@ public class RobotContainer {
     m_driverController.povRight().onTrue(intake.IntakeMiddle());
 
     // m_driverController.triangle().whileTrue(intake.runIntakeMotor());
-    m_driverController.triangle().whileTrue(kicker.shoot().alongWith(flywheel.manualFlywheelCommand()));
+    m_driverController.y().whileTrue(kicker.shoot().alongWith(flywheel.manualFlywheelCommand()));
 
     // m_driverController.L1().whileTrue(intake.IntakeShake());
-    m_driverController.L1().whileTrue(intake.IntakeShootInConstant());
+    m_driverController.leftBumper().whileTrue(intake.IntakeShootInConstant());
 
-    m_driverController.L2().whileTrue(intake.runIntakeWithPID());
+    m_driverController.leftTrigger().whileTrue(intake.runIntakeWithPID());
 
-    m_driverController.square().whileTrue(kicker.unJam());
+    m_driverController.x().whileTrue(kicker.unJam());
 
-    m_driverController.circle().whileTrue(turret.setTurretToZeroCommand());
+    m_driverController.b().whileTrue(turret.setTurretToZeroCommand());
     // m_driverController.circle().whileTrue()
 
-    m_driverController.R2()
+    m_driverController.rightTrigger()
         .onTrue(Commands.runOnce(() -> m_AddressableLEDs.setPatternMode(PatternMode.PATTERNSPINUP)));
-    m_driverController.R2().onFalse(
+    m_driverController.rightTrigger().onFalse(
     Commands.runOnce(() -> m_AddressableLEDs.setPatternMode(PatternMode.PATTERNGREENGOLD))
   );
     // m_driverController.cross().whileTrue(flywheel.flywheelSpinup());
     // m_driverController.cross().whileTrue(flywheel.flywheelSpinup());
-    m_driverController.cross().whileTrue(intake.IntakeOut().alongWith(kicker.unJam()));
+    m_driverController.a().whileTrue(intake.IntakeOut().alongWith(kicker.unJam()));
   }
 
   /**
