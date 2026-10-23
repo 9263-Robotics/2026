@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandPS5Controller;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -177,15 +178,18 @@ public class RobotContainer {
     // m_operatorController.touchpad().whileTrue(hood.HoodDown().repeatedly());
 
     
-    // m_driverController.rightTrigger()
-    //     .whileTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
+    m_driverController.R1()
+        .whileTrue(new ShootAtTarget(turret, kicker, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
     // m_driverController.rightBumper()
     //     .whileTrue(new AimAtTarget(turret, hood, drivebase, flywheel).alongWith(hood.HoodRunAnlge()));
-    m_driverController.R2()
+    m_driverController.L1()
            .whileTrue(turret.incrementTurretAngle);
 
     m_driverController.R1()
            .whileTrue(turret.decrementTurretAngle);
+
+    // m_driverController.R2()
+    //        .whileTrue(intake.IntakeShootInConstant().alongWith((new WaitCommand(1)).andThen(kicker.shoot()), flywheel.manualFlywheelCommand()));
 
     m_driverController.povDown().onTrue(intake.IntakeDown());
     m_driverController.povUp().onTrue(intake.IntakeUp());
@@ -195,7 +199,7 @@ public class RobotContainer {
     m_driverController.triangle().whileTrue(kicker.shoot().alongWith(flywheel.manualFlywheelCommand()));
 
     // m_driverController.L1().whileTrue(intake.IntakeShake());
-    m_driverController.L1().whileTrue(intake.IntakeShootInConstant());
+    m_driverController.povLeft().whileTrue(intake.IntakeShootInConstant());
 
     m_driverController.L2().whileTrue(intake.runIntakeWithPID());
 
